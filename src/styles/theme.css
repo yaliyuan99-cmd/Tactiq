@@ -1,0 +1,209 @@
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Tactiq brand palette. The site ships dark by default (an inline script in
+ * index.html adds .dark before first paint), but a full light theme lives in
+ * :root so the navbar toggle can switch between them.
+ * Brand anchors: primary #534AB7 · accent/teal #1D9E75.
+ */
+:root {
+  --font-size: 16px;
+  --background: #faf9ff;
+  --foreground: #1a1730;
+  --card: #ffffff;
+  --card-foreground: #1a1730;
+  --popover: #ffffff;
+  --popover-foreground: #1a1730;
+  --primary: #534ab7;
+  --primary-foreground: #ffffff;
+  --secondary: #f1eefb;
+  --secondary-foreground: #1a1730;
+  --muted: #eeebf7;
+  --muted-foreground: #6b6790;
+  --accent: #1d9e75;
+  --accent-foreground: #ffffff;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
+  --border: rgba(26, 23, 48, 0.1);
+  --input: rgba(26, 23, 48, 0.1);
+  --input-background: #f3f1fb;
+  --switch-background: #cbced4;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #534ab7;
+  --chart-1: #7c5cff;
+  --chart-2: #1d9e75;
+  --chart-3: #e08a00;
+  --chart-4: #c44be0;
+  --chart-5: #e08a00;
+  --radius: 0.625rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1a1730;
+  --sidebar-primary: #534ab7;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1eefb;
+  --sidebar-accent-foreground: #1a1730;
+  --sidebar-border: rgba(26, 23, 48, 0.1);
+  --sidebar-ring: #534ab7;
+}
+
+.dark {
+  --background: #0f0e1a;
+  --foreground: #f0eefc;
+  --card: #16142a;
+  --card-foreground: #f0eefc;
+  --popover: #16142a;
+  --popover-foreground: #f0eefc;
+  --primary: #534ab7;
+  --primary-foreground: #f0eefc;
+  --secondary: #211e3d;
+  --secondary-foreground: #f0eefc;
+  --muted: #211e3d;
+  --muted-foreground: #a09cc9;
+  --accent: #1d9e75;
+  --accent-foreground: #f0eefc;
+  --destructive: #e5484d;
+  --destructive-foreground: #ffffff;
+  --border: rgba(240, 238, 252, 0.12);
+  --input: rgba(240, 238, 252, 0.12);
+  --input-background: #1b1933;
+  --switch-background: #3a3663;
+  --ring: #534ab7;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: #8b6cff;
+  --chart-2: #1d9e75;
+  --chart-3: #f5a623;
+  --chart-4: #c44be0;
+  --chart-5: #f5a623;
+  --sidebar: #16142a;
+  --sidebar-foreground: #f0eefc;
+  --sidebar-primary: #534ab7;
+  --sidebar-primary-foreground: #f0eefc;
+  --sidebar-accent: #211e3d;
+  --sidebar-accent-foreground: #f0eefc;
+  --sidebar-border: rgba(240, 238, 252, 0.12);
+  --sidebar-ring: #534ab7;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /**
+  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
+  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
+  */
+
+  html {
+    font-size: var(--font-size);
+  }
+
+  h1 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  label {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  button {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  input {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+
+  .bg-grid-pattern {
+    background-image:
+      linear-gradient(to right, var(--border) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Anchor links land below the fixed navbar instead of under it. */
+  section[id],
+  [id="main-content"] {
+    scroll-margin-top: 5rem;
+  }
+
+  /* Honour the OS "reduce motion" setting for smooth scrolling. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+}

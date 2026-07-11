@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" fill="none" role="img" aria-label="RAGNAR smart ring placeholder">
+  <defs>
+    <linearGradient id="band" x1="120" y1="180" x2="480" y2="430" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7c5cff"/>
+      <stop offset="0.55" stop-color="#534ab7"/>
+      <stop offset="1" stop-color="#1d9e75"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="300" cy="320" r="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#534ab7" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#534ab7" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="300" cy="320" r="230" fill="url(#glow)"/>
+  <!-- ring band, 3/4 perspective -->
+  <g transform="translate(300 315) rotate(-18)">
+    <ellipse cx="0" cy="0" rx="190" ry="120" fill="none" stroke="url(#band)" stroke-width="64"/>
+    <ellipse cx="0" cy="0" rx="190" ry="120" fill="none" stroke="#0f0e1a" stroke-opacity="0.25" stroke-width="64" stroke-dasharray="180 600" stroke-dashoffset="60"/>
+    <!-- square sensor inlay -->
+    <rect x="-26" y="-150" width="52" height="52" rx="8" transform="rotate(8)" fill="#0f0e1a" fill-opacity="0.55" stroke="#a09cc9" stroke-opacity="0.5" stroke-width="3"/>
+    <!-- side button -->
+    <circle cx="178" cy="40" r="11" fill="#0f0e1a" fill-opacity="0.6" stroke="#a09cc9" stroke-opacity="0.5" stroke-width="3"/>
+  </g>
+  <text x="300" y="560" text-anchor="middle" font-family="'Space Grotesk', system-ui, sans-serif" font-size="26" letter-spacing="6" fill="#a09cc9" opacity="0.85">RAGNAR</text>
+</svg>
