@@ -96,6 +96,14 @@ export default function SiteFooter() {
               ))}
               <li>
                 <Link
+                  to="/"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Design showcase
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/login"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -130,12 +138,18 @@ export default function SiteFooter() {
             © 2026 Tactiq. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm text-muted-foreground">
-            <a href="#" className="hover:text-foreground transition-colors">
+            <Link
+              to="/privacy"
+              className="hover:text-foreground transition-colors"
+            >
               Privacy
-            </a>
-            <a href="#" className="hover:text-foreground transition-colors">
+            </Link>
+            <Link
+              to="/terms"
+              className="hover:text-foreground transition-colors"
+            >
               Terms
-            </a>
+            </Link>
             <a
               href="mailto:hello@tactiq.app"
               className="hover:text-foreground transition-colors"

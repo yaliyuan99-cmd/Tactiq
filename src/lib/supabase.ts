@@ -28,7 +28,6 @@ export const supabase: SupabaseClient<Database> | null = isSupabaseConfigured
   : null;
 
 if (!isSupabaseConfigured && import.meta.env.DEV) {
-  // eslint-disable-next-line no-console
   console.info(
     '[Tactiq] Supabase is not configured — using local fallback storage. ' +
       'Copy .env.example to .env and add your project keys to enable the backend.',

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Hand,
@@ -32,7 +32,6 @@ import { fieldClass } from '../auth/AuthLayout';
 
 export default function CustomizePage() {
   const [params] = useSearchParams();
-  const navigate = useNavigate();
 
   const [layout, setLayout] = useState<GestureLayout>({ ...DEFAULT_LAYOUT });
   const [name, setName] = useState('My Layout');

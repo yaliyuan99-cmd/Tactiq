@@ -1,6 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { motion } from 'motion/react';
 import {
   Hand,
   LogOut,
@@ -30,6 +29,7 @@ import { commandLabelFor } from '../../lib/gestures';
 import { useAuth } from '../auth/AuthContext';
 import { fieldClass } from '../auth/AuthLayout';
 import DeviceDashboard from './DeviceDashboard';
+import GestureActivity from './GestureActivity';
 
 const CATEGORY_LABELS: Record<string, string> = {
   'blind-low-vision': 'Blind or low-vision user',
@@ -140,11 +140,7 @@ export default function AccountPage() {
           Back to site
         </Link>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
+        <div className="animate-enter-rise">
           <h1 className="text-3xl font-semibold mb-1">Hi, {firstName}</h1>
           <p className="text-muted-foreground mb-8">
             Your device, your keyboard, your account — all in one place.
@@ -173,6 +169,9 @@ export default function AccountPage() {
           <div className="grid lg:grid-cols-2 gap-6">
             {/* Device telemetry — full width */}
             <DeviceDashboard seedKey={seedKey} />
+
+            {/* Live gesture recognitions — full width */}
+            <GestureActivity seedKey={seedKey} />
 
             {/* Profile card */}
             <section className="bg-card border border-border rounded-2xl p-6">
@@ -400,7 +399,7 @@ export default function AccountPage() {
               </Link>
             )}
           </div>
-        </motion.div>
+        </div>
       </main>
     </div>
   );

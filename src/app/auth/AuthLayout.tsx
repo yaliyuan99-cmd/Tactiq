@@ -1,7 +1,6 @@
 /** Shared shell for the sign-in / sign-up / password screens. */
 import { Link } from 'react-router';
 import { Hand } from 'lucide-react';
-import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 
 /** Shared input styling used across the auth forms. */
@@ -31,12 +30,7 @@ export default function AuthLayout({
       </header>
 
       <main className="flex-1 flex items-center justify-center px-4 py-10">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="w-full max-w-md"
-        >
+        <div className="w-full max-w-md animate-enter-rise">
           {banner}
           <div className="bg-card border border-border/60 rounded-2xl p-8 shadow-2xl backdrop-blur-sm">
             <div className="mb-6 text-center">
@@ -48,7 +42,7 @@ export default function AuthLayout({
           {footer && (
             <div className="mt-6 text-center text-sm text-muted-foreground">{footer}</div>
           )}
-        </motion.div>
+        </div>
       </main>
     </div>
   );

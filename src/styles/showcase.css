@@ -1,0 +1,307 @@
+/* ---------------------------------------------------------------------------
+ * Showcase page styles — two self-contained brand designs (Velorah + Jack).
+ *
+ * All colour tokens and helpers here are SCOPED to `.velorah-scope` /
+ * `.jack-scope` wrappers so they never leak into (or override) Tactiq's global
+ * theme in theme.css. Fonts are loaded in fonts.css.
+ * ------------------------------------------------------------------------- */
+
+/* === Velorah scope ======================================================= */
+.velorah-scope {
+  /* Dark navy cinematic theme, expressed as HSL channels like the source spec.
+     Consumed only inside this wrapper via var(--v-*) references below. */
+  --v-background: 201 100% 13%;
+  --v-foreground: 0 0% 100%;
+  --v-muted-foreground: 240 4% 66%;
+
+  --font-display: 'Instrument Serif', serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  background-color: hsl(var(--v-background));
+  color: hsl(var(--v-foreground));
+  font-family: var(--font-body);
+}
+
+.velorah-scope .v-foreground {
+  color: hsl(var(--v-foreground));
+}
+.velorah-scope .v-muted {
+  color: hsl(var(--v-muted-foreground));
+}
+.velorah-scope .v-display {
+  font-family: var(--font-display);
+}
+
+/* The hero sits on an arbitrary video frame, so guarantee legibility of the
+   white type without adding a decorative overlay: a soft shadow only. */
+.velorah-scope .v-legible {
+  text-shadow: 0 1px 40px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+/* Light type on dark reads lighter — give the display heading extra leading. */
+.velorah-scope h1 {
+  text-wrap: balance;
+}
+
+/* Hero CTAs — solid + bordered, no glassmorphism. The primary action is a
+   confident white fill; the secondary (nav) is a clean outline. Both carry a
+   hairline shadow so they hold against the bright parts of the video. */
+.velorah-scope .v-btn-solid {
+  background: #ffffff;
+  color: hsl(var(--v-background));
+  border: 1px solid #ffffff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.velorah-scope .v-btn-solid:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+.velorah-scope .v-btn-outline {
+  background: transparent;
+  color: hsl(var(--v-foreground));
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease;
+}
+.velorah-scope .v-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #ffffff;
+}
+
+/* Entrance animations (Velorah hero). */
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-rise {
+  animation: fade-rise 0.8s ease-out both;
+}
+.animate-fade-rise-delay {
+  animation: fade-rise 0.8s ease-out 0.2s both;
+}
+.animate-fade-rise-delay-2 {
+  animation: fade-rise 0.8s ease-out 0.4s both;
+}
+
+/* Respect reduced-motion: keep content fully visible, skip the entrance. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-rise,
+  .animate-fade-rise-delay,
+  .animate-fade-rise-delay-2 {
+    animation: none;
+  }
+}
+
+/* Visible keyboard focus for every interactive element in both scopes
+   (the custom buttons strip the browser default, so restore an explicit one). */
+.velorah-scope a:focus-visible,
+.velorah-scope button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+.jack-scope a:focus-visible,
+.jack-scope button:focus-visible {
+  outline: 2px solid #d7e2ea;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* === Jack scope ========================================================== */
+.jack-scope {
+  background-color: #0c0c0c;
+  color: #d7e2ea;
+  font-family: 'Kanit', ui-sans-serif, system-ui, sans-serif;
+  overflow-x: clip;
+}
+
+/* Display heading used across the Jack sections. Solid steel-blue — high
+   contrast on the #0C0C0C canvas, no decorative gradient fill. */
+.jack-scope .hero-heading {
+  color: #bbccd7;
+}
+
+/* === Tactiq cinematic intro scope ======================================== */
+/* One cohesive brand world for the merged homepage: Velorah's editorial hero
+   + Jack's kinetic sections, but wearing Tactiq's OWN violet identity (drawn
+   from theme.css: primary #534ab7, chart-1 #8b6cff on a deep-indigo canvas)
+   so the intro reads as Tactiq — not a borrowed navy portfolio. Scoped so it
+   never leaks into Tactiq's global product theme. */
+.tactiq-scope {
+  --t-bg: #0b0a14;
+  --t-surface: #14122a;
+  --t-ink: #f0eefc;
+  --t-muted: #a7a2cf;
+  --t-violet: #8b6cff;
+  --t-violet-deep: #534ab7;
+  --t-green: #29c48d;
+
+  --t-serif: 'Instrument Serif', serif;
+  --t-heavy: 'Kanit', ui-sans-serif, system-ui, sans-serif;
+  --t-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  background-color: var(--t-bg);
+  color: var(--t-ink);
+  font-family: var(--t-body);
+  overflow-x: clip;
+}
+
+.tactiq-scope .t-serif {
+  font-family: var(--t-serif);
+}
+.tactiq-scope .t-heavy {
+  font-family: var(--t-heavy);
+}
+
+/* Kinetic display heading (Kanit black) — solid violet-tinted ink, no gradient
+   fill. Sits large on the dark canvas across the intro's energetic sections. */
+.tactiq-scope .t-display {
+  font-family: var(--t-heavy);
+  color: var(--t-ink);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+
+/* Keep the cinematic serif legible over an arbitrary bright video frame. */
+.tactiq-scope .t-legible {
+  text-shadow: 0 1px 40px rgba(0, 0, 0, 0.55), 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Primary CTA — solid violet fill, the confident brand action. */
+.tactiq-scope .t-btn-solid {
+  background: var(--t-violet);
+  color: #0b0a14;
+  border: 1px solid var(--t-violet);
+  box-shadow: 0 10px 34px rgba(139, 108, 255, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s
+      ease;
+}
+.tactiq-scope .t-btn-solid:hover {
+  background: #a186ff;
+  box-shadow: 0 14px 40px rgba(139, 108, 255, 0.5);
+}
+/* Secondary CTA — hairline outline that holds against the video. */
+.tactiq-scope .t-btn-outline {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--t-ink);
+  border: 1px solid rgba(240, 238, 252, 0.4);
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s
+      ease;
+}
+.tactiq-scope .t-btn-outline:hover {
+  background: rgba(240, 238, 252, 0.1);
+  border-color: var(--t-ink);
+}
+
+.tactiq-scope .t-barlow {
+  font-family: 'Barlow', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Liquid-glass chrome — the cinematic "control layer" section.
+   A hairline gradient-masked border + luminosity-blended blur reads as real
+   frosted glass floating over the full-bleed video, not a flat translucent
+   panel. Used deliberately here (not as a site-wide default) because the
+   surface IS a lit video and the glass is the design's material. */
+.tactiq-scope .t-glass {
+  background: rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+.tactiq-scope .t-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.15) 18%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.15) 82%,
+    rgba(255, 255, 255, 0.45) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+/* FadingVideo is VISIBLE by default (opacity 1) so it never ships blank in a
+   background tab or headless render where rAF is frozen. The rAF crossfade only
+   *enhances* the loop seam (fade out just before the clip ends, fade back in on
+   restart). Opacity is driven imperatively, never via a React style prop, so
+   re-renders can't clobber an in-flight crossfade. */
+.tactiq-scope .t-fade-video {
+  opacity: 1;
+}
+
+/* Smoked-glass variant for the capability cards: a dark translucent fill so
+   white copy keeps ≥4.5:1 contrast over the brightest video frames, while the
+   blur + gradient hairline from .t-glass still read as frosted glass. */
+.tactiq-scope .t-glass-panel {
+  background: rgba(9, 8, 18, 0.66);
+}
+
+/* Stronger blur + lift for the primary glass CTA. */
+.tactiq-scope .t-glass-strong {
+  -webkit-backdrop-filter: blur(50px);
+  backdrop-filter: blur(50px);
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.tactiq-scope .t-glass-strong:hover {
+  box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+.tactiq-scope .t-glass-strong::before {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.2) 18%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.2) 82%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+}
+
+/* Focus-visible for the intro scope (custom controls strip the default). */
+.tactiq-scope a:focus-visible,
+.tactiq-scope button:focus-visible {
+  outline: 2px solid var(--t-violet);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* Cinematic entrance for the hero copy, mirrored on Velorah's cadence. */
+.tactiq-scope .t-rise {
+  animation: fade-rise 0.9s ease-out both;
+}
+.tactiq-scope .t-rise-2 {
+  animation: fade-rise 0.9s ease-out 0.15s both;
+}
+.tactiq-scope .t-rise-3 {
+  animation: fade-rise 0.9s ease-out 0.3s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tactiq-scope .t-rise,
+  .tactiq-scope .t-rise-2,
+  .tactiq-scope .t-rise-3 {
+    animation: none;
+  }
+}

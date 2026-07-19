@@ -207,3 +207,25 @@
     }
   }
 }
+
+/* Product-theme entrance. Deliberately animates transform ONLY — never
+   opacity — so the content's resting state is always fully visible. Even if the
+   animation is frozen at its first frame (a headless screenshot renderer, a
+   backgrounded tab that pauses the compositor) or skipped entirely (reduced
+   motion), the section still shows; motion only slides it into place. This is
+   the "enhance an already-visible default" rule: the reveal can never leave the
+   page blank. */
+@keyframes enter-rise {
+  from {
+    transform: translateY(16px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-enter-rise {
+    animation: enter-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}

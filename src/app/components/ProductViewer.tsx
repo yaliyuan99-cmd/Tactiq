@@ -92,7 +92,7 @@ export default function ProductViewer({
 
   return (
     <div className={className} style={{ position: 'relative' }}>
-      {/* @ts-ignore — model-viewer is a custom element registered at import time */}
+      {/* @ts-expect-error model-viewer is a custom element registered by @google/model-viewer at import time; it has no JSX.IntrinsicElements entry */}
       <model-viewer
         ref={ref}
         src={src}

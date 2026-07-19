@@ -134,6 +134,23 @@ function toAuthUser(u: LocalUser): AuthUser {
   return { id: u.id, email: u.email, fullName: u.fullName };
 }
 
+/**
+ * The localStorage auth fallback stores credentials in plaintext and exists
+ * ONLY so the auth screens are usable in local development before a Supabase
+ * project is connected. It must never run in a production build: if we reach a
+ * credential path here in prod, the Supabase env vars are missing, and we fail
+ * loudly rather than silently persisting unhashed passwords in the browser.
+ */
+function assertLocalAuthAllowed(): void {
+  if (!import.meta.env.DEV) {
+    throw new Error(
+      'Sign-in is unavailable: this deployment is missing its Supabase ' +
+        'configuration (VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY). ' +
+        'The insecure local auth fallback is disabled outside development.',
+    );
+  }
+}
+
 export async function signUp(params: {
   email: string;
   password: string;
@@ -157,6 +174,7 @@ export async function signUp(params: {
   }
 
   // --- Local fallback -------------------------------------------------------
+  assertLocalAuthAllowed();
   const email = params.email.trim().toLowerCase();
   const users = readLocalUsers();
   if (users.some((u) => u.email === email)) {
@@ -188,6 +206,7 @@ export async function signIn(email: string, password: string): Promise<AuthUser>
   }
 
   // --- Local fallback -------------------------------------------------------
+  assertLocalAuthAllowed();
   const normalized = email.trim().toLowerCase();
   const user = readLocalUsers().find((u) => u.email === normalized);
   if (!user || user.password !== password) {
@@ -289,6 +308,7 @@ export async function updatePassword(
     if (error) throw error;
     return;
   }
+  assertLocalAuthAllowed();
   const users = readLocalUsers();
   const target = opts?.email
     ? users.find((u) => u.email === opts.email!.trim().toLowerCase())
@@ -622,7 +642,6 @@ export function getDeviceHistory(seedKey = 'demo'): DeviceHistory {
   const active: HistoryPoint[] = [];
 
   // Reconstruct a plausible day. hoursAgo 23 → 0 (oldest first).
-  let cumulativeSteps = 0;
   for (let i = 23; i >= 0; i--) {
     const when = new Date(top.getTime() - i * 3600_000);
     const hourOfDay = when.getHours();
@@ -652,7 +671,6 @@ export function getDeviceHistory(seedKey = 'demo'): DeviceHistory {
     const hourSteps = awake
       ? Math.round(120 + hashed(seedBase, i + 200) * 850 * (0.6 + s))
       : Math.round(hashed(seedBase, i + 200) * 40);
-    cumulativeSteps += hourSteps;
     steps.push({ t, label, value: hourSteps });
 
     // Active minutes per hour (0..~12).

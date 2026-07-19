@@ -126,8 +126,9 @@ export default function DeviceDashboard({ seedKey }: Props) {
     window.setTimeout(() => setSyncing(false), 700);
   };
 
-  // 24-hour history, recomputed when the user (seed) changes or a card opens.
-  const history = useMemo<DeviceHistory>(() => getDeviceHistory(seedKey), [seedKey, openMetric]);
+  // 24-hour history. Deterministic per user, so it only needs to recompute when
+  // the seed changes (opening a card reads from this same snapshot).
+  const history = useMemo<DeviceHistory>(() => getDeviceHistory(seedKey), [seedKey]);
 
   useEffect(() => {
     const tick = () => {

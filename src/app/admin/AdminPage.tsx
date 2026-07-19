@@ -203,11 +203,7 @@ export default function AdminPage() {
   if (authorized === false) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/20 flex items-center justify-center px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-lg w-full text-center bg-card border border-border rounded-2xl p-10"
-        >
+        <div className="max-w-lg w-full text-center bg-card border border-border rounded-2xl p-10 animate-enter-rise">
           <div className="w-14 h-14 rounded-full bg-destructive/10 text-destructive flex items-center justify-center mx-auto mb-4">
             <ShieldAlert className="w-7 h-7" />
           </div>
@@ -222,7 +218,7 @@ export default function AdminPage() {
           >
             Back to your dashboard
           </Link>
-        </motion.div>
+        </div>
       </div>
     );
   }
