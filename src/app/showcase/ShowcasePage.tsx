@@ -11,7 +11,7 @@ import TactiqIntro from './TactiqIntro';
  * ------------------------------------------------------------------------- */
 export default function ShowcasePage() {
   useEffect(() => {
-    document.title = 'Design showcase · Tactiq';
+    document.title = 'Tactiq — silent, eyes-free phone control for blind users';
     const prev = document.body.style.backgroundColor;
     document.body.style.backgroundColor = '#0b0a14';
     return () => {

@@ -11,8 +11,8 @@
  * makes a whole phone usable with a gesture — accessibility without the
  * medical-grade price.
  *
- * The full product site (waitlist form, pricing, checkout) lived at /product; it now lives at the site root.
- * every primary CTA here routes there.
+ * The research-journal site (command map, prototype, research, follow form)
+ * lives at /project; every primary CTA here routes there.
  * ------------------------------------------------------------------------- */
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
@@ -341,7 +341,7 @@ function Hero() {
         </div>
 
         <Link
-          to="/#follow"
+          to="/project#follow"
           className="t-btn-outline inline-flex min-h-11 items-center rounded-full px-5 text-sm font-medium"
         >
           Get early access
@@ -362,9 +362,9 @@ function Hero() {
           className="t-serif t-legible t-rise-2 max-w-4xl font-normal leading-[0.95] tracking-[-0.02em]"
           style={{ fontSize: 'clamp(2.75rem, 8vw, 6rem)' }}
         >
-          One ring.{' '}
+          Your hands.{' '}
           <em className="not-italic" style={{ color: 'var(--t-violet)' }}>
-            Nine commands.
+            Your controller.
           </em>
         </h1>
 
@@ -376,7 +376,7 @@ function Hero() {
 
         <div className="t-rise-3 mt-10 flex flex-col items-center gap-4 sm:flex-row">
           <Link
-            to="/#follow"
+            to="/project#follow"
             className="t-btn-solid inline-flex min-h-12 items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold"
           >
             Get early access
@@ -694,7 +694,7 @@ function ClosingCTA() {
         <FadeIn y={20} delay={0.2}>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
-              to="/#follow"
+              to="/project#follow"
               className="t-btn-solid inline-flex min-h-12 items-center gap-2 rounded-full px-9 py-4 text-base font-semibold"
             >
               Get early access
@@ -702,7 +702,7 @@ function ClosingCTA() {
             </Link>
             <Magnet padding={80} strength={4}>
               <Link
-                to="/#research"
+                to="/project#research"
                 className="t-btn-outline inline-flex min-h-12 items-center rounded-full px-9 py-4 text-base font-medium"
               >
                 See the research
@@ -714,10 +714,10 @@ function ClosingCTA() {
         <FadeIn y={16} delay={0.3}>
           <div className="mt-14 flex flex-col items-center gap-1 text-sm text-[var(--t-muted)] sm:flex-row sm:justify-center sm:gap-4">
             <Link
-              to="/"
+              to="/project"
               className="inline-flex min-h-11 items-center px-2 transition-colors hover:text-[var(--t-ink)]"
             >
-              Explore the full product site
+              Explore the research site
             </Link>
             <span aria-hidden="true" className="hidden sm:inline">
               ·

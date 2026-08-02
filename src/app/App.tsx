@@ -3,15 +3,14 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import { AuthProvider } from './auth/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
-// The main Tactiq research site is the homepage, so it loads eagerly
-// (no Suspense flash on first paint). The design showcase is kept at
-// /showcase as a code-split archive page.
-import LandingPage from './LandingPage';
+// The cinematic motion showcase is the front page (it loads eagerly, no
+// Suspense flash); the research-journal site lives at /project.
+import ShowcasePage from './showcase/ShowcasePage';
 
 // Non-landing routes are split into their own chunks so a first-time visitor to
-// the main site never downloads the account / customiser / admin code.
+// the front page never downloads the account / customiser / admin code.
 // Each loads on demand behind Suspense.
-const ShowcasePage = lazy(() => import('./showcase/ShowcasePage'));
+const LandingPage = lazy(() => import('./LandingPage'));
 const LoginPage = lazy(() => import('./auth/LoginPage'));
 const SignUpPage = lazy(() => import('./auth/SignUpPage'));
 const ForgotPasswordPage = lazy(() => import('./auth/ForgotPasswordPage'));
@@ -45,10 +44,11 @@ export function AppRoutes() {
     <AuthProvider>
       <Suspense fallback={<RouteFallback />}>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          {/* Legacy alias — the main site now lives at the root. */}
-          <Route path="/product" element={<Navigate to="/" replace />} />
-          <Route path="/showcase" element={<ShowcasePage />} />
+          <Route path="/" element={<ShowcasePage />} />
+          <Route path="/project" element={<LandingPage />} />
+          {/* Legacy aliases */}
+          <Route path="/product" element={<Navigate to="/project" replace />} />
+          <Route path="/showcase" element={<Navigate to="/" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
