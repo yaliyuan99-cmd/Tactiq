@@ -1,89 +1,90 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Tactiq brand palette. The site ships dark by default (an inline script in
- * index.html adds .dark before first paint), but a full light theme lives in
- * :root so the navbar toggle can switch between them.
- * Brand anchors: primary #534AB7 · accent/teal #1D9E75.
+ * Tactiq brand palette — Caplet-inspired system: warm cream paper, near-black
+ * ink, one committed royal blue. Flat surfaces (tone, not shadow), generous
+ * radii, chunky display type. Light is the default; the navbar toggle switches
+ * to a warm-dark variant re-derived from the same anchors.
+ * Brand anchors: paper #F8F5EF · ink #1C1A16 · blue #1351AA.
  */
 :root {
   --font-size: 16px;
-  --background: #faf9ff;
-  --foreground: #1a1730;
-  --card: #ffffff;
-  --card-foreground: #1a1730;
-  --popover: #ffffff;
-  --popover-foreground: #1a1730;
-  --primary: #534ab7;
+  --background: #f8f5ef;
+  --foreground: #1c1a16;
+  --card: #fcfaf4;
+  --card-foreground: #1c1a16;
+  --popover: #fffdf8;
+  --popover-foreground: #1c1a16;
+  --primary: #1351aa;
   --primary-foreground: #ffffff;
-  --secondary: #f1eefb;
-  --secondary-foreground: #1a1730;
-  --muted: #eeebf7;
-  --muted-foreground: #6b6790;
-  --accent: #1d9e75;
+  --secondary: #efeae0;
+  --secondary-foreground: #1c1a16;
+  --muted: #f1ede4;
+  --muted-foreground: #615c4f;
+  --accent: #0e7a54;
   --accent-foreground: #ffffff;
-  --destructive: #d4183d;
+  --destructive: #bd3327;
   --destructive-foreground: #ffffff;
-  --border: rgba(26, 23, 48, 0.1);
-  --input: rgba(26, 23, 48, 0.1);
-  --input-background: #f3f1fb;
-  --switch-background: #cbced4;
+  --border: rgba(28, 26, 22, 0.12);
+  --input: rgba(28, 26, 22, 0.14);
+  --input-background: #fffdf8;
+  --switch-background: #cfc9bc;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #534ab7;
-  --chart-1: #7c5cff;
-  --chart-2: #1d9e75;
-  --chart-3: #e08a00;
-  --chart-4: #c44be0;
-  --chart-5: #e08a00;
-  --radius: 0.625rem;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #1a1730;
-  --sidebar-primary: #534ab7;
+  --ring: #1351aa;
+  --chart-1: #3b72d9;
+  --chart-2: #0e7a54;
+  --chart-3: #b45309;
+  --chart-4: #7c4fd0;
+  --chart-5: #b45309;
+  --radius: 0.875rem;
+  --sidebar: #fcfaf4;
+  --sidebar-foreground: #1c1a16;
+  --sidebar-primary: #1351aa;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1eefb;
-  --sidebar-accent-foreground: #1a1730;
-  --sidebar-border: rgba(26, 23, 48, 0.1);
-  --sidebar-ring: #534ab7;
+  --sidebar-accent: #efeae0;
+  --sidebar-accent-foreground: #1c1a16;
+  --sidebar-border: rgba(28, 26, 22, 0.12);
+  --sidebar-ring: #1351aa;
 }
 
 .dark {
-  --background: #0f0e1a;
-  --foreground: #f0eefc;
-  --card: #16142a;
-  --card-foreground: #f0eefc;
-  --popover: #16142a;
-  --popover-foreground: #f0eefc;
-  --primary: #534ab7;
-  --primary-foreground: #f0eefc;
-  --secondary: #211e3d;
-  --secondary-foreground: #f0eefc;
-  --muted: #211e3d;
-  --muted-foreground: #a09cc9;
-  --accent: #1d9e75;
-  --accent-foreground: #f0eefc;
-  --destructive: #e5484d;
+  --background: #171410;
+  --foreground: #f3efe6;
+  --card: #201c15;
+  --card-foreground: #f3efe6;
+  --popover: #201c15;
+  --popover-foreground: #f3efe6;
+  --primary: #4a80dd;
+  --primary-foreground: #ffffff;
+  --secondary: #2a251c;
+  --secondary-foreground: #f3efe6;
+  --muted: #2a251c;
+  --muted-foreground: #aaa290;
+  --accent: #2aae7e;
+  --accent-foreground: #10130f;
+  --destructive: #e5544a;
   --destructive-foreground: #ffffff;
-  --border: rgba(240, 238, 252, 0.12);
-  --input: rgba(240, 238, 252, 0.12);
-  --input-background: #1b1933;
-  --switch-background: #3a3663;
-  --ring: #534ab7;
+  --border: rgba(243, 239, 230, 0.14);
+  --input: rgba(243, 239, 230, 0.16);
+  --input-background: #241f17;
+  --switch-background: #4a4335;
+  --ring: #4a80dd;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --chart-1: #8b6cff;
-  --chart-2: #1d9e75;
-  --chart-3: #f5a623;
-  --chart-4: #c44be0;
-  --chart-5: #f5a623;
-  --sidebar: #16142a;
-  --sidebar-foreground: #f0eefc;
-  --sidebar-primary: #534ab7;
-  --sidebar-primary-foreground: #f0eefc;
-  --sidebar-accent: #211e3d;
-  --sidebar-accent-foreground: #f0eefc;
-  --sidebar-border: rgba(240, 238, 252, 0.12);
-  --sidebar-ring: #534ab7;
+  --chart-1: #6d99e8;
+  --chart-2: #2aae7e;
+  --chart-3: #e8a13c;
+  --chart-4: #a37fe8;
+  --chart-5: #e8a13c;
+  --sidebar: #201c15;
+  --sidebar-foreground: #f3efe6;
+  --sidebar-primary: #4a80dd;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #2a251c;
+  --sidebar-accent-foreground: #f3efe6;
+  --sidebar-border: rgba(243, 239, 230, 0.14);
+  --sidebar-ring: #4a80dd;
 }
 
 @theme inline {
@@ -145,28 +146,38 @@
     font-size: var(--font-size);
   }
 
+  /* Headings carry the chunky display face; body text stays on the humanist
+     sans. Tight tracking + short line-height is the display font's register —
+     utility classes on individual headings still override all of this. */
   h1 {
+    font-family: var(--font-display, inherit);
     font-size: var(--text-2xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
   }
 
   h2 {
+    font-family: var(--font-display, inherit);
     font-size: var(--text-xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
   }
 
   h3 {
+    font-family: var(--font-display, inherit);
     font-size: var(--text-lg);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
   }
 
   h4 {
+    font-family: var(--font-display, inherit);
     font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-weight: 700;
+    line-height: 1.4;
   }
 
   label {

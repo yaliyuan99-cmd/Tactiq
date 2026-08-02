@@ -20,7 +20,6 @@ import { Link } from 'react-router';
 import { motion, useReducedMotion } from 'motion/react';
 import {
   ArrowUpRight,
-  Star,
   Fingerprint,
   Hand,
   ShieldCheck,
@@ -50,37 +49,37 @@ const MARQUEE_A = [
 ];
 const MARQUEE_B = [
   'WEARABLE',
-  '60+ CONTROLS',
-  'CUSTOMIZABLE',
-  'RAGNAR',
+  'NINE COMMANDS',
+  'ONE RING',
+  'EYES-FREE',
   'ACCESSIBLE',
 ];
 
 const STEPS = [
   {
     n: '01',
-    name: 'Think',
-    desc: 'You decide what you want your phone to do — answer a call, scroll a page, trigger an SOS. No menus, no hunting for a button.',
+    name: 'Wake',
+    desc: 'The ring is idle until you deliberately squeeze its body. That squeeze opens a short command window — the design target is at most one false activation per hour.',
   },
   {
     n: '02',
-    name: 'Gesture',
-    desc: 'A small, natural finger movement. Tap a thumb, curl a finger. The motions are yours to map, and they work without looking.',
+    name: 'Tap',
+    desc: 'Your thumb taps one of eight contact points — the tips and bases of your four fingers. Points you can always find, because they are part of your own hand.',
   },
   {
     n: '03',
     name: 'Detect',
-    desc: 'The RAGNAR rings read the motion instantly and privately on-device, then speak to your phone over Bluetooth.',
+    desc: 'The ring senses the tap privately on-device — a passive magnet and three small magnetometers, no camera, no microphone — then speaks to your phone over Bluetooth.',
   },
   {
     n: '04',
     name: 'Execute',
-    desc: 'Your phone runs the command in real time — the same action a touchscreen would, minus the touchscreen.',
+    desc: 'Your phone runs the command through VoiceOver or TalkBack — Tactiq augments the screen reader you already use, never replaces it.',
   },
   {
     n: '05',
-    name: 'Done',
-    desc: 'Sixty-plus commands, always on your hands. The interface disappears and the control stays.',
+    name: 'Confirm',
+    desc: 'A distinct haptic pattern confirms what the ring heard. Nine fixed commands, always on your hand — the interface disappears and the control stays.',
   },
 ];
 
@@ -90,21 +89,21 @@ const STEPS = [
 const CAPS = [
   {
     icon: Fingerprint,
-    title: 'Meet RAGNAR',
-    body: 'Two feather-light smart rings — one per hand — read intent from the smallest finger motion. All-day battery, water-resistant, invisible under a sleeve.',
-    tags: ['Two rings', 'Bluetooth LE', 'On-device', 'All-day battery'],
+    title: 'Meet the ring',
+    body: 'One feather-light smart ring on the index finger of either hand. Your thumb taps eight contact points on your own fingers — nine fixed commands you can always feel.',
+    tags: ['One ring', 'Bluetooth LE', 'On-device', 'Haptic feedback'],
   },
   {
     icon: Hand,
-    title: 'Control everything',
-    body: 'One gesture language for your entire phone. Calls, scrolling, camera, music, smart-home, emergency SOS — mapped the way your hands actually move.',
-    tags: ['Scroll', 'Call', 'Camera', 'SOS'],
+    title: 'Augments your screen reader',
+    body: 'Tactiq drives VoiceOver and TalkBack — it never replaces them. Confirm, go back, next, previous, read again, undo, two shortcuts, and a deliberate 5-second emergency hold.',
+    tags: ['VoiceOver', 'TalkBack', 'One-handed', 'Eyes-free'],
   },
   {
     icon: ShieldCheck,
     title: 'Built for independence',
-    body: "Priced as consumer electronics, not medical equipment — because regaining control of your own phone shouldn't cost more than a laptop.",
-    tags: ['From $249', '60+ commands', 'Voice setup', 'No screens'],
+    body: "Positioned to be priced like earbuds, not like braille hardware — the bench prototype is under $60 in parts. A student research project, with every performance figure a pre-registered target.",
+    tags: ['Priced like earbuds', 'Nine commands', 'Voice setup', 'No screens'],
   },
 ] as const;
 
@@ -363,16 +362,16 @@ function Hero() {
           className="t-serif t-legible t-rise-2 max-w-4xl font-normal leading-[0.95] tracking-[-0.02em]"
           style={{ fontSize: 'clamp(2.75rem, 8vw, 6rem)' }}
         >
-          Your hands.{' '}
+          One ring.{' '}
           <em className="not-italic" style={{ color: 'var(--t-violet)' }}>
-            Your controller.
+            Nine commands.
           </em>
         </h1>
 
         <p className="t-legible t-rise-3 mt-7 max-w-xl text-base leading-relaxed text-[var(--t-muted)] sm:text-lg">
-          Tactiq is a wearable control layer for your phone. Two smart rings
-          turn the smallest finger motion into any command — invisible, instant,
-          and entirely yours.
+          Nine commands on the fingers you can always feel. Tactiq is a smart
+          ring for silent, eyes-free phone control — built for blind users,
+          augmenting VoiceOver and TalkBack.
         </p>
 
         <div className="t-rise-3 mt-10 flex flex-col items-center gap-4 sm:flex-row">
@@ -393,18 +392,9 @@ function Hero() {
 
         {/* Trust row */}
         <div className="t-rise-3 mt-9 flex items-center gap-3">
-          <span className="flex items-center gap-0.5" aria-hidden="true">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <Star
-                key={i}
-                className="h-4 w-4"
-                style={{ fill: 'var(--t-violet)', color: 'var(--t-violet)' }}
-              />
-            ))}
-          </span>
           <span className="text-sm text-[var(--t-muted)]">
-            <span className="font-semibold text-[var(--t-ink)]">1,200+</span>{' '}
-            early adopters on the waitlist
+            A <span className="font-semibold text-[var(--t-ink)]">student research project</span>{' '}
+            from Sydney — all performance figures are pre-registered targets
           </span>
         </div>
       </div>
@@ -412,9 +402,9 @@ function Hero() {
       {/* Hero stat strip */}
       <div className="relative z-10 mx-auto grid w-full max-w-3xl grid-cols-3 gap-4 px-6 pb-12">
         {[
-          { v: '60+', l: 'Gestures' },
-          { v: '2', l: 'Smart rings' },
-          { v: '0', l: 'Screens' },
+          { v: '9', l: 'Fixed commands' },
+          { v: '1', l: 'Ring, one hand' },
+          { v: '0', l: 'Screens needed' },
         ].map((s) => (
           <div key={s.l} className="text-center">
             <div
@@ -595,12 +585,15 @@ function GlassCapCard({
           </div>
         </div>
 
-        <h3
+        {/* h2 (not h3) keeps heading order: the page h1 is the hero, and these
+            cards are the first headings after it. All sizing is explicit, so
+            the tag swap renders identically. */}
+        <h2
           className="t-serif mt-16 italic leading-none text-[var(--t-ink)]"
           style={{ fontSize: 'clamp(1.9rem, 3vw, 2.5rem)' }}
         >
           {cap.title}
-        </h3>
+        </h2>
         <p className="t-barlow mt-3 text-[15px] leading-relaxed text-[rgba(240,238,252,0.82)]">
           {cap.body}
         </p>
@@ -693,9 +686,9 @@ function ClosingCTA() {
         </FadeIn>
         <FadeIn y={20} delay={0.1}>
           <p className="mx-auto mt-7 max-w-xl text-base leading-relaxed text-[var(--t-muted)] sm:text-lg">
-            Tactiq starts at $249 — two rings, sixty-plus commands, and your
-            phone back under your control. Join the waitlist and be first when
-            RAGNAR ships.
+            Braille displays run $799 to $15,500. Tactiq is positioned to be
+            priced like earbuds — one ring, nine commands, and your phone back
+            under your control. Join the waitlist to follow the research.
           </p>
         </FadeIn>
         <FadeIn y={20} delay={0.2}>
@@ -709,10 +702,10 @@ function ClosingCTA() {
             </Link>
             <Magnet padding={80} strength={4}>
               <Link
-                to="/product#pricing"
+                to="/product#research"
                 className="t-btn-outline inline-flex min-h-12 items-center rounded-full px-9 py-4 text-base font-medium"
               >
-                See pricing
+                See the research
               </Link>
             </Magnet>
           </div>
@@ -745,6 +738,10 @@ function ClosingCTA() {
               Terms
             </Link>
           </div>
+          <p className="mx-auto mt-6 max-w-xl text-xs leading-relaxed text-[var(--t-muted)]">
+            Tactiq is a student research project from Sydney, Australia. “Tactiq” is a working
+            title. All performance figures are pre-registered targets, not achieved results.
+          </p>
         </FadeIn>
       </div>
     </section>

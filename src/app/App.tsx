@@ -22,6 +22,7 @@ const AdminPage = lazy(() => import('./admin/AdminPage'));
 const LandingPage = lazy(() => import('./LandingPage'));
 const PrivacyPage = lazy(() => import('./legal/PrivacyPage'));
 const TermsPage = lazy(() => import('./legal/TermsPage'));
+const NotFoundPage = lazy(() => import('./NotFoundPage'));
 
 function RouteFallback() {
   return (
@@ -31,6 +32,40 @@ function RouteFallback() {
         aria-label="Loading"
       />
     </div>
+  );
+}
+
+/**
+ * The route table, exported without a router so the prerender (SSG) entry can
+ * wrap it in a StaticRouter while the browser app wraps it in BrowserRouter.
+ */
+export function AppRoutes() {
+  return (
+    <AuthProvider>
+      <Suspense fallback={<RouteFallback />}>
+        <Routes>
+          <Route path="/" element={<ShowcasePage />} />
+          <Route path="/product" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          {/* Legacy alias — the showcase now lives at the site root. */}
+          <Route path="/showcase" element={<Navigate to="/" replace />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          {/* Authenticated-only */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/customize" element={<CustomizePage />} />
+            <Route path="/admin" element={<AdminPage />} />
+          </Route>
+          {/* Unknown paths get a real 404 page (also prerendered to /404.html). */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
+    </AuthProvider>
   );
 }
 
@@ -46,31 +81,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <AuthProvider>
-          <Suspense fallback={<RouteFallback />}>
-            <Routes>
-              <Route path="/" element={<ShowcasePage />} />
-              <Route path="/product" element={<LandingPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/reset-password" element={<ResetPasswordPage />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
-              {/* Legacy alias — the showcase now lives at the site root. */}
-              <Route path="/showcase" element={<Navigate to="/" replace />} />
-              <Route path="/privacy" element={<PrivacyPage />} />
-              <Route path="/terms" element={<TermsPage />} />
-              {/* Authenticated-only */}
-              <Route element={<ProtectedRoute />}>
-                <Route path="/account" element={<AccountPage />} />
-                <Route path="/customize" element={<CustomizePage />} />
-                <Route path="/admin" element={<AdminPage />} />
-              </Route>
-              {/* Unknown paths fall back to the landing page. */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Suspense>
-        </AuthProvider>
+        <AppRoutes />
       </BrowserRouter>
     </ErrorBoundary>
   );

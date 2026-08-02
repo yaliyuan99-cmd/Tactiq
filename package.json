@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build && vite build --ssr src/prerender-entry.tsx --outDir dist-ssr && node prerender.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "preview": "vite preview"

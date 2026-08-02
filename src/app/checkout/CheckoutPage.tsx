@@ -21,24 +21,31 @@ interface Plan {
   features: string[];
 }
 
+// Tactiq is a research project: there is no product for sale and no price to
+// charge. "Checkout" is a free research-interest reservation, kept as two
+// tiers only so existing saved orders keep their plan ids.
 const PLANS: Record<string, Plan> = {
   essential: {
     id: 'essential',
-    name: 'Tactiq Essential',
-    price: 249,
-    blurb: 'Two smart rings with the core gesture toolkit.',
-    features: ['Two smart rings (left & right)', 'Voice-guided setup', '60+ commands'],
+    name: 'Research Reservation',
+    price: 0,
+    blurb: 'Register interest in the first build — one ring, nine commands.',
+    features: [
+      'One ring — index finger, either hand',
+      'Nine fixed commands',
+      'Augments VoiceOver & TalkBack',
+    ],
   },
   pro: {
     id: 'pro',
-    name: 'Tactiq Pro',
-    price: 349,
-    blurb: 'Everything in Essential, plus cloud sync and priority support.',
+    name: 'Reservation + Updates',
+    price: 0,
+    blurb: 'The same reservation, plus bench-experiment updates by email.',
     features: [
-      'Advanced gesture profiles',
-      'Cloud sync across devices',
-      'Priority support',
-      '2-year extended warranty',
+      'Everything in Research Reservation',
+      'Bench-experiment result emails (Aug–Oct 2026)',
+      'AUSSEF / ISEF milestone news',
+      'Papers available on request',
     ],
   },
 };
@@ -91,7 +98,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/20">
+    <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-background/80 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -119,12 +126,12 @@ export default function CheckoutPage() {
             <div className="w-16 h-16 bg-accent/15 text-accent rounded-full flex items-center justify-center mx-auto mb-5">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h1 className="text-2xl font-semibold mb-2">Order reserved!</h1>
+            <h1 className="text-2xl font-semibold mb-2">Reservation confirmed!</h1>
             <p className="text-muted-foreground mb-6">
               Thanks, {(user.fullName || user.email || '').split(' ')[0]} — your{' '}
-              {plan.name} reservation is confirmed. We'll email{' '}
-              <span className="text-foreground">{user.email}</span> with shipping details
-              before the Q3 2026 launch.
+              {plan.name} is confirmed. We'll email{' '}
+              <span className="text-foreground">{user.email}</span> with research updates,
+              and you'll be first to know if there is ever a build to try.
             </p>
             <Link
               to="/account"
@@ -162,7 +169,7 @@ export default function CheckoutPage() {
                       }`}
                     >
                       {p.name}
-                      <span className="block text-muted-foreground">${p.price} AUD</span>
+                      <span className="block text-muted-foreground">Free — research interest</span>
                     </Link>
                   ))}
                 </div>
@@ -174,11 +181,11 @@ export default function CheckoutPage() {
                 <dl className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <dt className="text-muted-foreground">{plan.name}</dt>
-                    <dd>${plan.price.toFixed(2)}</dd>
+                    <dd className="text-primary">Free</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-muted-foreground">Shipping</dt>
-                    <dd className="text-primary">Free</dd>
+                    <dt className="text-muted-foreground">Payment required</dt>
+                    <dd className="text-primary">None</dd>
                   </div>
                   <div className="border-t border-border my-3" />
                   <div className="flex justify-between text-base font-semibold">
@@ -209,8 +216,9 @@ export default function CheckoutPage() {
 
                 <p className="mt-3 flex items-start gap-2 text-xs text-muted-foreground">
                   <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                  This is a pre-launch reservation — you won't be charged today. Payment is
-                  collected when your rings ship.
+                  This registers research interest only — Tactiq is a student research
+                  project. No payment is taken, now or later, and there is no product for
+                  sale.
                 </p>
               </aside>
             </div>

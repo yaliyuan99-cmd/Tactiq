@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import '@google/model-viewer';
 
 interface ProductViewerProps {
   /** Path to the .glb / .gltf model, e.g. "/models/ring.glb". */
@@ -36,6 +35,14 @@ export default function ProductViewer({
   // poster / fallback slot, which can linger over the canvas in environments
   // where its visibility observer doesn't fire). `ready` hides it once loaded.
   const [ready, setReady] = useState(false);
+
+  // model-viewer touches `window` the moment its module loads, so it must be
+  // imported only in the browser — a static import would crash the prerender
+  // (SSG) pass. Until the custom element upgrades, the tag renders inert and
+  // our poster overlay covers it, so nothing visible changes.
+  useEffect(() => {
+    import('@google/model-viewer').catch(() => setFailed(true));
+  }, []);
 
   // model-viewer reads these as boolean HTML attributes; set them imperatively
   // so toggling a prop reliably adds/removes the attribute on the custom element.

@@ -1,43 +1,47 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowRight, Radio, Zap } from 'lucide-react';
-import { COMMANDS_BY_ID } from '../../lib/gestures';
+import { ArrowRight, Radio, Zap, Check, CornerUpLeft, Undo2, ChevronRight, ChevronLeft, Ear } from 'lucide-react';
+import { COMMANDS_BY_ID, type CommandDef } from '../../lib/gestures';
 
 interface Props {
   seedKey: string;
 }
 
-// Curated (physical gesture → command id) pairs the rings recognise, weighted
-// so common actions (media, volume) show up more than rare ones (SOS).
+// The seven fixed commands are not in COMMAND_LIBRARY (they can never be
+// remapped), so the feed carries its own definitions for them. Shortcut taps
+// resolve through the shared library like everywhere else.
+const CORE_COMMANDS: Record<string, CommandDef> = {
+  'core-confirm': { id: 'core-confirm', label: 'Confirm', category: 'Core', icon: Check },
+  'core-back': { id: 'core-back', label: 'Dismiss / Back', category: 'Core', icon: CornerUpLeft },
+  'core-undo': { id: 'core-undo', label: 'Undo', category: 'Core', icon: Undo2 },
+  'core-next': { id: 'core-next', label: 'Next', category: 'Core', icon: ChevronRight },
+  'core-prev': { id: 'core-prev', label: 'Previous', category: 'Core', icon: ChevronLeft },
+  'core-read': { id: 'core-read', label: 'Read / Repeat', category: 'Core', icon: Ear },
+};
+
+// Curated (contact point → command) pairs the ring recognises, weighted so the
+// everyday commands (confirm, next, read) show up more than rare ones.
 const GESTURE_EVENTS: { gesture: string; command: string; weight: number }[] = [
-  { gesture: 'Double-tap thumb', command: 'media-playpause', weight: 6 },
-  { gesture: 'Swipe index up', command: 'volume-up', weight: 5 },
-  { gesture: 'Swipe index down', command: 'volume-down', weight: 4 },
-  { gesture: 'Flick right', command: 'media-next', weight: 4 },
-  { gesture: 'Flick left', command: 'media-prev', weight: 3 },
-  { gesture: 'Two-finger tap', command: 'answer-call', weight: 3 },
-  { gesture: 'Make a fist', command: 'end-call', weight: 2 },
-  { gesture: 'Pinch & hold', command: 'open-assistant', weight: 3 },
-  { gesture: 'Draw a circle', command: 'open-camera', weight: 2 },
-  { gesture: 'Tap pinky', command: 'announce-time', weight: 3 },
-  { gesture: 'Long-press palm', command: 'screen-reader', weight: 2 },
-  { gesture: 'Swipe thumb across', command: 'switch-lang', weight: 2 },
-  { gesture: 'Cup ear', command: 'read-last-message', weight: 3 },
-  { gesture: 'Hold & speak', command: 'reply-voice', weight: 2 },
+  { gesture: 'Index tip · tap', command: 'core-confirm', weight: 6 },
+  { gesture: 'Middle base · tap', command: 'core-next', weight: 5 },
+  { gesture: 'Ring base · tap', command: 'core-prev', weight: 4 },
+  { gesture: 'Ring tip · tap', command: 'core-read', weight: 4 },
+  { gesture: 'Index base · tap', command: 'core-back', weight: 3 },
+  { gesture: 'Middle tip · tap', command: 'core-undo', weight: 2 },
+  { gesture: 'Pinky base · tap', command: 'announce-time', weight: 3 },
+  { gesture: 'Pinky tip · tap', command: 'media-playpause', weight: 3 },
 ];
 
 const TOTAL_WEIGHT = GESTURE_EVENTS.reduce((a, e) => a + e.weight, 0);
 
 // Per-category accent so each event reads at a glance without a legend.
 const CATEGORY_TONE: Record<string, string> = {
-  Media: 'text-primary',
+  Core: 'text-primary',
+  Media: 'text-chart-1',
   Phone: 'text-chart-2',
   Messages: 'text-chart-2',
   Apps: 'text-chart-1',
-  Safety: 'text-destructive',
-  Accessibility: 'text-primary',
-  Typing: 'text-muted-foreground',
-  Keypad: 'text-muted-foreground',
+  Utility: 'text-chart-2',
 };
 
 interface LiveEvent {
@@ -143,13 +147,13 @@ export default function GestureActivity({ seedKey }: Props) {
         >
           {today.toLocaleString()}
         </motion.span>{' '}
-        gestures recognised today · ~12&thinsp;ms average latency
+        commands recognised today · simulated demo data
       </p>
 
       <ul className="space-y-1">
         <AnimatePresence initial={false}>
           {events.map((ev) => {
-            const cmd = COMMANDS_BY_ID[ev.command];
+            const cmd = CORE_COMMANDS[ev.command] ?? COMMANDS_BY_ID[ev.command];
             if (!cmd) return null;
             const Icon = cmd.icon;
             const tone = CATEGORY_TONE[cmd.category] ?? 'text-primary';
@@ -187,8 +191,8 @@ export default function GestureActivity({ seedKey }: Props) {
       </ul>
 
       <p className="mt-4 text-xs text-muted-foreground">
-        Recognised on-device — raw motion never leaves your rings. Live stream is simulated for this
-        preview; your companion app shows real recognitions here once your rings ship.
+        Recognised on-device — raw sensing never leaves the ring. This stream is simulated: Tactiq is
+        a research prototype, and this preview shows how the companion app would display recognitions.
       </p>
     </section>
   );

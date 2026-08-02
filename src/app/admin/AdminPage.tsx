@@ -202,7 +202,7 @@ export default function AdminPage() {
 
   if (authorized === false) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/20 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
         <div className="max-w-lg w-full text-center bg-card border border-border rounded-2xl p-10 animate-enter-rise">
           <div className="w-14 h-14 rounded-full bg-destructive/10 text-destructive flex items-center justify-center mx-auto mb-4">
             <ShieldAlert className="w-7 h-7" />
@@ -231,7 +231,7 @@ export default function AdminPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/20">
+    <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">

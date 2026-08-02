@@ -113,7 +113,7 @@ export default function AccountPage() {
   const seedKey = user?.id || user?.email || 'demo';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/20">
+    <div className="min-h-screen bg-background">
       {/* Top bar */}
       <header className="border-b border-border bg-background/80 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -149,17 +149,17 @@ export default function AccountPage() {
           {/* Customise keyboard — hero action */}
           <Link
             to="/customize"
-            className="group block mb-6 rounded-2xl border border-primary/30 bg-gradient-to-r from-primary/10 via-primary/5 to-chart-2/10 p-6 hover:shadow-lg transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="group block mb-6 rounded-2xl bg-primary/10 p-6 hover:bg-primary/15 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center flex-shrink-0">
                 <Settings2 className="w-6 h-6" />
               </div>
               <div className="flex-1">
-                <h2 className="text-lg font-semibold">Customise your keyboard &amp; inputs</h2>
+                <h2 className="text-lg font-semibold">Customise your shortcuts</h2>
                 <p className="text-sm text-muted-foreground">
-                  Remap any key — letters, spacebar, thumb, pinky and palm — then save
-                  layouts for different moments.
+                  Choose what your two pinky shortcut points do — the seven core commands
+                  never move — then save layouts for different moments.
                 </p>
               </div>
               <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
@@ -277,7 +277,7 @@ export default function AccountPage() {
                   <>
                     <div className="flex items-center justify-between mb-1">
                       <span className="font-medium">
-                        {latestOrder.plan === 'pro' ? 'Tactiq Pro' : 'Tactiq Essential'}
+                        {latestOrder.plan === 'pro' ? 'Reservation + Updates' : 'Research Reservation'}
                       </span>
                       <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-accent/15 text-accent capitalize">
                         {latestOrder.status}
@@ -289,7 +289,7 @@ export default function AccountPage() {
                         currency: latestOrder.currency,
                       })}{' '}
                       · Reserved {new Date(latestOrder.created_at).toLocaleDateString()}. We’ll email
-                      you before the Q3 2026 launch.
+                      you research updates as the bench experiment lands.
                     </p>
                     <Link
                       to="/checkout?plan=pro"
@@ -301,7 +301,7 @@ export default function AccountPage() {
                 ) : (
                   <>
                     <p className="text-sm text-muted-foreground mb-4">
-                      Ready to get your Tactiq rings? Pick a plan and check out.
+                      Want to follow the research? Register a free reservation.
                     </p>
                     <Link
                       to="/checkout?plan=pro"

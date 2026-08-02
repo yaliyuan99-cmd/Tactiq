@@ -6,8 +6,8 @@ import { useAuth } from './AuthContext';
 import AuthLayout, { fieldClass } from './AuthLayout';
 
 const PLAN_LABELS: Record<string, string> = {
-  essential: 'Tactiq Essential',
-  pro: 'Tactiq Pro',
+  essential: 'a Research Reservation',
+  pro: 'a Reservation + Updates',
 };
 
 export default function SignUpPage() {
@@ -65,21 +65,21 @@ export default function SignUpPage() {
 
   return (
     <AuthLayout
-      title={isBuyIntent ? 'Create an account to buy' : 'Create your account'}
+      title={isBuyIntent ? 'Create an account to reserve' : 'Create your account'}
       subtitle={
         isBuyIntent
-          ? 'Sign up first — then we’ll take you straight to checkout.'
-          : 'Join Tactiq to save layouts and manage your orders.'
+          ? 'Sign up first — then we’ll take you straight to your reservation.'
+          : 'Join Tactiq to save shortcut layouts and follow the research.'
       }
       banner={
         isBuyIntent ? (
           <div className="mb-4 flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm">
             <ShoppingBag className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
             <span>
-              <strong className="font-medium">Sign up, then buy.</strong> You need a free
-              account to purchase
-              {planLabel ? <> {planLabel}</> : <> your Tactiq rings</>}. It only takes a
-              moment — we’ll send you right to checkout afterwards.
+              <strong className="font-medium">Sign up, then reserve.</strong> You need a free
+              account to register
+              {planLabel ? <> {planLabel}</> : <> your research reservation</>} — no payment,
+              ever. We’ll send you right there afterwards.
             </span>
           </div>
         ) : null

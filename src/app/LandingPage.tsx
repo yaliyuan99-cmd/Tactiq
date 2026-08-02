@@ -1,8 +1,8 @@
 import { motion, AnimatePresence, useScroll, useSpring, animate } from 'motion/react';
-import { Hand, Zap, Users, Shield, ChevronRight, Menu, X, Keyboard, Command, Phone, MessageSquare, Home, Music, Check, AlertCircle, CheckCircle2, Loader2, Sun, Moon, Brain, Radio, CircleCheck, User as UserIcon, ArrowUp, Star } from 'lucide-react';
+import { Hand, Zap, Users, Shield, ChevronRight, Menu, X, Keyboard, Command, MessageSquare, Music, Check, AlertCircle, CheckCircle2, Loader2, Sun, Moon, Brain, Radio, CircleCheck, User as UserIcon, ArrowUp, FlaskConical } from 'lucide-react';
 import { useState, useEffect, lazy, Suspense, type ComponentProps } from 'react';
 import type { FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 import InteractiveHandDemo from './components/InteractiveHandDemo';
 import Testimonials from './components/Testimonials';
 import FaqSection from './components/FaqSection';
@@ -21,7 +21,7 @@ const ProductViewer = lazy(() => import('./components/ProductViewer'));
 function RingViewer(props: ComponentProps<typeof ProductViewer>) {
   return (
     <Suspense
-      fallback={<img src={RING_POSTER} alt="RAGNAR smart ring" className="w-full h-full object-contain" />}
+      fallback={<img src={RING_POSTER} alt="Concept model of the Tactiq smart ring" className="w-full h-full object-contain" />}
     >
       <ProductViewer {...props} />
     </Suspense>
@@ -69,7 +69,6 @@ function CountUp({
 }
 
 export default function LandingPage() {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -121,18 +120,6 @@ export default function LandingPage() {
     document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // Buy flow: signed-in users go straight to checkout; everyone else is sent
-  // to sign up first ("sign up, then buy"), returning to checkout afterwards.
-  const handleBuy = (plan: 'essential' | 'pro') => {
-    setMobileMenuOpen(false);
-    if (user) {
-      navigate(`/checkout?plan=${plan}`);
-    } else {
-      const next = encodeURIComponent(`/checkout?plan=${plan}`);
-      navigate(`/signup?intent=buy&plan=${plan}&next=${next}`);
-    }
-  };
-
   const handleWaitlistSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!nameValid || !emailValid) {
@@ -162,7 +149,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/20">
+    <div className="min-h-screen bg-background">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg"
@@ -174,10 +161,10 @@ export default function LandingPage() {
       <motion.div
         aria-hidden
         style={{ scaleX: progressScaleX }}
-        className="fixed top-0 left-0 right-0 h-1 origin-left z-[60] bg-gradient-to-r from-primary via-chart-1 to-chart-2"
+        className="fixed top-0 left-0 right-0 h-1 origin-left z-[60] bg-primary"
       />
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-background/80 backdrop-blur-md border-b border-border z-50">
+      <nav aria-label="Primary" className="fixed top-0 w-full bg-background/80 backdrop-blur-md border-b border-border z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
@@ -191,6 +178,7 @@ export default function LandingPage() {
               <a href="#hardware" className="text-muted-foreground hover:text-foreground transition-colors">Hardware</a>
               <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a>
               <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
+              <a href="#research" className="text-muted-foreground hover:text-foreground transition-colors">Research</a>
               <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
               <button
                 onClick={toggleTheme}
@@ -223,7 +211,7 @@ export default function LandingPage() {
                   Log in
                 </Link>
               )}
-              <button onClick={scrollToWaitlist} className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity">
+              <button onClick={scrollToWaitlist} className="px-6 py-2 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity">
                 Get Started
               </button>
             </div>
@@ -260,13 +248,14 @@ export default function LandingPage() {
               <a href="#features" onClick={() => setMobileMenuOpen(false)} className="block text-muted-foreground hover:text-foreground transition-colors">Features</a>
               <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="block text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
               <a href="#for-who" onClick={() => setMobileMenuOpen(false)} className="block text-muted-foreground hover:text-foreground transition-colors">Who It's For</a>
+              <a href="#research" onClick={() => setMobileMenuOpen(false)} className="block text-muted-foreground hover:text-foreground transition-colors">Research</a>
               <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="block text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
               {user ? (
                 <Link to="/account" onClick={() => setMobileMenuOpen(false)} className="block text-muted-foreground hover:text-foreground transition-colors">Account</Link>
               ) : (
                 <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="block text-muted-foreground hover:text-foreground transition-colors">Log in</Link>
               )}
-              <button onClick={scrollToWaitlist} className="w-full px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity">
+              <button onClick={scrollToWaitlist} className="w-full px-6 py-2 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity">
                 Get Started
               </button>
             </div>
@@ -274,28 +263,11 @@ export default function LandingPage() {
         )}
       </nav>
 
+      {/* Main landmark — an unstyled block wrapper, so it renders identically;
+          it exists so all page content sits inside a labelled landmark. */}
+      <main>
       {/* Hero Section */}
       <section id="main-content" tabIndex={-1} className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden focus:outline-none">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.1, 0.15, 0.1],
-            }}
-            transition={{ duration: 8, repeat: Infinity }}
-            className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/20 rounded-full blur-3xl"
-          />
-          <motion.div
-            animate={{
-              scale: [1, 1.3, 1],
-              opacity: [0.1, 0.2, 0.1],
-            }}
-            transition={{ duration: 10, repeat: Infinity, delay: 2 }}
-            className="absolute bottom-1/4 -right-20 w-96 h-96 bg-chart-1/20 rounded-full blur-3xl"
-          />
-        </div>
-
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left side - Text content */}
@@ -309,21 +281,19 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full mb-6 text-sm"
+                className="font-script text-primary text-lg sm:text-xl mb-5"
               >
-                Next-Gen Wearable Control
+                silent, eyes-free phone control
               </motion.div>
 
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl mb-6 leading-tight">
-                Your hands.
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl mb-6 leading-[1.02] tracking-tight">
+                One ring.
                 <br />
-                <span className="bg-gradient-to-r from-primary via-chart-1 to-chart-2 bg-clip-text text-transparent">
-                  Your controller.
-                </span>
+                <span className="text-primary">Nine commands.</span>
               </h1>
 
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                Tactiq is not just accessibility hardware — it's a <span className="text-foreground font-semibold">personal control layer for your phone</span>. Wearable, invisible, fully customizable.
+                Nine commands on the fingers you can always feel. Tactiq is a smart ring for blind users that <span className="text-foreground font-semibold">augments VoiceOver and TalkBack</span> — silent, one-handed, and priced like earbuds.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-12">
@@ -331,7 +301,7 @@ export default function LandingPage() {
                   onClick={scrollToWaitlist}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-xl hover:shadow-lg transition-shadow flex items-center justify-center gap-2 group"
+                  className="px-8 py-4 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2 group"
                 >
                   Get Early Access
                   <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -340,7 +310,7 @@ export default function LandingPage() {
                   href="#how-it-works"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-8 py-4 border-2 border-primary/20 rounded-xl hover:bg-primary/5 transition-colors backdrop-blur-sm text-center"
+                  className="px-8 py-4 bg-card rounded-xl hover:bg-secondary transition-colors text-center"
                 >
                   Watch Demo
                 </motion.a>
@@ -353,23 +323,19 @@ export default function LandingPage() {
                 transition={{ delay: 0.5 }}
                 className="flex items-center gap-3 mb-10"
               >
-                <div className="flex items-center gap-0.5" aria-hidden>
-                  {[0, 1, 2, 3, 4].map((i) => (
-                    <Star key={i} className="w-4 h-4 fill-chart-1 text-chart-1" />
-                  ))}
-                </div>
                 <span className="text-sm text-muted-foreground">
-                  <span className="text-foreground font-semibold">1,200+</span> early adopters on the
-                  waitlist
+                  A <span className="text-foreground font-semibold">student research project</span> from
+                  Sydney, Australia — all performance figures are pre-registered targets, not achieved
+                  results
                 </span>
               </motion.div>
 
               {/* Stats */}
               <div className="grid grid-cols-3 gap-6">
                 {[
-                  { value: 60, suffix: "+", label: "Gestures" },
-                  { value: 2, suffix: "", label: "Smart Rings" },
-                  { value: 0, suffix: "", label: "Screens" }
+                  { value: 9, suffix: "", label: "Fixed commands" },
+                  { value: 1, suffix: "", label: "Ring, one hand" },
+                  { value: 0, suffix: "", label: "Screens needed" }
                 ].map((stat, i) => (
                   <motion.div
                     key={i}
@@ -399,27 +365,17 @@ export default function LandingPage() {
               className="order-1 lg:order-2 relative"
             >
               <div className="relative">
-                {/* Glowing ring effect */}
-                <motion.div
-                  animate={{
-                    scale: [1, 1.1, 1],
-                    opacity: [0.3, 0.6, 0.3],
-                  }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  className="absolute inset-0 bg-gradient-to-br from-primary/30 to-chart-1/30 rounded-3xl blur-3xl"
-                />
-
                 {/* Product render */}
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-card to-secondary/40 border border-border aspect-square">
+                <div className="relative rounded-3xl overflow-hidden bg-card aspect-square">
                   <RingViewer
                     src={RING_MODEL}
                     poster={RING_POSTER}
-                    alt="RAGNAR smart ring, rotating"
+                    alt="Concept model of the Tactiq smart ring, rotating slowly"
                     autoRotate
                     exposure={1.1}
                     className="w-full h-full"
                   >
-                    <img src={RING_POSTER} alt="RAGNAR smart ring" className="w-full h-full object-contain" />
+                    <img src={RING_POSTER} alt="Concept model of the Tactiq smart ring" className="w-full h-full object-contain" />
                   </RingViewer>
                 </div>
 
@@ -428,11 +384,11 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.5 }}
-                  className="absolute -bottom-6 -left-6 bg-card border border-border rounded-xl px-4 py-3 shadow-lg backdrop-blur-sm"
+                  className="absolute -bottom-6 -left-6 bg-popover border border-border rounded-xl px-4 py-3"
                 >
                   <div className="flex items-center gap-2">
                     <Hand className="w-5 h-5 text-primary" />
-                    <span className="text-sm font-medium">RAGNAR · Smart Ring</span>
+                    <span className="text-sm font-medium">Tactiq · Research Prototype</span>
                   </div>
                 </motion.div>
               </div>
@@ -446,16 +402,16 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-r from-primary/5 via-chart-1/5 to-chart-2/5 rounded-3xl p-8 md:p-12 border border-primary/10"
+            className="bg-card rounded-3xl p-8 md:p-12"
           >
-            <h3 className="text-2xl sm:text-3xl text-center mb-8">How It Works: Instant Control</h3>
+            <h2 className="text-2xl sm:text-3xl text-center mb-8">How It Works: Instant Control</h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 items-start">
               {[
-                { label: "Think", Icon: Brain, tile: "from-primary/20 to-primary/5 border-primary/20", icon: "text-primary" },
-                { label: "Gesture", Icon: Hand, tile: "from-accent/30 to-accent/10 border-accent/30", icon: "text-accent-foreground" },
-                { label: "Detect", Icon: Radio, tile: "from-chart-1/20 to-chart-1/5 border-chart-1/20", icon: "text-chart-1" },
-                { label: "Execute", Icon: Zap, tile: "from-chart-2/20 to-chart-2/5 border-chart-2/20", icon: "text-chart-2" },
-                { label: "Done", Icon: CircleCheck, tile: "from-primary/20 to-chart-1/10 border-primary/20", icon: "text-primary" }
+                { label: "Squeeze to wake", Icon: Brain, tile: "bg-primary/10", icon: "text-primary" },
+                { label: "Thumb taps a point", Icon: Hand, tile: "bg-accent/10", icon: "text-accent" },
+                { label: "Ring detects", Icon: Radio, tile: "bg-chart-1/10", icon: "text-chart-1" },
+                { label: "Phone acts", Icon: Zap, tile: "bg-chart-3/10", icon: "text-chart-3" },
+                { label: "Haptic confirms", Icon: CircleCheck, tile: "bg-primary/10", icon: "text-primary" }
               ].map((step, i) => (
                 <div key={i} className="relative flex flex-col items-center">
                   <motion.div
@@ -464,7 +420,7 @@ export default function LandingPage() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1, type: "spring", stiffness: 260, damping: 18 }}
                     whileHover={{ scale: 1.08, y: -3 }}
-                    className={`mb-3 w-16 h-16 rounded-2xl bg-gradient-to-br ${step.tile} border flex items-center justify-center shadow-sm`}
+                    className={`mb-3 w-16 h-16 rounded-2xl ${step.tile} flex items-center justify-center`}
                   >
                     <step.Icon className={`w-7 h-7 ${step.icon}`} strokeWidth={1.75} />
                   </motion.div>
@@ -476,15 +432,14 @@ export default function LandingPage() {
               ))}
             </div>
             <p className="text-center text-muted-foreground mt-8 italic">
-              "User intention → finger gesture → ring detection → phone command → instant action"
+              "A deliberate squeeze wakes the ring → the thumb taps a contact point → a distinct haptic pattern confirms the command"
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* The Problem Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-accent/20 to-transparent relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -494,7 +449,7 @@ export default function LandingPage() {
           >
             <h2 className="text-3xl sm:text-4xl mb-6">The Problem We're Solving</h2>
             <p className="text-xl text-muted-foreground">
-              Smartphones are essential infrastructure for independence — yet they remain fundamentally hostile to blind users, elderly people, and anyone struggling with touchscreens.
+              The WHO estimates at least 2.2 billion people live with a vision impairment, and 91.3% of screen-reader users rely on one on mobile (WebAIM Screen Reader Survey #10). Yet the phone in their pocket still assumes eyes, a free hand, and a quiet room.
             </p>
           </motion.div>
 
@@ -506,13 +461,13 @@ export default function LandingPage() {
                 color: "from-destructive/10 to-destructive/5"
               },
               {
-                title: "Voice Fails Too Often",
-                description: "Noisy environments, accents, privacy concerns, and speech impairments make voice assistants unreliable for millions of users.",
+                title: "Voice Is Conditionally Reliable",
+                description: "Voice control fails in noise — and broadcasts your business to the street. For atypical speech it's worse: studies measured mainstream assistants at roughly 50–60% accuracy (Ballati et al. 2018), and unadapted state-of-the-art recognition still shows around 60% median word error on disordered speech (JSLHR 2024).",
                 color: "from-chart-1/10 to-chart-1/5"
               },
               {
-                title: "Accessibility Costs Too Much",
-                description: "Professional assistive technology ranges from $1,500 to $7,000 — placing critical tools beyond reach for those who need them most.",
+                title: "Braille Hardware Costs Too Much",
+                description: "Refreshable braille displays run from $799 (Orbit Reader 20) to $15,500 (APH Monarch), with mainstream 20–40-cell displays around $2,000–$3,800 — and only 38% of screen-reader users use braille output at all (WebAIM Survey #10).",
                 color: "from-chart-2/10 to-chart-2/5"
               }
             ].map((item, i) => (
@@ -523,7 +478,7 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -5 }}
-                className={`bg-gradient-to-br ${item.color} backdrop-blur-sm p-8 rounded-2xl border border-border/50 shadow-lg`}
+                className="bg-card p-8 rounded-2xl"
               >
                 <h3 className="mb-4">{item.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{item.description}</p>
@@ -552,7 +507,7 @@ export default function LandingPage() {
             {[
               {
                 title: "Blind & Visually Impaired Users",
-                description: "Remove the greatest daily friction point of smartphone use. Every repeated action becomes a gesture you perform without thinking — faster and more reliable than any voice command or screen reader.",
+                description: "Tactiq augments VoiceOver and TalkBack over Bluetooth — it never replaces them. The nine commands you use most live on the fingers you can always feel, and it works one-handed while the other hand holds a cane or a guide-dog harness.",
                 highlight: "Primary Users",
                 gradient: "from-primary/20 to-primary/5",
                 borderColor: "border-primary/30"
@@ -579,7 +534,7 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -5 }}
-                className={`bg-gradient-to-br ${user.gradient} backdrop-blur-sm p-8 rounded-2xl border ${user.borderColor} shadow-lg`}
+                className="bg-card p-8 rounded-2xl"
               >
                 <div className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm mb-4">{user.highlight}</div>
                 <h3 className="mb-4 text-xl">{user.title}</h3>
@@ -601,7 +556,7 @@ export default function LandingPage() {
           >
             <h2 className="text-3xl sm:text-4xl mb-6">How Tactiq Works</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Two smart rings detect tap pressure and knuckle flex across all ten fingers, translating gestures into phone commands in real time.
+              One ring, worn on the index finger of either hand. The thumb taps eight contact points — the tips and bases of the four fingers — carrying nine fixed commands.
             </p>
           </motion.div>
 
@@ -618,20 +573,20 @@ export default function LandingPage() {
             >
               <div className="flex items-center gap-3 mb-6">
                 <Keyboard className="w-8 h-8 text-chart-2" />
-                <h3>The Left Hand — Keyboard</h3>
+                <h3>Wake, Tap, Confirm</h3>
               </div>
               <ul className="space-y-4 text-muted-foreground">
                 <li className="flex gap-3">
                   <div className="w-2 h-2 rounded-full bg-chart-2 flex-shrink-0 mt-2" />
-                  <span><strong className="text-foreground">Text Input:</strong> Full keyboard layout mapped to knuckle positions for fast typing</span>
+                  <span><strong className="text-foreground">Squeeze to Wake:</strong> The ring is idle until a deliberate squeeze of the ring body opens a short command window — design target: at most 1 false activation per hour</span>
                 </li>
                 <li className="flex gap-3">
                   <div className="w-2 h-2 rounded-full bg-chart-2 flex-shrink-0 mt-2" />
-                  <span><strong className="text-foreground">Character Entry:</strong> Type letters, numbers, and symbols without looking at a screen</span>
+                  <span><strong className="text-foreground">Haptic Feedback:</strong> Distinct vibration patterns confirm each command, so you always know what the ring heard</span>
                 </li>
                 <li className="flex gap-3">
                   <div className="w-2 h-2 rounded-full bg-chart-2 flex-shrink-0 mt-2" />
-                  <span><strong className="text-foreground">Muscle Memory:</strong> Natural hand positions that become second nature with practice</span>
+                  <span><strong className="text-foreground">Optional Single Earbud:</strong> One ear only — ambient sound is how blind users read the street, so the other ear always stays open</span>
                 </li>
               </ul>
             </motion.div>
@@ -640,9 +595,8 @@ export default function LandingPage() {
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="bg-gradient-to-br from-chart-2/20 via-chart-2/10 to-transparent rounded-3xl p-12 flex items-center justify-center h-80 relative overflow-hidden border border-chart-2/20"
+              className="bg-card rounded-3xl p-12 flex items-center justify-center h-80 relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
               <motion.div
                 animate={{ rotate: [0, 5, -5, 0] }}
                 transition={{ duration: 4, repeat: Infinity }}
@@ -657,9 +611,8 @@ export default function LandingPage() {
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="bg-gradient-to-br from-primary/20 via-primary/10 to-transparent rounded-3xl p-12 flex items-center justify-center h-80 md:order-1 relative overflow-hidden border border-primary/20"
+              className="bg-card rounded-3xl p-12 flex items-center justify-center h-80 md:order-1 relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
               <motion.div
                 animate={{ rotate: [0, -5, 5, 0] }}
                 transition={{ duration: 4, repeat: Infinity }}
@@ -676,24 +629,24 @@ export default function LandingPage() {
             >
               <div className="flex items-center gap-3 mb-6">
                 <Command className="w-8 h-8 text-primary" />
-                <h3>The Right Hand — Commands</h3>
+                <h3>The Nine Commands</h3>
               </div>
               <ul className="space-y-4 text-muted-foreground">
                 <li className="flex gap-3">
                   <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-2" />
-                  <span><strong className="text-foreground">3×3 Grid:</strong> Three middle fingers, three knuckle positions each = 9 customizable commands</span>
+                  <span><strong className="text-foreground">Index finger:</strong> Confirm (tip) · Dismiss/Back (base)</span>
                 </li>
                 <li className="flex gap-3">
                   <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-2" />
-                  <span><strong className="text-foreground">Thumb Modifier:</strong> Hold to unlock a second layer of 9 commands — doubling your shortcuts</span>
+                  <span><strong className="text-foreground">Middle finger:</strong> Undo (tip) · Next (base)</span>
                 </li>
                 <li className="flex gap-3">
                   <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-2" />
-                  <span><strong className="text-foreground">Pinky Shortcuts:</strong> Fixed delete cluster (tap/double/triple) + 6 personal shortcuts</span>
+                  <span><strong className="text-foreground">Ring finger:</strong> Read/Repeat (tip) · Previous (base)</span>
                 </li>
                 <li className="flex gap-3">
                   <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-2" />
-                  <span><strong className="text-foreground">Navigation & Media:</strong> Control phone apps, skip tracks, adjust volume, send messages</span>
+                  <span><strong className="text-foreground">Pinky:</strong> Shortcut 1 (base) · Shortcut 2 (tip, brief tap) · Emergency (tip, sustained 5-second hold — never a tap count; the only shared point, separated by duration)</span>
                 </li>
               </ul>
             </motion.div>
@@ -703,9 +656,8 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-16 text-center bg-gradient-to-r from-primary/10 via-chart-1/10 to-chart-2/10 backdrop-blur-sm border border-primary/20 rounded-3xl p-12 relative overflow-hidden"
+            className="mt-16 text-center bg-primary text-primary-foreground rounded-3xl p-12 relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
             <div className="relative z-10">
               <motion.div
                 initial={{ scale: 0.8 }}
@@ -713,11 +665,11 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 className="inline-block mb-4"
               >
-                <Zap className="w-12 h-12 text-primary mx-auto" />
+                <Zap className="w-12 h-12 text-primary-foreground mx-auto" />
               </motion.div>
-              <h3 className="mb-4 text-2xl">Total Capacity: 60+ Distinct Gestures</h3>
-              <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-                All accessible without a screen, without a voice, and without looking at anything — just natural hand movements your body already knows.
+              <h3 className="mb-4 text-2xl">Nine Commands. Deliberately Capped.</h3>
+              <p className="text-primary-foreground/85 max-w-2xl mx-auto text-lg">
+                Our capacity analysis found a knee at eight contact points — more points add little information but collapse accuracy. Text entry and any clear-field or delete gesture are deliberately excluded: recoverable commands only, on the fingers you can always feel.
               </p>
             </div>
           </motion.div>
@@ -725,7 +677,7 @@ export default function LandingPage() {
       </section>
 
       {/* Hardware Section */}
-      <section id="hardware" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-secondary/25 to-transparent relative overflow-hidden">
+      <section id="hardware" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -733,12 +685,12 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="inline-block px-4 py-1.5 mb-4 rounded-full bg-primary/10 text-primary text-sm font-medium tracking-wide">
-              The Hardware
+            <span className="font-script text-primary text-lg sm:text-xl block mb-3">
+              the hardware
             </span>
-            <h2 className="text-4xl sm:text-5xl mb-6">Meet RAGNAR</h2>
+            <h2 className="text-4xl sm:text-5xl mb-6">Meet the Tactiq Ring</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              A featherweight smart ring built around a precision motion sensor. Drag to spin it — every angle is engineered to disappear on your hand.
+              A single ring for the index finger of either hand. Drag to spin the concept model — and note: every performance figure below is a pre-registered target, not an achieved result.
             </p>
           </motion.div>
 
@@ -747,19 +699,19 @@ export default function LandingPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-card to-secondary/40 border border-border aspect-square"
+              className="relative rounded-3xl overflow-hidden bg-card aspect-square"
             >
               <RingViewer
                 src={RING_MODEL}
                 poster={RING_POSTER}
-                alt="RAGNAR smart ring — drag to rotate"
+                alt="Concept model of the Tactiq smart ring — drag to rotate"
                 cameraControls
                 autoRotate
                 ar
                 exposure={1.1}
                 className="w-full h-full"
               >
-                <img src={RING_POSTER} alt="RAGNAR smart ring" className="w-full h-full object-contain" />
+                <img src={RING_POSTER} alt="Concept model of the Tactiq smart ring" className="w-full h-full object-contain" />
               </RingViewer>
             </motion.div>
 
@@ -771,12 +723,12 @@ export default function LandingPage() {
             >
               <div className="grid sm:grid-cols-2 gap-4">
                 {[
-                  { icon: Zap, title: '7-day battery', desc: 'A full week of gesture control on a single charge.' },
-                  { icon: Hand, title: '9-axis motion', desc: 'Gyroscope + accelerometer track 60+ distinct gestures.' },
-                  { icon: Shield, title: 'Titanium shell', desc: 'Aerospace-grade, water-resistant, scratch-proof finish.' },
-                  { icon: Check, title: 'Universal fit', desc: 'Six sizes, under 4 grams — you forget it is there.' },
+                  { icon: Hand, title: 'Magnetic sensing', desc: 'A passive magnet and three low-cost magnetometers localize the thumb as it taps — no camera, no microphone.' },
+                  { icon: Zap, title: 'Squeeze to wake', desc: 'Idle until deliberately squeezed. Target: at most 1 false activation per hour.' },
+                  { icon: Shield, title: '≥95% per-contact accuracy', desc: 'Pre-registered target for the bench experiment — not an achieved result.' },
+                  { icon: Check, title: 'Under $60 in parts', desc: 'The bench prototype is built from off-the-shelf components.' },
                 ].map((spec) => (
-                  <div key={spec.title} className="p-5 rounded-2xl bg-card border border-border">
+                  <div key={spec.title} className="p-5 rounded-2xl bg-card">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-3">
                       <spec.icon className="w-5 h-5" />
                     </div>
@@ -786,12 +738,12 @@ export default function LandingPage() {
                 ))}
               </div>
               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                <span className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Bluetooth 5.3 LE</span>
-                <span className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> iOS & Android</span>
+                <span className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Bluetooth LE</span>
+                <span className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Augments VoiceOver & TalkBack</span>
                 <span className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Haptic feedback</span>
               </div>
-              <button onClick={() => handleBuy('pro')} className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity">
-                Reserve your pair
+              <button onClick={scrollToWaitlist} className="px-6 py-3 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity">
+                Follow the research
               </button>
             </motion.div>
           </div>
@@ -801,11 +753,11 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-12 relative rounded-3xl overflow-hidden border border-border shadow-2xl"
+            className="mt-12 relative rounded-3xl overflow-hidden"
           >
             <img
               src={HANDS_PHOTO}
-              alt="A hand wearing the RAGNAR smart ring"
+              alt="A hand wearing the Concept model of the Tactiq smart ring"
               loading="lazy"
               className="w-full h-[280px] sm:h-[360px] lg:h-[440px] object-cover"
             />
@@ -813,7 +765,7 @@ export default function LandingPage() {
             <div className="absolute bottom-0 left-0 p-6 sm:p-10 max-w-xl">
               <h3 className="text-2xl sm:text-3xl mb-2">Made to disappear on your hand</h3>
               <p className="text-muted-foreground">
-                Worn like jewellery, RAGNAR turns the gestures your hand already knows into 60+ instant commands — no screen, no voice.
+                Worn like jewellery, the ring puts nine commands on the fingers you can always feel — no screen, no voice, one hand free for a cane or a guide dog.
               </p>
             </div>
           </motion.div>
@@ -821,7 +773,7 @@ export default function LandingPage() {
       </section>
 
       {/* Command Capabilities Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-primary/5 to-transparent">
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -829,53 +781,53 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl sm:text-5xl mb-6">Control Everything</h2>
+            <h2 className="text-4xl sm:text-5xl mb-6">Eight Points, Nine Commands</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              From media playback to emergency calls — Tactiq gives you instant access to everything you need, directly from your fingers.
+              The thumb taps the tips and bases of the four fingers — eight contact points you can find without looking, carrying nine fixed commands that drive VoiceOver and TalkBack.
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {[
               {
-                icon: <Music className="w-6 h-6" />,
-                title: "Media Control",
-                commands: ["Play/Pause", "Skip Track", "Volume", "Podcast Skip"]
+                icon: <Check className="w-6 h-6" />,
+                title: "Index Tip — Confirm",
+                commands: ["Answer a call", "Activate the focused item", "Accept a suggestion"]
               },
               {
-                icon: <Phone className="w-6 h-6" />,
-                title: "Phone & Messages",
-                commands: ["Call Contact", "Send Voice Msg", "Read Messages", "Mute Call"]
+                icon: <X className="w-6 h-6" />,
+                title: "Index Base — Dismiss/Back",
+                commands: ["Decline a call", "Go back a screen", "Silence an alarm"]
               },
               {
                 icon: <Command className="w-6 h-6" />,
-                title: "App Shortcuts",
-                commands: ["Open Maps", "Launch Spotify", "Start Camera", "Open Notes"]
+                title: "Middle Tip — Undo",
+                commands: ["Reverse the last action", "Recover from a mis-tap"]
               },
               {
-                icon: <Home className="w-6 h-6" />,
-                title: "Smart Home",
-                commands: ["Lights On/Off", "Lock Door", "Set Temperature", "Start Routine"]
+                icon: <ChevronRight className="w-6 h-6" />,
+                title: "Middle Base — Next",
+                commands: ["Next item in a list", "Next element on screen", "Skip forward"]
               },
               {
                 icon: <MessageSquare className="w-6 h-6" />,
-                title: "Text Input",
-                commands: ["Type Letter", "Delete Char", "Delete Word", "Clear Field"]
+                title: "Ring Tip — Read/Repeat",
+                commands: ["Read the current item again", "Repeat the last announcement"]
+              },
+              {
+                icon: <Music className="w-6 h-6" />,
+                title: "Ring Base — Previous",
+                commands: ["Previous item in a list", "Previous element on screen", "Skip back"]
               },
               {
                 icon: <Zap className="w-6 h-6" />,
-                title: "Navigation",
-                commands: ["Start Route Home", "Find Nearby", "Share Location", "Save Place"]
-              },
-              {
-                icon: <Shield className="w-6 h-6" />,
-                title: "Accessibility",
-                commands: ["Screen Reader", "Voice Over", "Zoom", "High Contrast"]
+                title: "Pinky Base & Tip — Shortcuts",
+                commands: ["Shortcut 1 (base): your choice", "Shortcut 2 (tip, brief tap): your choice"]
               },
               {
                 icon: <AlertCircle className="w-6 h-6" />,
-                title: "Emergency",
-                commands: ["Call Emergency", "Share Location", "Alert Contact", "SOS Signal"]
+                title: "Pinky Tip — Emergency",
+                commands: ["Sustained 5-second hold — never a tap count", "The only shared point, separated by duration"]
               }
             ].map((category, i) => (
               <motion.div
@@ -885,7 +837,7 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
                 whileHover={{ y: -5 }}
-                className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-6"
+                className="bg-card rounded-2xl p-6"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
@@ -910,18 +862,18 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-br from-primary/10 via-chart-1/5 to-transparent rounded-3xl p-8 border border-primary/20"
+            className="bg-card rounded-3xl p-8"
           >
-            <h3 className="text-2xl mb-4 text-center">Switch Profiles Instantly</h3>
+            <h3 className="text-2xl mb-4 text-center">Two Shortcuts, Fully Yours</h3>
             <p className="text-muted-foreground text-center mb-8 max-w-2xl mx-auto">
-              Create custom gesture profiles for different contexts — switch between them with a single gesture.
+              Seven commands never move — muscle memory depends on it. The two shortcut points are the personal part. Examples of what they could trigger:
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              {["Daily Mode", "Gym Mode", "Travel Mode", "School Mode", "Emergency Mode", "Navigation Mode", "Typing Mode"].map((mode, i) => (
+              {["Speak the time", "Where am I?", "Call a favourite", "Play / pause podcast", "Speak battery level", "Toggle flashlight", "Send a preset message"].map((mode, i) => (
                 <motion.div
                   key={i}
                   whileHover={{ scale: 1.05 }}
-                  className="px-4 py-2 bg-card border border-border rounded-full text-sm"
+                  className="px-4 py-2 bg-secondary rounded-full text-sm"
                 >
                   {mode}
                 </motion.div>
@@ -932,8 +884,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-accent/20 to-transparent relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -985,7 +936,7 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -8, scale: 1.02 }}
-                className={`bg-gradient-to-br ${feature.gradient} backdrop-blur-sm p-8 rounded-2xl border border-border/50 shadow-lg hover:shadow-xl transition-shadow`}
+                className="bg-card p-8 rounded-2xl"
               >
                 <motion.div
                   whileHover={{ rotate: 360 }}
@@ -1004,8 +955,6 @@ export default function LandingPage() {
 
       {/* Pricing Section */}
       <section id="pricing" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-accent/15 to-transparent"></div>
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
 
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
@@ -1014,9 +963,9 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl sm:text-5xl mb-6">Simple, Affordable Pricing</h2>
+            <h2 className="text-4xl sm:text-5xl mb-6">Priced Like Earbuds</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Priced as consumer electronics, not medical equipment. Because accessibility shouldn't cost more than a laptop.
+              Tactiq is a research project, so there is no product to buy and no retail price to promise. The positioning is the commitment: consumer electronics money, not braille-display money.
             </p>
           </motion.div>
 
@@ -1028,25 +977,25 @@ export default function LandingPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
               whileHover={{ y: -8 }}
-              className="bg-card border border-border rounded-3xl p-8 shadow-lg"
+              className="bg-card rounded-3xl p-8"
             >
               <div className="mb-6">
-                <h3 className="text-2xl mb-2">Tactiq Essential</h3>
+                <h3 className="text-2xl mb-2">Bench Prototype</h3>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-semibold">$249</span>
-                  <span className="text-muted-foreground">AUD</span>
+                  <span className="text-5xl font-semibold">Under $60</span>
+                  <span className="text-muted-foreground">in parts</span>
                 </div>
               </div>
 
               <ul className="space-y-4 mb-8">
                 {[
-                  "Two smart rings (left & right)",
-                  "Basic gesture profiles",
-                  "Voice-guided setup",
-                  "Emergency contact gesture",
-                  "60+ customizable commands",
-                  "Bluetooth connectivity",
-                  "Mobile app included"
+                  "One 3D-printed ring shell",
+                  "Passive magnet + three low-cost magnetometers",
+                  "Squeeze-to-wake sensing",
+                  "Haptic feedback motor",
+                  "Bluetooth LE module",
+                  "Built entirely from off-the-shelf components",
+                  "Bench experiment: August–October 2026"
                 ].map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
@@ -1056,12 +1005,12 @@ export default function LandingPage() {
               </ul>
 
               <motion.button
-                onClick={() => handleBuy('essential')}
+                onClick={scrollToWaitlist}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full px-8 py-4 border-2 border-primary/20 rounded-xl hover:bg-primary/5 transition-colors"
               >
-                Buy Now
+                Follow the Research
               </motion.button>
             </motion.div>
 
@@ -1072,45 +1021,45 @@ export default function LandingPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
               whileHover={{ y: -8 }}
-              className="bg-gradient-to-br from-primary/10 to-chart-1/5 border-2 border-primary/30 rounded-3xl p-8 shadow-2xl relative"
+              className="bg-primary text-primary-foreground rounded-3xl p-8 relative"
             >
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-primary text-primary-foreground rounded-full text-sm font-medium">
-                Most Popular
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-primary-foreground text-primary rounded-full text-sm font-semibold">
+                Design Target
               </div>
 
               <div className="mb-6">
-                <h3 className="text-2xl mb-2">Tactiq Pro</h3>
+                <h3 className="text-2xl mb-2">Retail Vision</h3>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-semibold">$349</span>
-                  <span className="text-muted-foreground">AUD</span>
+                  <span className="text-5xl font-semibold">Earbud-class</span>
+                  <span className="text-primary-foreground/70">pricing</span>
                 </div>
               </div>
 
               <ul className="space-y-4 mb-8">
                 {[
-                  "Everything in Essential, plus:",
-                  "Advanced gesture profiles",
-                  "Cloud sync across devices",
-                  "Custom app shortcuts",
-                  "Priority support",
-                  "Firmware updates (lifetime)",
-                  "Extended warranty (2 years)",
-                  "Exclusive beta features"
+                  "If the research holds, one day:",
+                  "One ring — index finger, either hand",
+                  "Nine fixed commands",
+                  "Distinct haptic confirmation patterns",
+                  "Optional single-earbud audio",
+                  "Augments VoiceOver & TalkBack",
+                  "No subscription",
+                  "No firm retail price — earbud-class is the promise"
                 ].map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span className={i === 0 ? "font-medium" : "text-muted-foreground"}>{feature}</span>
+                    <Check className="w-5 h-5 text-primary-foreground flex-shrink-0 mt-0.5" />
+                    <span className={i === 0 ? "font-medium" : "text-primary-foreground/85"}>{feature}</span>
                   </li>
                 ))}
               </ul>
 
               <motion.button
-                onClick={() => handleBuy('pro')}
+                onClick={scrollToWaitlist}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full px-8 py-4 bg-primary text-primary-foreground rounded-xl hover:shadow-lg transition-shadow"
+                className="w-full px-8 py-4 bg-primary-foreground text-primary rounded-xl font-semibold hover:opacity-90 transition-opacity"
               >
-                Buy Now
+                Join the Waitlist
               </motion.button>
             </motion.div>
           </div>
@@ -1123,7 +1072,7 @@ export default function LandingPage() {
             className="mt-12 text-center"
           >
             <p className="text-muted-foreground">
-              <span className="text-primary font-medium">Early bird pricing:</span> First 500 customers get 20% off. Launch Q3 2026.
+              <span className="text-primary font-medium">Where things stand:</span> bench experiment August–October 2026 · AUSSEF submission 11 November 2026 · ISEF 2027 pathway.
             </p>
           </motion.div>
         </div>
@@ -1133,27 +1082,7 @@ export default function LandingPage() {
       <Testimonials />
 
       {/* Pricing Philosophy Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary via-primary/95 to-chart-1/50 text-primary-foreground relative overflow-hidden">
-        {/* Animated background */}
-        <div className="absolute inset-0 overflow-hidden">
-          <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 90, 0],
-            }}
-            transition={{ duration: 20, repeat: Infinity }}
-            className="absolute -top-1/2 -left-1/4 w-96 h-96 bg-primary-foreground/10 rounded-full blur-3xl"
-          />
-          <motion.div
-            animate={{
-              scale: [1, 1.3, 1],
-              rotate: [0, -90, 0],
-            }}
-            transition={{ duration: 25, repeat: Infinity }}
-            className="absolute -bottom-1/2 -right-1/4 w-96 h-96 bg-primary-foreground/10 rounded-full blur-3xl"
-          />
-        </div>
-
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-primary text-primary-foreground relative overflow-hidden">
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1173,13 +1102,91 @@ export default function LandingPage() {
 
             <h2 className="text-4xl sm:text-5xl mb-8 leading-tight">Accessibility Should Not Cost More Than a Laptop</h2>
             <p className="text-xl opacity-95 mb-8 leading-relaxed">
-              Professional assistive technology ranges from <span className="font-bold">$1,500 to $7,000</span>. Tactiq is built on mature smart ring technology and priced as consumer electronics — comparable to a pair of wireless earbuds.
+              Refreshable braille displays run from <span className="font-bold">$799 to $15,500</span>, and the mainstream 20–40-cell models most people actually buy sit around $2,000–$3,800. Tactiq is built from ordinary consumer components and positioned to be priced like earbuds.
             </p>
-            <div className="inline-block bg-primary-foreground/10 backdrop-blur-sm rounded-2xl px-8 py-6 border border-primary-foreground/20">
+            <div className="inline-block bg-primary-foreground/10 rounded-2xl px-8 py-6">
               <p className="text-2xl font-semibold">
                 Tactiq is built to prove accessibility doesn't have to be expensive.
               </p>
             </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Research */}
+      <section id="research" className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <span className="font-script text-primary text-lg sm:text-xl block mb-3">
+              the research
+            </span>
+            <h2 className="text-4xl sm:text-5xl mb-6">Two Studies Behind the Ring</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Tactiq's design is not a guess — it comes out of two linked studies, and every claim below is either a published measurement, a simulation result, or a pre-registered target.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="bg-card p-8 rounded-2xl"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+                  <Hand className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl">Study 1 — Design</h3>
+              </div>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                The design study derives nine design principles for eyes-free wearable input, then asks how many contact points a thumb can reliably hit. The capacity analysis finds a knee at eight: going to sixteen points adds only about +0.31 bits of information but collapses worst-command accuracy from 87% to roughly 50%.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                For context: Apple's AssistiveTouch ships 4 gestures, Meta's sEMG wristband handles roughly 9, and EFRing reached 89.5% accuracy on 9. Nine commands is not timid — it is where reliable sits.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="bg-card p-8 rounded-2xl"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-chart-1/10 rounded-lg flex items-center justify-center text-chart-1">
+                  <FlaskConical className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl">Study 2 — Physics</h3>
+              </div>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                The physics study simulates magnet trilateration: a passive magnet and three low-cost magnetometers, using the inverse-cube law, localize the thumb to about 1.65 mm at the array centre and about 4.4 mm off-centre (a ≈2 mm realistic centroid budget) — against 20–25 mm between contact points. That is an order-of-magnitude margin, in simulation, under stated conditions: magnet tilt under ~12°, per-sensor gain calibration, and a minimum sensor standoff.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                The honest risk: sensor noise is not the bottleneck — thumb aim is. That is exactly why the bench work measures real thumbs first.
+              </p>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center bg-card rounded-2xl p-8"
+          >
+            <p className="text-muted-foreground mb-3">
+              <span className="text-foreground font-medium">Status:</span> bench experiment August–October 2026 · AUSSEF submission 11 November 2026 · ISEF 2027 pathway · papers available on request.
+            </p>
+            <p className="text-sm text-muted-foreground italic">
+              All performance figures are pre-registered targets, not achieved results.
+            </p>
           </motion.div>
         </div>
       </section>
@@ -1190,8 +1197,6 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section id="waitlist" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         {/* Background gradients */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-chart-1/5 to-transparent"></div>
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div
@@ -1205,13 +1210,13 @@ export default function LandingPage() {
               viewport={{ once: true }}
               className="mb-8"
             >
-              <h2 className="text-5xl sm:text-6xl mb-4 bg-gradient-to-r from-primary via-chart-1 to-chart-2 bg-clip-text text-transparent font-semibold">
+              <h2 className="text-5xl sm:text-6xl mb-4 text-primary">
                 Feel in Control
               </h2>
             </motion.div>
 
             <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-              Join the waitlist to be among the first to experience phone control that lives on your body, not in your pocket.
+              The hand is the controller. Join the waitlist to follow the research — and be first to know when there is something real to try.
             </p>
 
             <motion.div
@@ -1219,7 +1224,7 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-card border border-border/50 rounded-2xl p-8 shadow-2xl max-w-xl mx-auto backdrop-blur-sm"
+              className="bg-card rounded-2xl p-8 max-w-xl mx-auto"
             >
               {formStatus === 'success' ? (
                 <motion.div
@@ -1234,7 +1239,7 @@ export default function LandingPage() {
                   <h3 className="text-xl font-semibold mb-2">You're on the list!</h3>
                   <p className="text-muted-foreground">
                     Thanks{form.fullName ? `, ${form.fullName.trim().split(' ')[0]}` : ''} — we'll email{' '}
-                    <span className="text-foreground">{form.email}</span> with launch news and your early-bird discount.
+                    <span className="text-foreground">{form.email}</span> with research updates and bench-experiment results as they land.
                   </p>
                 </motion.div>
               ) : (
@@ -1333,7 +1338,7 @@ export default function LandingPage() {
                       disabled={formStatus === 'submitting'}
                       whileHover={{ scale: formStatus === 'submitting' ? 1 : 1.02 }}
                       whileTap={{ scale: formStatus === 'submitting' ? 1 : 0.98 }}
-                      className="w-full px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-xl hover:shadow-lg transition-shadow font-medium flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed"
+                      className="w-full px-8 py-4 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity font-medium flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       {formStatus === 'submitting' ? (
                         <>
@@ -1349,7 +1354,7 @@ export default function LandingPage() {
                     </motion.button>
                   </form>
                   <p className="text-sm text-muted-foreground mt-4 text-center">
-                    No spam. Just updates on launch and exclusive early-bird pricing.
+                    No spam. Just research updates — and first word when there is something real to try.
                   </p>
                 </>
               )}
@@ -1365,7 +1370,7 @@ export default function LandingPage() {
             >
               <div className="flex items-center gap-2">
                 <Users className="w-5 h-5 text-primary" />
-                <span className="text-sm">1,200+ on waitlist</span>
+                <span className="text-sm">Student research project</span>
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-primary" />
@@ -1373,12 +1378,14 @@ export default function LandingPage() {
               </div>
               <div className="flex items-center gap-2">
                 <Zap className="w-5 h-5 text-primary" />
-                <span className="text-sm">Launching Q3 2026</span>
+                <span className="text-sm">Bench experiment Aug–Oct 2026</span>
               </div>
             </motion.div>
           </motion.div>
         </div>
       </section>
+
+      </main>
 
       {/* Footer */}
       <SiteFooter />

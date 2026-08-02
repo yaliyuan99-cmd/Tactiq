@@ -1,9 +1,16 @@
 /**
- * Shared gesture model.
+ * Shared command model.
  *
  * Both the marketing hand demo (`InteractiveHandDemo`) and the in-account
- * keyboard customizer (`CustomizePage`) read from this single source of truth so
+ * shortcut customizer (`CustomizePage`) read from this single source of truth so
  * the two never drift apart.
+ *
+ * The concept: one ring on the index finger of either hand. The thumb taps
+ * eight contact points — the tips and bases of the four fingers — carrying nine
+ * fixed commands. Seven commands never move; only the two shortcut points are
+ * remappable. Emergency shares the pinky tip but is separated by duration
+ * (a sustained 5-second hold — never a tap count). Text entry is deliberately
+ * excluded, as is any clear-field/delete gesture.
  */
 import {
   Play,
@@ -14,26 +21,17 @@ import {
   Volume2,
   Volume1,
   PhoneCall,
-  PhoneOff,
-  PhoneIncoming,
   MessageSquare,
   Mic,
   Navigation,
   Camera,
   Bot,
   NotebookPen,
-  Siren,
   MapPin,
-  Languages,
-  ArrowBigUp,
-  Delete,
-  CornerDownLeft,
   Clock,
   BatteryCharging,
   ZoomIn,
   Eye,
-  Type,
-  Space,
   type LucideIcon,
 } from 'lucide-react';
 import type { GestureLayout } from './database.types';
@@ -62,209 +60,118 @@ export interface GesturePoint {
 }
 
 export const gesturePoints: GesturePoint[] = [
-  // Thumb (angled up-left)
+  // Index finger — Confirm / Dismiss
   {
-    id: 'thumb-top',
-    finger: 'Thumb',
-    position: 'Top',
-    x: '14%',
-    y: '53%',
-    type: 'modifier',
-    label: 'Shift/Caps',
-    description: 'Modifier (thumb) - Hold for capitalization or shift input',
-    gestures: ['Tap: Shift', 'Hold: Caps Lock'],
-    editable: true,
-  },
-  {
-    id: 'thumb-mid',
-    finger: 'Thumb',
-    position: 'Mid',
-    x: '23%',
-    y: '63%',
-    type: 'modifier',
-    label: 'Switch Lang',
-    description: 'Switch language or input mode',
-    gestures: ['Tap: Switch Language', 'Hold: Input Mode'],
-    editable: true,
-  },
-  {
-    id: 'space-bar',
-    finger: 'Palm',
-    position: 'Below fingers',
-    x: '54%',
-    y: '63%',
-    type: 'space',
-    label: 'Space',
-    description:
-      'Spacebar — a long bar resting across the palm beneath the fingers, just like a keyboard. Tap anywhere along it to insert a space.',
-    gestures: ['Tap: Space', 'Hold: repeat space'],
-    editable: true,
-  },
-
-  // 9-grid keypad — row 1 (matches a phone dialpad: 1 / ABC / DEF)
-  {
-    id: 'index-top',
+    id: 'index-tip',
     finger: 'Index',
-    position: 'Top',
+    position: 'Tip',
     x: '36%',
-    y: '34%',
-    type: 'letter',
-    label: '.?!',
-    description:
-      '9-grid keypad key 1 — punctuation. Multi-tap to cycle, just like a phone dialpad.',
-    gestures: ['Tap 1×: .', 'Tap 2×: ,', 'Tap 3×: ?', 'Tap 4×: !'],
-    editable: true,
-  },
-  {
-    id: 'middle-top',
-    finger: 'Middle',
-    position: 'Top',
-    x: '50%',
-    y: '30%',
-    type: 'letter',
-    label: 'ABC',
-    description: '9-grid keypad key 2 — multi-tap to cycle A → B → C.',
-    gestures: ['Tap 1×: A', 'Tap 2×: B', 'Tap 3×: C'],
-    editable: true,
-  },
-  {
-    id: 'ring-top',
-    finger: 'Ring',
-    position: 'Top',
-    x: '64%',
-    y: '34%',
-    type: 'letter',
-    label: 'DEF',
-    description: '9-grid keypad key 3 — multi-tap to cycle D → E → F.',
-    gestures: ['Tap 1×: D', 'Tap 2×: E', 'Tap 3×: F'],
-    editable: true,
-  },
-
-  // 9-grid keypad — row 2 (GHI / JKL / MNO)
-  {
-    id: 'index-mid',
-    finger: 'Index',
-    position: 'Mid',
-    x: '36%',
-    y: '42%',
-    type: 'letter',
-    label: 'GHI',
-    description: '9-grid keypad key 4 — multi-tap to cycle G → H → I.',
-    gestures: ['Tap 1×: G', 'Tap 2×: H', 'Tap 3×: I'],
-    editable: true,
-  },
-  {
-    id: 'middle-mid',
-    finger: 'Middle',
-    position: 'Mid',
-    x: '50%',
-    y: '40%',
-    type: 'letter',
-    label: 'JKL',
-    description: '9-grid keypad key 5 — multi-tap to cycle J → K → L.',
-    gestures: ['Tap 1×: J', 'Tap 2×: K', 'Tap 3×: L'],
-    editable: true,
-  },
-  {
-    id: 'ring-mid',
-    finger: 'Ring',
-    position: 'Mid',
-    x: '64%',
-    y: '42%',
-    type: 'letter',
-    label: 'MNO',
-    description: '9-grid keypad key 6 — multi-tap to cycle M → N → O.',
-    gestures: ['Tap 1×: M', 'Tap 2×: N', 'Tap 3×: O'],
-    editable: true,
-  },
-
-  // 9-grid keypad — row 3 (PQRS / TUV / WXYZ)
-  {
-    id: 'index-bottom',
-    finger: 'Index',
-    position: 'Bottom',
-    x: '36%',
-    y: '51%',
-    type: 'letter',
-    label: 'PQRS',
-    description: '9-grid keypad key 7 — multi-tap to cycle P → Q → R → S.',
-    gestures: ['Tap 1×: P', 'Tap 2×: Q', 'Tap 3×: R', 'Tap 4×: S'],
-    editable: true,
-  },
-  {
-    id: 'middle-bottom',
-    finger: 'Middle',
-    position: 'Bottom',
-    x: '50%',
-    y: '50%',
-    type: 'letter',
-    label: 'TUV',
-    description: '9-grid keypad key 8 — multi-tap to cycle T → U → V.',
-    gestures: ['Tap 1×: T', 'Tap 2×: U', 'Tap 3×: V'],
-    editable: true,
-  },
-  {
-    id: 'ring-bottom',
-    finger: 'Ring',
-    position: 'Bottom',
-    x: '64%',
-    y: '51%',
-    type: 'letter',
-    label: 'WXYZ',
-    description: '9-grid keypad key 9 — multi-tap to cycle W → X → Y → Z.',
-    gestures: ['Tap 1×: W', 'Tap 2×: X', 'Tap 3×: Y', 'Tap 4×: Z'],
-    editable: true,
-  },
-
-  // Pinky
-  {
-    id: 'pinky-top',
-    finger: 'Pinky',
-    position: 'Top',
-    x: '76%',
-    y: '40%',
+    y: '28%',
     type: 'fixed',
-    label: 'Delete',
-    description: 'Fixed: Delete cluster - tap variations',
-    gestures: ['Tap 1x: Delete char', 'Tap 2x: Delete word', 'Tap 3x: Clear field'],
-    editable: true,
+    label: 'OK',
+    description:
+      'Confirm — activate the focused item, answer a call, accept a suggestion. The "yes" of the whole system, on the finger wearing the ring.',
+    gestures: ['Brief tap: Confirm'],
+    editable: false,
   },
   {
-    id: 'pinky-mid',
-    finger: 'Pinky',
-    position: 'Mid',
-    x: '76%',
-    y: '47%',
-    type: 'custom',
-    label: 'Custom',
-    description: 'Customizable shortcut',
-    gestures: ['Tap 1x: Custom', 'Tap 2x: Custom', 'Tap 3x: Custom'],
-    editable: true,
-  },
-  {
-    id: 'pinky-bottom',
-    finger: 'Pinky',
-    position: 'Bottom',
-    x: '76%',
-    y: '54%',
-    type: 'custom',
-    label: 'Custom',
-    description: 'Customizable shortcut',
-    gestures: ['Tap 1x: Custom', 'Tap 2x: Custom', 'Tap 3x: Custom'],
-    editable: true,
+    id: 'index-base',
+    finger: 'Index',
+    position: 'Base',
+    x: '36%',
+    y: '56%',
+    type: 'fixed',
+    label: 'Back',
+    description:
+      'Dismiss / Back — decline a call, go back a screen, silence an alarm. The "no" that mirrors Confirm on the same finger.',
+    gestures: ['Brief tap: Dismiss / Back'],
+    editable: false,
   },
 
-  // Palm
+  // Middle finger — Undo / Next
   {
-    id: 'palm-return',
-    finger: 'Palm',
-    position: 'Side',
-    x: '70%',
-    y: '74%',
+    id: 'middle-tip',
+    finger: 'Middle',
+    position: 'Tip',
+    x: '50%',
+    y: '24%',
+    type: 'fixed',
+    label: 'Undo',
+    description:
+      'Undo — reverse the last action and recover from a mis-tap. Every Tactiq command is recoverable; that is why there is no delete or clear-field gesture at all.',
+    gestures: ['Brief tap: Undo'],
+    editable: false,
+  },
+  {
+    id: 'middle-base',
+    finger: 'Middle',
+    position: 'Base',
+    x: '50%',
+    y: '55%',
+    type: 'fixed',
+    label: 'Next',
+    description:
+      'Next — move to the next item, element, or track. Paired with Previous on the ring finger for symmetric navigation.',
+    gestures: ['Brief tap: Next'],
+    editable: false,
+  },
+
+  // Ring finger — Read/Repeat / Previous
+  {
+    id: 'ring-tip',
+    finger: 'Ring',
+    position: 'Tip',
+    x: '64%',
+    y: '28%',
+    type: 'fixed',
+    label: 'Read',
+    description:
+      'Read / Repeat — speak the current item again or repeat the last announcement through VoiceOver or TalkBack.',
+    gestures: ['Brief tap: Read / Repeat'],
+    editable: false,
+  },
+  {
+    id: 'ring-base',
+    finger: 'Ring',
+    position: 'Base',
+    x: '64%',
+    y: '56%',
+    type: 'fixed',
+    label: 'Prev',
+    description:
+      'Previous — move to the previous item, element, or track. Paired with Next on the middle finger.',
+    gestures: ['Brief tap: Previous'],
+    editable: false,
+  },
+
+  // Pinky — the personal points
+  {
+    id: 'pinky-base',
+    finger: 'Pinky',
+    position: 'Base',
+    x: '76%',
+    y: '58%',
+    type: 'custom',
+    label: 'S1',
+    description:
+      'Shortcut 1 — one of the two points that are yours to map: speak the time, call a favourite, play a podcast, share your location…',
+    gestures: ['Brief tap: your chosen shortcut'],
+    editable: true,
+  },
+  {
+    id: 'pinky-tip',
+    finger: 'Pinky',
+    position: 'Tip',
+    x: '76%',
+    y: '35%',
     type: 'return',
-    label: 'Return',
-    description: 'Palm (pinky side tap) - Sends Return/Enter command',
-    gestures: ['Side tap: Return/Enter'],
+    label: 'S2·SOS',
+    description:
+      'Shortcut 2 and Emergency share this point, separated by duration — the only shared point in the system. A brief tap fires your second shortcut; Emergency requires a sustained 5-second hold, never a tap count, so it cannot fire by accident.',
+    gestures: [
+      'Brief tap: Shortcut 2 (yours to map)',
+      'Sustained 5-second hold: Emergency',
+    ],
     editable: true,
   },
 ];
@@ -282,11 +189,13 @@ export const colorMap: Record<
   space: { bg: 'bg-slate-600', border: 'border-slate-400', text: 'text-slate-600', glow: 'shadow-slate-500/50' },
 };
 
-/** Slots a user is allowed to remap. */
+/** Slots a user is allowed to remap — only the two shortcut points. */
 export const editableGesturePoints = gesturePoints.filter((p) => p.editable);
 
 // ---------------------------------------------------------------------------
-// Command library — what an editable slot can be mapped to.
+// Command library — what a shortcut slot can be mapped to.
+// Deliberately excludes text entry and any delete/clear-field command, and
+// Emergency is never remappable (it is fixed to the sustained pinky-tip hold).
 // ---------------------------------------------------------------------------
 
 export interface CommandDef {
@@ -297,23 +206,6 @@ export interface CommandDef {
 }
 
 export const COMMAND_LIBRARY: CommandDef[] = [
-  // Typing & system
-  { id: 'shift', label: 'Shift / Caps Lock', category: 'Typing', icon: ArrowBigUp },
-  { id: 'switch-lang', label: 'Switch language', category: 'Typing', icon: Languages },
-  { id: 'delete', label: 'Delete', category: 'Typing', icon: Delete },
-  { id: 'return', label: 'Return / Enter', category: 'Typing', icon: CornerDownLeft },
-  // Keypad — the 9-grid letter keys + spacebar (defaults for the typing slots).
-  // Re-assign these to put letters back on a slot you previously remapped.
-  { id: 'key-punct', label: '.?! — punctuation', category: 'Keypad', icon: Type },
-  { id: 'key-abc', label: 'ABC', category: 'Keypad', icon: Type },
-  { id: 'key-def', label: 'DEF', category: 'Keypad', icon: Type },
-  { id: 'key-ghi', label: 'GHI', category: 'Keypad', icon: Type },
-  { id: 'key-jkl', label: 'JKL', category: 'Keypad', icon: Type },
-  { id: 'key-mno', label: 'MNO', category: 'Keypad', icon: Type },
-  { id: 'key-pqrs', label: 'PQRS', category: 'Keypad', icon: Type },
-  { id: 'key-tuv', label: 'TUV', category: 'Keypad', icon: Type },
-  { id: 'key-wxyz', label: 'WXYZ', category: 'Keypad', icon: Type },
-  { id: 'space', label: 'Space', category: 'Keypad', icon: Space },
   // Media
   { id: 'media-playpause', label: 'Play / Pause', category: 'Media', icon: Play },
   { id: 'media-next', label: 'Next track', category: 'Media', icon: SkipForward },
@@ -324,8 +216,6 @@ export const COMMAND_LIBRARY: CommandDef[] = [
   { id: 'volume-down', label: 'Volume down', category: 'Media', icon: Volume1 },
   // Phone & messages
   { id: 'call-favorite', label: 'Call favourite contact', category: 'Phone', icon: PhoneCall },
-  { id: 'answer-call', label: 'Answer call', category: 'Phone', icon: PhoneIncoming },
-  { id: 'end-call', label: 'End call', category: 'Phone', icon: PhoneOff },
   { id: 'read-last-message', label: 'Read last message', category: 'Messages', icon: MessageSquare },
   { id: 'reply-voice', label: 'Reply by voice', category: 'Messages', icon: Mic },
   // Apps
@@ -333,14 +223,12 @@ export const COMMAND_LIBRARY: CommandDef[] = [
   { id: 'open-camera', label: 'Open camera', category: 'Apps', icon: Camera },
   { id: 'open-assistant', label: 'Open voice assistant', category: 'Apps', icon: Bot },
   { id: 'open-notes', label: 'New note', category: 'Apps', icon: NotebookPen },
-  // Safety
-  { id: 'sos', label: 'Emergency SOS', category: 'Safety', icon: Siren },
-  { id: 'share-location', label: 'Share my location', category: 'Safety', icon: MapPin },
-  // Accessibility
-  { id: 'announce-time', label: 'Announce time', category: 'Accessibility', icon: Clock },
-  { id: 'announce-battery', label: 'Announce battery', category: 'Accessibility', icon: BatteryCharging },
-  { id: 'magnifier', label: 'Toggle magnifier', category: 'Accessibility', icon: ZoomIn },
-  { id: 'screen-reader', label: 'Toggle screen reader', category: 'Accessibility', icon: Eye },
+  // Utility & accessibility
+  { id: 'share-location', label: 'Share my location', category: 'Utility', icon: MapPin },
+  { id: 'announce-time', label: 'Announce time', category: 'Utility', icon: Clock },
+  { id: 'announce-battery', label: 'Announce battery', category: 'Utility', icon: BatteryCharging },
+  { id: 'magnifier', label: 'Toggle magnifier', category: 'Utility', icon: ZoomIn },
+  { id: 'screen-reader', label: 'Toggle screen reader', category: 'Utility', icon: Eye },
 ];
 
 export const COMMANDS_BY_ID: Record<string, CommandDef> = Object.fromEntries(
@@ -351,27 +239,10 @@ export const COMMAND_CATEGORIES = Array.from(
   new Set(COMMAND_LIBRARY.map((c) => c.category)),
 );
 
-/** The factory-default mapping for every editable slot. */
+/** The factory-default mapping for the two shortcut slots. */
 export const DEFAULT_LAYOUT: GestureLayout = {
-  // Thumb / pinky / palm — the quick-action slots.
-  'thumb-top': 'shift',
-  'thumb-mid': 'switch-lang',
-  'pinky-top': 'delete',
-  'pinky-mid': 'media-playpause',
-  'pinky-bottom': 'sos',
-  'palm-return': 'return',
-  // 9-grid keypad + spacebar — editable too, but default to the typing keys so
-  // text input works out of the box.
-  'index-top': 'key-punct',
-  'middle-top': 'key-abc',
-  'ring-top': 'key-def',
-  'index-mid': 'key-ghi',
-  'middle-mid': 'key-jkl',
-  'ring-mid': 'key-mno',
-  'index-bottom': 'key-pqrs',
-  'middle-bottom': 'key-tuv',
-  'ring-bottom': 'key-wxyz',
-  'space-bar': 'space',
+  'pinky-base': 'announce-time',
+  'pinky-tip': 'media-playpause',
 };
 
 /** Human-readable command name for a slot in a layout (falls back to default). */

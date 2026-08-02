@@ -5,6 +5,7 @@ const PRODUCT_LINKS = [
   { label: 'How it works', href: '#how-it-works' },
   { label: 'Hardware', href: '#hardware' },
   { label: 'Features', href: '#features' },
+  { label: 'Research', href: '#research' },
   { label: 'Pricing', href: '#pricing' },
 ];
 
@@ -19,7 +20,7 @@ export default function SiteFooter() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
   return (
-    <footer className="border-t border-border bg-gradient-to-b from-background to-secondary/30">
+    <footer className="border-t border-border bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
@@ -29,8 +30,8 @@ export default function SiteFooter() {
               <span className="text-xl font-semibold">Tactiq</span>
             </div>
             <p className="text-sm text-muted-foreground max-w-xs mb-4">
-              Phone control that lives on your body, not in your pocket. Wearable,
-              invisible, fully personal.
+              One ring. Nine commands on the fingers you can always feel. Silent,
+              eyes-free phone control, built for blind users.
             </p>
             <div className="flex items-center gap-3">
               <a
@@ -43,10 +44,10 @@ export default function SiteFooter() {
                 <Twitter className="w-4 h-4" />
               </a>
               <a
-                href="https://github.com"
+                href="https://github.com/yaliyuan99-cmd/Tactiq-product"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Tactiq on GitHub"
+                aria-label="Tactiq research code on GitHub"
                 className="w-9 h-9 flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
               >
                 <Github className="w-4 h-4" />
@@ -135,7 +136,9 @@ export default function SiteFooter() {
 
         <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2026 Tactiq. All rights reserved.
+            © 2026 Tactiq — a student research project from Sydney, Australia. “Tactiq” is a
+            working title. All performance figures are pre-registered targets, not achieved
+            results.
           </p>
           <div className="flex gap-6 text-sm text-muted-foreground">
             <Link

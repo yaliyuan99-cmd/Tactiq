@@ -9,32 +9,36 @@ interface Faq {
 
 const FAQS: Faq[] = [
   {
-    q: 'How do the rings know which gesture I’m making?',
-    a: 'Each ring packs a 9-axis motion sensor (gyroscope + accelerometer) that tracks tap pressure and knuckle flex across all ten fingers. On-device software translates those movements into phone commands in real time — no camera, no cloud round-trip.',
+    q: 'How does the ring know which point I tapped?',
+    a: 'A passive magnet and three low-cost magnetometers in the ring localize the thumb using the inverse-cube law. In simulation that resolves position to about 1.65 mm at the array centre — against 20–25 mm between contact points. It all happens on-device: no camera, no microphone, no cloud round-trip. These are simulation results; the bench experiment (August–October 2026) measures real thumbs.',
   },
   {
     q: 'Do I need to look at my phone to use it?',
-    a: 'No. That’s the whole point. Every gesture maps to muscle memory, so you can type, send messages, control media, and trigger shortcuts entirely without a screen or your voice. Haptic feedback confirms each action.',
+    a: 'No — that’s the whole point. Nine fixed commands on the fingers you can always feel drive VoiceOver or TalkBack, and a distinct haptic pattern confirms each one. An optional single earbud (one ear only — ambient sound is how blind users read the street) adds spoken detail when you want it.',
   },
   {
-    q: 'Is Tactiq only for blind or low-vision users?',
-    a: 'Blind and low-vision users are who we design for first, but Tactiq works for anyone — elderly and motor-impaired users, commuters, athletes, and anyone who wants eyes-free phone control. It’s a performance device that happens to be life-changing.',
+    q: 'What stops it firing in my pocket or mid-conversation?',
+    a: 'The ring is idle until you deliberately squeeze the ring body, which opens a short command window. The pre-registered design target is at most one false activation per hour. Emergency is stricter still: a sustained 5-second hold on the pinky tip — never a tap count — so it cannot fire by accident.',
   },
   {
-    q: 'How long does the battery last?',
-    a: 'A full week of everyday gesture control on a single charge. The titanium shell is water-resistant, so you can wear the rings in the shower or the rain without taking them off to charge.',
+    q: 'Why only nine commands? Can it type?',
+    a: 'Deliberately not. Our capacity analysis found a knee at eight contact points — going to sixteen adds only ~0.31 bits of information but collapses worst-command accuracy from 87% to roughly 50%. Text entry and any delete or clear-field gesture are excluded by design: every Tactiq command is recoverable, and Undo has its own dedicated point.',
   },
   {
-    q: 'Which phones are supported?',
-    a: 'Both iOS and Android, over Bluetooth 5.3 LE. The companion app handles voice-guided setup and lets you customise every gesture profile.',
+    q: 'Does it replace VoiceOver or TalkBack?',
+    a: 'Never — it augments them over Bluetooth. Your screen reader stays exactly as you configured it; Tactiq just gives its most-used actions a physical home on one hand, so the other hand is free for a cane or a guide-dog harness.',
   },
   {
     q: 'When does it ship and how much does it cost?',
-    a: 'Tactiq Essential is $249 AUD and Tactiq Pro is $349 AUD — priced as consumer electronics, not medical equipment. We launch Q3 2026, and the first 500 customers get 20% off. Reserve now and you won’t be charged until your rings ship.',
+    a: 'It doesn’t — yet. Tactiq is a student research project: the bench experiment runs August–October 2026, the AUSSEF submission is due 11 November 2026, and ISEF 2027 is the pathway after that. The bench prototype costs under $60 in parts, and the positioning commitment is “priced like earbuds” — there is deliberately no firm retail price to promise.',
+  },
+  {
+    q: 'Is Tactiq only for blind or low-vision users?',
+    a: 'Blind and low-vision users are who we design for first — one-handed, silent, eyes-free control is the core requirement. The same properties help elderly and motor-impaired users, and anyone whose eyes and hands are busy.',
   },
   {
     q: 'Is my data private?',
-    a: 'Yes. Gesture detection runs on the rings themselves, so your movements never leave your hand unless you choose to sync layouts. We collect the minimum needed to run your account, and never sell your data.',
+    a: 'Yes. Tap detection runs on the ring itself, so your movements never leave your hand unless you choose to sync shortcut layouts. We collect the minimum needed to run your account, and never sell your data.',
   },
 ];
 
@@ -72,7 +76,7 @@ export default function FaqSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.04 }}
-                className="bg-card border border-border rounded-2xl overflow-hidden"
+                className="bg-card rounded-2xl overflow-hidden"
               >
                 <h3>
                   <button

@@ -21,7 +21,7 @@ export default function AuthLayout({
   footer?: ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/20 flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <header className="px-4 sm:px-6 lg:px-8 py-5">
         <Link to="/" className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity">
           <Hand className="w-6 h-6" />

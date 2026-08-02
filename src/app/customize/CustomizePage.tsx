@@ -145,7 +145,7 @@ export default function CustomizePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/20">
+    <div className="min-h-screen bg-background">
       {/* Top bar */}
       <header className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -173,9 +173,9 @@ export default function CustomizePage() {
 
         <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-semibold mb-1">Customise your keyboard</h1>
+            <h1 className="text-3xl font-semibold mb-1">Customise your shortcuts</h1>
             <p className="text-muted-foreground">
-              Pick a slot, assign a command, then save it as a reusable layout.
+              Pick a shortcut point, assign a command, then save it as a reusable layout.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -193,10 +193,10 @@ export default function CustomizePage() {
           <div className="space-y-4">
             <div className="flex items-baseline justify-between">
               <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-                Editable slots
+                Your shortcut points
               </h2>
               <span className="text-xs text-muted-foreground">
-                {editableGesturePoints.length} keys
+                {editableGesturePoints.length} of 8 points
               </span>
             </div>
             {slotGroups.map((group) => (
@@ -237,10 +237,10 @@ export default function CustomizePage() {
             ))}
 
             <div className="rounded-xl border border-border bg-secondary/20 p-3 text-xs text-muted-foreground">
-              Every key is now remappable — including the 9-grid letter keys and the
-              spacebar. Re-assigning a letter key changes what you type there, so keep
-              enough keys on letters to write. Use the <strong>Keypad</strong> category to
-              put a letter or space back, or hit <strong>Reset slot</strong>.
+              Only the two pinky shortcut points are remappable — the seven core commands
+              never move, because muscle memory depends on it. Emergency always stays on
+              the pinky tip as a sustained 5-second hold and cannot be reassigned. Made a
+              mess? Hit <strong>Reset slot</strong>.
             </div>
           </div>
 

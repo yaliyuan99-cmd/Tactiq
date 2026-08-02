@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { Rewind, FastForward, PhoneCall, Navigation, Voicemail, Siren, Pointer, Settings2, type LucideIcon } from 'lucide-react';
+import { Clock, BatteryCharging, PhoneCall, Navigation, Voicemail, MapPin, Pointer, Settings2, type LucideIcon } from 'lucide-react';
 import { gesturePoints, colorMap } from '../../lib/gestures';
 
 type Tint = 'primary' | 'accent' | 'chart1' | 'destructive';
@@ -15,12 +15,12 @@ const tileStyles: Record<Tint, { icon: string; ripple: string }> = {
 };
 
 const presets: { icon: LucideIcon; label: string; category: string; tint: Tint }[] = [
-  { icon: Rewind, label: 'Rewind 10 seconds', category: 'Media', tint: 'primary' },
-  { icon: FastForward, label: 'Fast-forward 30 seconds', category: 'Media', tint: 'primary' },
-  { icon: PhoneCall, label: 'Call favorite contact', category: 'Phone', tint: 'accent' },
+  { icon: Clock, label: 'Speak the time', category: 'Utility', tint: 'primary' },
+  { icon: BatteryCharging, label: 'Announce battery level', category: 'Utility', tint: 'primary' },
+  { icon: PhoneCall, label: 'Call favourite contact', category: 'Phone', tint: 'accent' },
   { icon: Navigation, label: 'Open navigation', category: 'Apps', tint: 'chart1' },
   { icon: Voicemail, label: 'Replay last voice message', category: 'Messages', tint: 'accent' },
-  { icon: Siren, label: 'Emergency SOS', category: 'Safety', tint: 'destructive' }
+  { icon: MapPin, label: 'Share my location', category: 'Utility', tint: 'destructive' }
 ];
 
 export default function InteractiveHandDemo() {
@@ -36,11 +36,9 @@ export default function InteractiveHandDemo() {
       {/* Legend */}
       <div className="mb-8 flex flex-wrap gap-4 justify-center">
         {[
-          { type: 'modifier' as const, label: 'Modifier (Thumb)' },
-          { type: 'letter' as const, label: 'Letters — 9-grid keypad' },
-          { type: 'fixed' as const, label: 'Delete (Pinky)' },
-          { type: 'custom' as const, label: 'Custom shortcut (Pinky)' },
-          { type: 'return' as const, label: 'Palm — Return' }
+          { type: 'fixed' as const, label: 'Fixed commands — never move' },
+          { type: 'custom' as const, label: 'Shortcut 1 — yours to map' },
+          { type: 'return' as const, label: 'Shortcut 2 + Emergency (5-second hold)' }
         ].map((item) => (
           <div key={item.type} className="flex items-center gap-2 text-sm">
             <div className={`w-3 h-3 rounded-full ${colorMap[item.type].bg}`}></div>
@@ -56,7 +54,7 @@ export default function InteractiveHandDemo() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="relative aspect-[3/4] bg-gradient-to-br from-primary/5 to-chart-2/5 rounded-3xl border border-border overflow-hidden"
+            className="relative aspect-[3/4] bg-card rounded-3xl overflow-hidden"
           >
             {/* Hand outline — line art so each gesture dot sits clearly on a finger */}
             <svg
@@ -203,7 +201,7 @@ export default function InteractiveHandDemo() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className={`bg-gradient-to-br ${colorMap[activeGesture.type].bg}/10 backdrop-blur-sm border-2 ${colorMap[activeGesture.type].border} rounded-2xl p-6`}
+                className={`bg-card border-2 ${colorMap[activeGesture.type].border} rounded-2xl p-6`}
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className={`w-8 h-8 ${colorMap[activeGesture.type].bg} rounded-full flex items-center justify-center text-white text-sm font-semibold`}>
@@ -211,7 +209,7 @@ export default function InteractiveHandDemo() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">{activeGesture.finger}</h3>
-                    <p className="text-sm text-muted-foreground">{activeGesture.position} knuckle</p>
+                    <p className="text-sm text-muted-foreground">{activeGesture.position} contact point</p>
                   </div>
                 </div>
 
@@ -229,18 +227,18 @@ export default function InteractiveHandDemo() {
                   </div>
                 )}
 
-                {activeGesture.type === 'letter' && (
+                {activeGesture.type === 'fixed' && (
                   <div className="mt-4 p-3 bg-background/50 rounded-lg border border-border">
                     <p className="text-xs text-muted-foreground italic">
-                      Part of the 9-grid English keypad. Tap repeatedly to cycle through this key's letters — exactly like typing on a phone dialpad, but with your fingers instead of a screen.
+                      One of the seven fixed commands. They never move — muscle memory depends on it.
                     </p>
                   </div>
                 )}
 
-                {activeGesture.type === 'custom' && (
+                {(activeGesture.type === 'custom' || activeGesture.type === 'return') && (
                   <div className="mt-4 p-3 bg-background/50 rounded-lg border border-border">
                     <p className="text-xs text-muted-foreground italic">
-                      This position is fully customizable. Assign any command: media control, app shortcuts, phone calls, navigation, and more.
+                      A shortcut point — one of only two you can remap: media control, calls, navigation, spoken utilities and more. Emergency is not remappable and only ever fires on a sustained 5-second hold.
                     </p>
                   </div>
                 )}
@@ -255,9 +253,9 @@ export default function InteractiveHandDemo() {
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 text-primary">
                   <Pointer className="w-7 h-7" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Type with the 9-grid keypad</h3>
+                <h3 className="text-xl font-semibold mb-2">Nine commands on eight points</h3>
                 <p className="text-muted-foreground">
-                  Click or hover over any dot to see what that knuckle does. The index, middle and ring fingers form a 3×3 keypad — multi-tap each key to type English just like a phone dialpad, while the thumb and pinky handle modifiers and shortcuts.
+                  Click or hover over any dot to see what that contact point does. The thumb taps the tips and bases of the four fingers — seven fixed commands, two personal shortcuts, and an emergency hold, all on skin you can feel without looking.
                 </p>
               </motion.div>
             )}
@@ -271,9 +269,9 @@ export default function InteractiveHandDemo() {
             className="mt-6 grid grid-cols-3 gap-4"
           >
             {[
-              { value: '9', label: '9-grid Keys' },
-              { value: '26', label: 'Letters' },
-              { value: '1–4', label: 'Taps / Key' }
+              { value: '8', label: 'Contact points' },
+              { value: '9', label: 'Fixed commands' },
+              { value: '5s', label: 'Emergency hold' }
             ].map((stat, i) => (
               <div key={i} className="bg-card border border-border rounded-xl p-4 text-center">
                 <div className="text-2xl font-semibold text-primary">{stat.value}</div>
@@ -289,11 +287,11 @@ export default function InteractiveHandDemo() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="mt-12 bg-gradient-to-r from-chart-1/10 via-primary/5 to-chart-2/10 rounded-2xl p-8 border border-primary/20"
+        className="mt-12 bg-card rounded-2xl p-8"
       >
-        <h3 className="text-xl font-semibold mb-4 text-center">Beyond typing: customizable shortcut slots</h3>
+        <h3 className="text-xl font-semibold mb-4 text-center">Two shortcut points, fully yours</h3>
         <p className="text-muted-foreground text-center mb-6 max-w-3xl mx-auto">
-          The 9-grid handles English text entry, but the pinky shortcut slots and the thumb's command layer can be mapped to anything. In the companion app you assign each slot to an action from a full library — and all navigation is voice-guided.
+          Seven commands never move — reliability lives in muscle memory. The two pinky shortcut points are the personal part: in the companion app you assign each one an action from the library, and all navigation is voice-guided.
         </p>
         <div className="grid md:grid-cols-3 gap-4">
           {presets.map((preset, i) => {
@@ -310,7 +308,7 @@ export default function InteractiveHandDemo() {
                 whileHover={{ y: -4 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 22 }}
-                className="group relative overflow-hidden text-left bg-card/50 backdrop-blur-sm border border-border rounded-xl p-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                className="group relative overflow-hidden text-left bg-secondary/50 rounded-xl p-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
               >
                 {/* Press ripple sweeping from the icon */}
                 <AnimatePresence>
@@ -344,13 +342,13 @@ export default function InteractiveHandDemo() {
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
           <Link
             to="/customize"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:shadow-lg transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <Settings2 className="w-4 h-4" />
-            Customise your keyboard
+            Customise your shortcuts
           </Link>
           <p className="text-sm text-muted-foreground">
-            Remap every slot and save your own layouts.
+            Choose what your two shortcut points do — and save layouts for different days.
           </p>
         </div>
       </motion.div>

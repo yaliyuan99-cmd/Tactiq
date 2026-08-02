@@ -325,7 +325,7 @@ export default function DeviceDashboard({ seedKey }: Props) {
             <MapPin className="w-4 h-4 text-primary" />
             Device location
           </div>
-          <div className="relative h-40 rounded-lg overflow-hidden border border-border bg-gradient-to-br from-primary/10 via-background to-chart-2/10">
+          <div className="relative h-40 rounded-lg overflow-hidden border border-border bg-secondary/40">
             {/* faux map grid */}
             <svg className="absolute inset-0 w-full h-full text-foreground/10" aria-hidden="true">
               <defs>
@@ -433,9 +433,9 @@ export default function DeviceDashboard({ seedKey }: Props) {
       </div>
 
       <p className="mt-4 text-xs text-muted-foreground">
-        Tap any metric to see the past 24 hours. Live readings are simulated for this preview —
-        once your rings ship, the companion app streams real battery, location, and wellness data
-        here.
+        Tap any metric to see the past 24 hours. All readings are simulated — Tactiq is a research
+        prototype, and this preview shows how the companion app would present battery, location,
+        and wear data.
       </p>
 
       {openMetric && (

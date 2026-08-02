@@ -16,7 +16,7 @@ function figmaAssetResolver() {
   }
 }
 
-export default defineConfig({
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [
     figmaAssetResolver(),
     // The React and Tailwind plugins are both required by the Figma Make
@@ -40,12 +40,16 @@ export default defineConfig({
       output: {
         // Split large, stable vendor libraries into their own long-cacheable
         // chunks so app-code changes don't bust the whole bundle and the React
-        // runtime downloads in parallel with the rest.
-        manualChunks: {
-          react: ['react', 'react-dom', 'react-router'],
-          motion: ['motion'],
-        },
+        // runtime downloads in parallel with the rest. Client build only: the
+        // prerender (SSR) build externalizes these packages, and rollup
+        // rejects externals inside manualChunks.
+        manualChunks: isSsrBuild
+          ? undefined
+          : {
+              react: ['react', 'react-dom', 'react-router'],
+              motion: ['motion'],
+            },
       },
     },
   },
-})
+}))
