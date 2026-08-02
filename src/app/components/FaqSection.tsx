@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Plus, HelpCircle } from 'lucide-react';
+/**
+ * FAQ — native <details>/<summary> disclosures, so every answer opens without
+ * JavaScript and expanded state is exposed to assistive tech by the platform.
+ */
 
 interface Faq {
   q: string;
@@ -30,11 +31,11 @@ const FAQS: Faq[] = [
   },
   {
     q: 'When does it ship and how much does it cost?',
-    a: 'It doesn’t — yet. Tactiq is a student research project: the bench experiment runs August–October 2026, the AUSSEF submission is due 11 November 2026, and ISEF 2027 is the pathway after that. The bench prototype costs under $60 in parts, and the positioning commitment is “priced like earbuds” — there is deliberately no firm retail price to promise.',
+    a: 'It doesn’t — yet. Tactiq is a student research project: the bench experiment runs August–October 2026, the AUSSEF submission is due 11 November 2026, and ISEF 2027 is the pathway after that. The bench prototype costs under $60 in parts, and the positioning aim is consumer-electronics pricing — there is deliberately no firm retail price to promise.',
   },
   {
     q: 'Is Tactiq only for blind or low-vision users?',
-    a: 'Blind and low-vision users are who we design for first — one-handed, silent, eyes-free control is the core requirement. The same properties help elderly and motor-impaired users, and anyone whose eyes and hands are busy.',
+    a: 'Blind and low-vision users are who we design for first — one-handed, silent, eyes-free control is the core requirement. The same properties help older and motor-impaired users, and anyone whose eyes and hands are busy.',
   },
   {
     q: 'Is my data private?',
@@ -43,93 +44,33 @@ const FAQS: Faq[] = [
 ];
 
 export default function FaqSection() {
-  const [open, setOpen] = useState<number | null>(0);
-
   return (
-    <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8">
+    <section id="faq" aria-labelledby="faq-heading" className="px-4 sm:px-6 lg:px-8 py-16 border-t border-border">
       <div className="max-w-3xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-4 rounded-full bg-primary/10 text-primary text-sm font-medium">
-            <HelpCircle className="w-4 h-4" />
-            Questions & answers
-          </div>
-          <h2 className="text-3xl sm:text-4xl mb-4">Frequently asked questions</h2>
-          <p className="text-lg text-muted-foreground">
-            Everything you need to know about how Tactiq works.
-          </p>
-        </motion.div>
+        <h2 id="faq-heading" className="text-3xl sm:text-4xl mb-10">
+          Questions people actually ask
+        </h2>
 
-        <div className="space-y-3">
-          {FAQS.map((faq, i) => {
-            const isOpen = open === i;
-            const panelId = `faq-panel-${i}`;
-            const buttonId = `faq-button-${i}`;
-            return (
-              <motion.div
-                key={faq.q}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.04 }}
-                className="bg-card rounded-2xl overflow-hidden"
-              >
-                <h3>
-                  <button
-                    id={buttonId}
-                    aria-expanded={isOpen}
-                    aria-controls={panelId}
-                    onClick={() => setOpen(isOpen ? null : i)}
-                    className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left hover:bg-secondary/40 transition-colors"
-                  >
-                    <span className="font-medium">{faq.q}</span>
-                    <motion.span
-                      animate={{ rotate: isOpen ? 45 : 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="flex-shrink-0 text-primary"
-                    >
-                      <Plus className="w-5 h-5" />
-                    </motion.span>
-                  </button>
-                </h3>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      id={panelId}
-                      role="region"
-                      aria-labelledby={buttonId}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25, ease: 'easeInOut' }}
-                      className="overflow-hidden"
-                    >
-                      <p className="px-6 pb-5 text-muted-foreground leading-relaxed">
-                        {faq.a}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            );
-          })}
+        <div className="divide-y divide-border border-y border-border">
+          {FAQS.map((faq) => (
+            <details key={faq.q} className="group py-1">
+              <summary className="flex items-center justify-between gap-4 cursor-pointer list-none py-4 font-medium hover:text-primary-strong [&::-webkit-details-marker]:hidden">
+                {faq.q}
+                <span aria-hidden className="text-muted-foreground text-xl leading-none group-open:hidden">+</span>
+                <span aria-hidden className="text-muted-foreground text-xl leading-none hidden group-open:inline">−</span>
+              </summary>
+              <p className="pb-5 text-[0.95rem] text-muted-foreground max-w-[65ch]">{faq.a}</p>
+            </details>
+          ))}
         </div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-center text-muted-foreground mt-10"
-        >
-          Still have a question?{' '}
-          <a href="mailto:hello@tactiq.app" className="text-primary hover:underline">
-            Email our team
+        <p className="text-muted-foreground mt-8 text-[0.95rem]">
+          Something else?{' '}
+          <a href="mailto:hello@tactiq.app" className="underline underline-offset-4 hover:text-primary-strong">
+            Email the project
           </a>
-        </motion.p>
+          .
+        </p>
       </div>
     </section>
   );

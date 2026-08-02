@@ -1,166 +1,67 @@
+/**
+ * Site footer — deliberately small. One sentence about the project, the
+ * research status, contact, and the legal/accessibility links. No duplicated
+ * navigation, no placeholder social icons. "Sign in" lives here, quietly.
+ */
 import { Link } from 'react-router';
-import { Hand, ArrowUp, Mail, Github, Twitter, Linkedin } from 'lucide-react';
-
-const PRODUCT_LINKS = [
-  { label: 'How it works', href: '#how-it-works' },
-  { label: 'Hardware', href: '#hardware' },
-  { label: 'Features', href: '#features' },
-  { label: 'Research', href: '#research' },
-  { label: 'Pricing', href: '#pricing' },
-];
-
-const COMPANY_LINKS = [
-  { label: "Who it's for", href: '#for-who' },
-  { label: 'FAQ', href: '#faq' },
-  { label: 'Join the waitlist', href: '#waitlist' },
-];
+import { Hand, Mail, Github } from 'lucide-react';
 
 export default function SiteFooter() {
-  const scrollTop = () =>
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
   return (
-    <footer className="border-t border-border bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-          {/* Brand */}
-          <div className="lg:col-span-1">
+    <footer className="border-t border-border bg-background px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
+          <div className="max-w-md">
             <div className="flex items-center gap-2 mb-3">
-              <Hand className="w-6 h-6" />
-              <span className="text-xl font-semibold">Tactiq</span>
+              <Hand className="w-5 h-5" aria-hidden />
+              <span className="text-lg font-semibold">Tactiq</span>
             </div>
-            <p className="text-sm text-muted-foreground max-w-xs mb-4">
-              One ring. Nine commands on the fingers you can always feel. Silent,
-              eyes-free phone control, built for blind users.
+            <p className="text-[0.95rem] text-muted-foreground mb-3">
+              A smart ring being designed to give blind and low-vision people quiet, one-handed
+              phone control alongside VoiceOver and TalkBack.
             </p>
-            <div className="flex items-center gap-3">
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Tactiq on X / Twitter"
-                className="w-9 h-9 flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-              >
-                <Twitter className="w-4 h-4" />
-              </a>
-              <a
-                href="https://github.com/yaliyuan99-cmd/Tactiq-product"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Tactiq research code on GitHub"
-                className="w-9 h-9 flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-              >
-                <Github className="w-4 h-4" />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Tactiq on LinkedIn"
-                className="w-9 h-9 flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-              >
-                <Linkedin className="w-4 h-4" />
-              </a>
-            </div>
+            <p className="font-mono-label text-muted-foreground">
+              Research status: prototype construction · bench testing Aug–Oct 2026
+            </p>
           </div>
 
-          {/* Product */}
-          <nav aria-label="Product">
-            <h3 className="text-sm font-semibold mb-4">Product</h3>
-            <ul className="space-y-3">
-              {PRODUCT_LINKS.map((l) => (
-                <li key={l.href}>
-                  <a
-                    href={l.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* Company */}
-          <nav aria-label="Company">
-            <h3 className="text-sm font-semibold mb-4">Company</h3>
-            <ul className="space-y-3">
-              {COMPANY_LINKS.map((l) => (
-                <li key={l.href}>
-                  <a
-                    href={l.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-              <li>
-                <Link
-                  to="/"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Design showcase
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/login"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Sign in
-                </Link>
-              </li>
-            </ul>
-          </nav>
-
-          {/* Contact */}
-          <div>
-            <h3 className="text-sm font-semibold mb-4">Get in touch</h3>
+          <div className="flex flex-col gap-2.5 text-[0.95rem]">
             <a
               href="mailto:hello@tactiq.app"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Mail className="w-4 h-4" />
+              <Mail className="w-4 h-4" aria-hidden />
               hello@tactiq.app
             </a>
-            <button
-              onClick={scrollTop}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+            <a
+              href="https://github.com/yaliyuan99-cmd/Tactiq-product"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <ArrowUp className="w-4 h-4" />
-              Back to top
-            </button>
+              <Github className="w-4 h-4" aria-hidden />
+              Research code and bench tools
+            </a>
+            <Link to="/accessibility" className="text-muted-foreground hover:text-foreground transition-colors">
+              Accessibility statement
+            </Link>
+            <Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
+              Privacy
+            </Link>
+            <Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
+              Terms
+            </Link>
+            <Link to="/login" className="text-muted-foreground hover:text-foreground transition-colors">
+              Sign in
+            </Link>
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground">
-            © 2026 Tactiq — a student research project from Sydney, Australia. “Tactiq” is a
-            working title. All performance figures are pre-registered targets, not achieved
-            results.
-          </p>
-          <div className="flex gap-6 text-sm text-muted-foreground">
-            <Link
-              to="/privacy"
-              className="hover:text-foreground transition-colors"
-            >
-              Privacy
-            </Link>
-            <Link
-              to="/terms"
-              className="hover:text-foreground transition-colors"
-            >
-              Terms
-            </Link>
-            <a
-              href="mailto:hello@tactiq.app"
-              className="hover:text-foreground transition-colors"
-            >
-              Contact
-            </a>
-          </div>
-        </div>
+        <p className="mt-10 pt-6 border-t border-border text-sm text-muted-foreground max-w-[75ch]">
+          © 2026 Tactiq — a student research project from Sydney, Australia. “Tactiq” is a working
+          title. All ring performance figures are pre-registered targets or simulation results,
+          not achieved results.
+        </p>
       </div>
     </footer>
   );

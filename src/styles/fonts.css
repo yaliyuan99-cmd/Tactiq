@@ -1,5 +1,7 @@
-/* Product theme (Caplet-inspired) — chunky display, humanist body, script accent. */
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Shantell+Sans:wght@400;500&display=swap');
+/* Product theme (tactile research-journal) — legible humanist sans for body
+   and interface, a restrained editorial serif for large headings, and a
+   monospace strictly for small research labels and measurements. */
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500&display=swap');
 /* Showcase page (Velorah hero + Jack portfolio) — display, body and Kanit. */
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&family=Kanit:wght@300;400;500;600;700;800;900&display=swap');
 /* Cinematic capabilities section — Barlow for the liquid-glass UI chrome. */
@@ -7,8 +9,8 @@
 
 :root {
   --font-sans: 'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-display: 'Bricolage Grotesque', var(--font-sans);
-  --font-script: 'Shantell Sans', ui-rounded, cursive;
+  --font-serif: 'Lora', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
 html,
@@ -16,7 +18,7 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Handwritten accent line — the "one useful step at a time" register. */
-.font-script {
-  font-family: var(--font-script);
+/* Selected large headings and pull-quotes — editorial, never decorative. */
+.font-serif-display {
+  font-family: var(--font-serif);
 }

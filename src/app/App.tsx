@@ -3,14 +3,15 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import { AuthProvider } from './auth/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
-// The Velorah + Jack showcase is now the site's homepage, so it loads eagerly
-// (no Suspense flash on first paint). The original Tactiq marketing page is
-// code-split and served at /product.
-import ShowcasePage from './showcase/ShowcasePage';
+// The main Tactiq research site is the homepage, so it loads eagerly
+// (no Suspense flash on first paint). The design showcase is kept at
+// /showcase as a code-split archive page.
+import LandingPage from './LandingPage';
 
 // Non-landing routes are split into their own chunks so a first-time visitor to
-// the marketing page never downloads the account / customiser / admin code.
+// the main site never downloads the account / customiser / admin code.
 // Each loads on demand behind Suspense.
+const ShowcasePage = lazy(() => import('./showcase/ShowcasePage'));
 const LoginPage = lazy(() => import('./auth/LoginPage'));
 const SignUpPage = lazy(() => import('./auth/SignUpPage'));
 const ForgotPasswordPage = lazy(() => import('./auth/ForgotPasswordPage'));
@@ -19,9 +20,9 @@ const AccountPage = lazy(() => import('./account/AccountPage'));
 const CheckoutPage = lazy(() => import('./checkout/CheckoutPage'));
 const CustomizePage = lazy(() => import('./customize/CustomizePage'));
 const AdminPage = lazy(() => import('./admin/AdminPage'));
-const LandingPage = lazy(() => import('./LandingPage'));
 const PrivacyPage = lazy(() => import('./legal/PrivacyPage'));
 const TermsPage = lazy(() => import('./legal/TermsPage'));
+const AccessibilityPage = lazy(() => import('./legal/AccessibilityPage'));
 const NotFoundPage = lazy(() => import('./NotFoundPage'));
 
 function RouteFallback() {
@@ -44,17 +45,18 @@ export function AppRoutes() {
     <AuthProvider>
       <Suspense fallback={<RouteFallback />}>
         <Routes>
-          <Route path="/" element={<ShowcasePage />} />
-          <Route path="/product" element={<LandingPage />} />
+          <Route path="/" element={<LandingPage />} />
+          {/* Legacy alias — the main site now lives at the root. */}
+          <Route path="/product" element={<Navigate to="/" replace />} />
+          <Route path="/showcase" element={<ShowcasePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          {/* Legacy alias — the showcase now lives at the site root. */}
-          <Route path="/showcase" element={<Navigate to="/" replace />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
+          <Route path="/accessibility" element={<AccessibilityPage />} />
           {/* Authenticated-only */}
           <Route element={<ProtectedRoute />}>
             <Route path="/account" element={<AccountPage />} />
