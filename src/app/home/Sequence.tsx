@@ -5,6 +5,8 @@
  * removed entirely under prefers-reduced-motion (theme.css global rule).
  */
 
+import Reveal from './Reveal';
+
 const STEPS: { verb: string; body: string }[] = [
   { verb: 'Squeeze', body: 'A deliberate squeeze of the ring body wakes it and opens a short command window.' },
   { verb: 'Tap', body: 'Your thumb taps one of eight contact points on the tips and bases of your fingers.' },
@@ -47,8 +49,10 @@ export default function Sequence() {
               >
                 {i + 1}
               </span>
-              <h3 className="mb-1.5">{step.verb}</h3>
-              <p className="text-muted-foreground text-[0.95rem]">{step.body}</p>
+              <Reveal delay={i * 0.09}>
+                <h3 className="mb-1.5">{step.verb}</h3>
+                <p className="text-muted-foreground text-[0.95rem]">{step.body}</p>
+              </Reveal>
             </li>
           ))}
         </ol>

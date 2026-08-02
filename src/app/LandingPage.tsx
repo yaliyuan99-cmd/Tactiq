@@ -9,9 +9,11 @@
  */
 import SiteHeader from './home/SiteHeader';
 import Hero from './home/Hero';
+import Marquee from './home/Marquee';
 import Scenarios from './home/Scenarios';
 import Sequence from './home/Sequence';
 import HandMap from './home/HandMap';
+import DesignEvolution from './home/DesignEvolution';
 import Prototype from './home/Prototype';
 import Research from './home/Research';
 import Timeline from './home/Timeline';
@@ -25,9 +27,11 @@ export default function LandingPage() {
       <SiteHeader />
       <main id="main-content" tabIndex={-1} className="focus:outline-none">
         <Hero />
+        <Marquee />
         <Scenarios />
         <Sequence />
         <HandMap />
+        <DesignEvolution />
         <Prototype />
         <Research />
         <Timeline />

@@ -316,3 +316,42 @@
     animation: haptic-pulse-ring 2.4s ease-out infinite;
   }
 }
+
+/* Command-strip marquee: two identical rows slide by exactly one row's width,
+   so the loop is seamless. CSS-only (runs without JS); the reduced-motion
+   global rule freezes it into a static row. */
+@keyframes marquee-slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .marquee-track {
+    animation: marquee-slide 28s linear infinite;
+  }
+}
+
+/* Hero contact points pop in one by one. Transform-only scale with both ends
+   visible-safe: if the animation never runs (reduced motion), the dot simply
+   rests at full size. */
+@keyframes point-pop {
+  0% {
+    transform: scale(0);
+  }
+  70% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .point-pop {
+    animation: point-pop 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+}

@@ -3,7 +3,18 @@
  * points mapped onto the fingers. The illustration is a technical line
  * drawing (not a glossy product render) and is explicitly captioned as a
  * concept. Statistics are plain text in the initial HTML — no count-up.
+ *
+ * Motion: transform-only entrance stagger (content is always visible — it
+ * only slides into place) and a CSS pop-in on the contact points that rests
+ * at full size whenever animation is unavailable or reduced.
  */
+import { motion } from 'motion/react';
+
+const rise = (delay: number) => ({
+  initial: { y: 18 },
+  animate: { y: 0 },
+  transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] as const },
+});
 
 /** Contact points in the 300×400 hand-outline coordinate space. */
 const POINTS: { x: number; y: number; kind: 'fixed' | 'shortcut' | 'emergency' }[] = [
@@ -43,7 +54,7 @@ function HandFigure() {
         </g>
         {/* Contact points */}
         {POINTS.map((p, i) => (
-          <g key={i}>
+          <g key={i} className="point-pop" style={{ animationDelay: `${0.5 + i * 0.08}s` }}>
             {p.kind === 'emergency' && (
               <circle cx={p.x} cy={p.y} r="14" fill="none" stroke="var(--color-primary)" strokeWidth="2" strokeDasharray="3 3" />
             )}
@@ -72,21 +83,21 @@ export default function Hero() {
     <section className="px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-16">
       <div className="max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-16 items-center">
         <div>
-          <p className="font-mono-label text-muted-foreground mb-5">
+          <motion.p {...rise(0)} className="font-mono-label text-muted-foreground mb-5">
             Student research prototype · Sydney, Australia · Bench testing planned for August–October 2026
-          </p>
+          </motion.p>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] mb-6">
+          <motion.h1 {...rise(0.08)} className="text-4xl sm:text-5xl lg:text-[3.4rem] mb-6">
             Control your phone with the hand you already know.
-          </h1>
+          </motion.h1>
 
-          <p className="text-lg text-muted-foreground max-w-[38rem] mb-8">
+          <motion.p {...rise(0.16)} className="text-lg text-muted-foreground max-w-[38rem] mb-8">
             Tactiq is a smart ring that gives blind and low-vision people a quiet, one-handed
             way to control their phone. Tap a point on your fingers, and VoiceOver or TalkBack
             carries out the command.
-          </p>
+          </motion.p>
 
-          <div className="flex flex-col sm:flex-row gap-3 mb-10">
+          <motion.div {...rise(0.24)} className="flex flex-col sm:flex-row gap-3 mb-10">
             <a
               href="#follow"
               className="inline-flex items-center justify-center px-6 h-12 bg-primary text-primary-foreground rounded-md font-medium hover:opacity-90 transition-opacity"
@@ -99,9 +110,9 @@ export default function Hero() {
             >
               See how it works
             </a>
-          </div>
+          </motion.div>
 
-          <dl className="flex flex-wrap gap-x-10 gap-y-4">
+          <motion.dl {...rise(0.32)} className="flex flex-wrap gap-x-10 gap-y-4">
             {[
               { value: '9', label: 'commands' },
               { value: '8', label: 'contact points' },
@@ -115,7 +126,7 @@ export default function Hero() {
                 </dd>
               </div>
             ))}
-          </dl>
+          </motion.dl>
         </div>
 
         <HandFigure />

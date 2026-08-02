@@ -14,6 +14,7 @@
  * customiser uses, so the two can never drift apart.
  */
 import { useRef, useState } from 'react';
+import { motion } from 'motion/react';
 import { List, Hand as HandIcon } from 'lucide-react';
 import { gesturePoints, type GesturePoint } from '../../lib/gestures';
 
@@ -176,8 +177,16 @@ export default function HandMap() {
               })}
             </div>
 
-            {/* Explanation panel — updates with selection, persists, announced politely */}
-            <div aria-live="polite" className="md:sticky md:top-24">
+            {/* Explanation panel — updates with selection, persists, announced politely.
+                The swap slides (transform-only): content never hides. */}
+            <motion.div
+              key={selected.id}
+              initial={{ y: 10 }}
+              animate={{ y: 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              aria-live="polite"
+              className="md:sticky md:top-24"
+            >
               <p className="font-mono-label text-muted-foreground mb-2">
                 {selected.finger} · {selected.position.toLowerCase()} · {KIND_STYLE[kindOf(selected)].label}
               </p>
@@ -195,7 +204,7 @@ export default function HandMap() {
                   ))}
                 </ul>
               )}
-            </div>
+            </motion.div>
           </div>
         )}
 
