@@ -7,50 +7,52 @@ number quoted here comes from its claims ledger.
 
 ## The idea
 
-**Make the spectacle be the evidence.**
+**Let people use the thing.**
 
-Tactiq's physics is genuinely beautiful and almost none of it is visible. A
-dipole field collapsing as the inverse cube. Three spheres of constant field
-strength intersecting at a point. An angular factor that goes to exactly 1 the
-moment you constrain the geometry — and a design that becomes possible because
-of it. A confidence ellipse at the Cramér–Rao bound, which is the mathematical
-statement that no better estimator exists.
+> **Revised 3 August 2026.** An earlier version of this plan led with the
+> physics — raymarched dipole fields, live Fisher information, Cramér–Rao
+> ellipses. That is a demo built to impress an engineer, and it answers the
+> wrong question. A visitor arrives asking *what is this, and what would it do
+> for me?* The site's job is to answer that, convincingly and quickly.
+>
+> The rigour has a home: **the paper.** The ledger, the criteria table, the
+> statistical design, the limitations — a judge who wants those goes there and
+> finds them done properly. The site does not need to prove the physics in the
+> hero. It needs to make someone want the product.
 
-Right now all of that is prose. Rendered properly it is the most impressive
-thing on any science-fair site, and it costs the project nothing in credibility
-because **the spectacle is a live rendering of the actual model.** Not an
-illustration of the physics — the physics, running at 60 fps, in the browser.
+So the organising rule is:
 
-The organising rule everything below follows:
+> **The centrepiece is an interaction you can perform, not a simulation you can
+> inspect.** Squeeze, tap, and watch a phone respond. Everything else supports
+> that.
 
-> Every impressive moment on this site is a different camera angle on one
-> running simulation, driven by one shared physics module, which also generates
-> the static fallbacks at build time.
-
-That single rule is what buys the spectacle. It means the fancy version and the
-honest version cannot diverge, because they are computed from the same source.
+The physics still earns a place — one section, well told, because "a magnet and
+three cheap sensors, no camera, no microphone, nothing leaves your hand" is a
+genuinely good *product* story about privacy and cost. But it is a supporting
+act, not the opening.
 
 ---
 
 ## The one thing to build if only one thing ships
 
-**The σ_tap dial, stamped `NEVER MEASURED`.**
+**The interaction demo.** ✅ *Built — `src/app/home/TryIt.tsx`.*
 
-A single control. Drag it from 0 to 6 mm of thumb-placement scatter. Eight
-contact zones bloom into probability clouds, overlap, and start stealing taps
-from each other. A number tracks the worst contact point: 100% … 97% … **86%**
-… 80%. A hard line sits at the 95% criterion, and you watch the number cross it
-at about 4 mm.
+A hand, a ring, and a phone side by side. Squeeze the ring; a short command
+window opens and a bar shows it closing. Tap a point on the fingers; the phone
+moves through a real task — an inbox — and a line shows what the screen reader
+just said. A haptic panel names the pattern that confirmed it.
 
-Then the stamp: **this quantity has never been measured.** The entire project
-turns on a number nobody has.
+Tap *without* squeezing first and **nothing happens**, and the demo says so.
+That single refusal is the most persuasive thing on the page: it is the answer
+to "what stops it firing in my pocket", and you learn it by doing rather than by
+reading a reliability figure.
 
-It is simultaneously the most impressive interaction available, the most candid
-thing the project could say, and the cheapest of the headline pieces — it is a
-precomputed lookup table, not a live Monte Carlo. It is also the piece that
-makes a judge stop walking.
+Hold the pinky tip and a counter climbs to five seconds before Emergency fires —
+so "it cannot go off by accident" is something you feel rather than a claim.
 
-If the deadline eats everything else, ship this.
+This demonstrates, in about fifteen seconds of play: the gating, the command
+set, the screen-reader integration, one-handed operation, and the recoverability
+of every action. No physics required.
 
 ---
 
@@ -88,9 +90,55 @@ gets the drama and keeps the contrast.
 
 ---
 
-## The six signature pieces
+## The pieces that sell the product
 
-### 1. The Equatorial Collapse — the money shot
+**Ordered by product value, not by technical ambition.** Pieces 1–3 sell the
+product. Pieces 4–6 are the physics and evidence layer — worth building, but
+they are the supporting act and several belong on the research page rather than
+the homepage.
+
+### 1. The interaction demo ✅ built
+
+Described above. The centrepiece.
+
+**Next passes on it:** a guided first-run ("try Next") so a visitor knows where
+to start; a scenario switcher — inbox, music, incoming call — so the value is
+visible in more than one context; and a real haptic buzz on devices that support
+`navigator.vibrate`, which makes the confirmation layer land properly on a phone.
+
+### 2. The ring, shown properly
+
+A concept render of the hardware that looks like something you would want to
+wear: soft-touch shell, the band, the passive thumb magnet. Slow, controlled,
+opt-in — never auto-rotating.
+
+The existing 3D model is behind a "load the model" button, which is right for
+performance and for motion sensitivity. What it needs is better material and
+lighting work, and an exploded view that names the parts.
+
+*Difficulty: medium — mostly asset work, not code.*
+
+### 3. Scenarios, dramatised
+
+The three situations already on the site — cane in one hand, a call on a loud
+platform, moving through a screen reader silently — currently illustrated with
+small line figures. These are the emotional argument for the product and they
+deserve real art direction: proper illustration, a scroll-linked reveal, maybe
+ambient audio on the noisy-platform one so the "voice control fails here" point
+lands without being stated.
+
+*Difficulty: medium.*
+
+---
+
+## Supporting pieces — the physics and evidence layer
+
+These belong mostly on the **research page**, not the homepage. They are how the
+project shows its working to someone who asks — and the equatorial collapse in
+particular is a genuinely good story about why the ring can be cheap and private.
+But none of them is what makes a visitor want the product.
+
+### S1. The equatorial collapse
 
 The best idea in the project, currently one paragraph of prose.
 
@@ -115,7 +163,7 @@ not a smooth ramp: legible at low acuity, and it makes "exactly 1" unmistakable
 as a single flat band.
 *Difficulty: high.*
 
-### 2. Three Shells — trilateration you can grab
+### S2. Three shells — trilateration you can grab
 
 Drag the thumb anywhere in the hand volume. Three isosurfaces of constant |B| —
 which, once the angular factor is 1, are exactly spheres of radius
@@ -132,7 +180,7 @@ exact and free. The lens is an SDF CSG of three spheres, sphere-traced, shaded
 with a Fresnel rim so it reads as glass rather than fog.
 *Difficulty: high.*
 
-### 3. The Cramér–Rao ellipse, and the axis we are not allowed to draw
+### S3. The Cramér–Rao ellipse, and the axis we are not allowed to draw
 
 Walk the eight contact points. At each, compute the Fisher information live
 (`J = Σ (1/σ²)·ggᵀ`, with `g = ∇|B| = −(3k/r⁴)·r̂`), invert it, render the 95%
@@ -150,7 +198,7 @@ is to admit what it does not know.
 
 *Difficulty: high.*
 
-### 4. The σ_tap dial
+### S4. The σ_tap dial
 
 Described above. Build it as a precomputed `Float32` lookup baked offline from
 the seeded scripts, not a live Monte Carlo — instant, deterministic, and every
@@ -162,7 +210,7 @@ loud at the judging table.
 
 *Difficulty: medium — and the highest value-per-hour on this list.*
 
-### 5. The Capacity Cliff — 8 points versus 16
+### S5. The capacity cliff — 8 points versus 16
 
 Scroll-driven. The hand shows 8 well-spaced points; as you scroll, 16 crowd in.
 A bit-counter climbs from 2.71 to 3.02 — **+0.31 bits, almost nothing** — while
@@ -176,7 +224,7 @@ are eight points and not more.
 comparison with no second code path to maintain, and it proves the whole
 fallback architecture end to end before a single shader is written.*
 
-### 6. Listening Mode
+### S6. Listening mode
 
 Site-wide opt-in sonification. Three oscillators map log|B| for the three
 sensors. Accuracy renders as noise density against a clean reference tone
@@ -320,13 +368,14 @@ a jank-locked laptop will happen.
 
 Sequenced so that value lands early and nothing half-built is ever live.
 
-| Phase | Contents | Why this order |
+| Phase | Contents | Status |
 | --- | --- | --- |
-| **V0 — Foundations** | `shouldAnimate()` helper; `forced-colors` / `prefers-contrast` support; the two CI gates; `field.ts` physics module; typography upgrade | Nothing renders until the safety net exists. Also fixes **F-35** — the hand map's list alternative currently doesn't render without JS |
-| **V1 — Proof** | Capacity Cliff (pure SVG) + σ_tap dial (LUT) | Zero WebGL. Proves the L0/L1/L2 architecture end to end. If everything else slips, these two still ship — and the σ_tap dial is the single best piece anyway |
-| **V2 — The field** | `field.ts` → GPU. Cold open, Equatorial Collapse, Three Shells | The spectacle. All three are camera angles on one shader |
-| **V3 — Depth** | CRLB ellipse, Listening Mode, audio-described 90-second cut with captions and transcript | The rigour layer, and the pieces that make it land for a blind judge |
-| **V4 — Polish** | Postprocessing tuning, DOF, the exploded prototype view, `/showcase` retirement | Last, because it is the only purely cosmetic phase |
+| **V0 — Foundations** | `shouldAnimate()` motion gate; `field.ts` physics module; **F-35 fix** — the hand map's command list now renders without JavaScript | ✅ **done** |
+| **V1 — The demo** | `TryIt` — squeeze, tap, watch the phone respond, with the gating and the emergency hold both playable | ✅ **done** |
+| **V2 — Make it look like a product** | Scenario art direction; the ring render with materials and an exploded view; typography upgrade; a guided first run and scenario switcher for the demo; real `navigator.vibrate` on phones | **next** — this is the phase that actually answers "make it stylish" |
+| **V3 — Show the working** | Research page: the equatorial collapse, the capacity cliff, the σ_tap dial. `forced-colors` support and the two CI gates | After V2. Doubles as W2 content |
+| **V4 — Spectacle** | `field.ts` → GPU: the cold open, volumetric field, three shells, CRLB ellipse | Only if time allows after the bench experiment. Genuinely optional |
+| **V5 — Polish** | Postprocessing, listening mode, the audio-described cut, `/showcase` retirement | Last |
 
 **Scheduling reality:** this competes directly with W2 in `PLAN.md` — the
 criteria table, testing page and redesign pages that AUSSEF actually scores, and
@@ -341,13 +390,17 @@ and the AUSSEF work are the same work.
 
 ---
 
-## The honest summary
+## The summary
 
-You asked for fancy, and the plan above is genuinely ambitious — raymarched
-volumetric fields, live Fisher information, closed-form field-line geometry,
-sonification. It is also, deliberately, a plan where **the most impressive thing
-on the site and the most honest thing on the site are the same control.**
+The site's job is to make someone understand Tactiq and want it. The demo does
+the persuading: you squeeze, you tap, the phone responds, and when you tap
+without squeezing first, nothing happens — which teaches the reliability story
+better than any figure could.
 
-That is not a compromise on the spectacle. It is the reason the spectacle
-survives contact with a judge who asks "so what has actually been measured?" —
-because the answer is already stamped on the most beautiful object on the page.
+The physics is a supporting act on the research page, and the full apparatus —
+ledger, criteria, statistics, limitations — lives in the paper, where a judge
+who wants rigour will go looking and find it done properly.
+
+Honesty on the site is one visible label per section, not a hedge in every
+sentence. The design is real, the simulation work is real, and the site should
+carry itself that way.

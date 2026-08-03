@@ -11,11 +11,25 @@ it afterwards. Sessions end; this file does not.
 Readers*, 9-key typing study, engineering logbook, design portfolio §§1–25.
 Not committed; see the de-identification note below.
 
+> **What the website is for.** The site's job is to **demonstrate the product** —
+> what Tactiq does, who it is for, and why the design is good. It is a shop
+> window, not an errata sheet. The scientific apparatus (the ledger, the criteria
+> tables, the statistical design, the limitations) belongs to the **paper**,
+> which is where a judge goes for rigour.
+>
+> Honesty on the site is carried by a **visible evidence label per section**, not
+> by hedging every verb. Product copy reads as product copy; one clear status
+> statement prevents anyone mistaking a design for a shipped device. Getting this
+> wrong in the cautious direction is a real failure mode — a site that says
+> "not measured, not built, not confirmed" in every paragraph demonstrates
+> nothing and reads as though the project has nothing to show. It has a great
+> deal to show.
+
 > **The binding rule.** No number appears on the website or in the paper unless
 > it appears in the claims ledger (§5) with a provenance and an evidence status.
 > If you need a number that is not here, add it here first, with its source.
 > The project has already had to retract three of its own statistics. Do not add
-> a fourth.
+> a fourth. *(This constrains the numbers, not the tone.)*
 
 > **De-identification.** This repository is public and AUSSEF requires
 > de-identified submissions. Keep this file free of personal names, school
@@ -685,6 +699,8 @@ Append-only. Date every entry.
 | 2026-08-03 | The site now states the *unflattering* half — 86% worst-contact under worn conditions against a 95% criterion, σ_tap unmeasured | Omitting it was the "flattering half" problem. A pre-registered criterion the project might fail is stronger evidence of scientific honesty than a criterion it is certain to pass |
 | 2026-08-03 | F-27 reclassified from "check before citing the URL" to a **live breach**, then closed by removing the link | The handle was published on every page of the live site, independent of whether the URL is ever cited |
 | 2026-08-03 | Visual direction chosen by judged comparison of four independent proposals, recorded in [`VISUAL-PLAN.md`](./VISUAL-PLAN.md) | The winning direction keeps the audited light theme and multiply-blends WebGL onto it. A dark bloomed aesthetic was rejected: bloom on near-black simulates halation, the light-scatter artefact low-vision users already experience |
+| 2026-08-03 | **The site's purpose is to demonstrate the product; the paper carries the rigour.** W1's tone over-corrected and is being walked back — see working agreement 2 | The correctness pass fixed real errors but left product pages hedging every verb, which demonstrates nothing. Honesty moves to one visible evidence label per section; the numbers stay exactly as the ledger has them |
+| 2026-08-03 | Built `TryIt` — an interactive demonstration of the interaction, not of the sensing physics | A first pass aimed at a magnetometer-readout instrument. That shows off the engineering to an engineer; it does not show a visitor what the product is for. The demo now drives a mock phone through a real screen-reader task |
 
 ---
 
@@ -692,7 +708,14 @@ Append-only. Date every entry.
 
 1. **Never invent a number.** If it is not in the ledger, it does not go on the
    page or in the paper. Add it to the ledger first, with provenance.
-2. **Never state design intent in the present tense.** No wearable ring exists.
+2. **Label design intent; do not hedge it into mush.** No wearable ring exists,
+   and the reader must never be able to mistake the design for a shipped device
+   — but the fix is a visible evidence label on the section, not the conditional
+   mood in every sentence. "A squeeze opens a short command window" under a
+   *design intent* label is correct and readable. "A squeeze would open what
+   would be a short command window, though nothing has been built" is neither.
+   Product sections demonstrate; the research and evidence sections carry the
+   caveats.
 3. **Never pair a bench-scale figure with a hand-scale one.** They are different
    experiments, with different magnets and different sensor layouts. §5.1 and
    §5.2 are separated for exactly this reason.

@@ -11,6 +11,7 @@ import SiteHeader from './home/SiteHeader';
 import Hero from './home/Hero';
 import Scenarios from './home/Scenarios';
 import Sequence from './home/Sequence';
+import TryIt from './home/TryIt';
 import HandMap from './home/HandMap';
 import DesignEvolution from './home/DesignEvolution';
 import Prototype from './home/Prototype';
@@ -28,6 +29,7 @@ export default function LandingPage() {
         <Hero />
         <Scenarios />
         <Sequence />
+        <TryIt />
         <HandMap />
         <DesignEvolution />
         <Prototype />

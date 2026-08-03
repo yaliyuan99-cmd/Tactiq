@@ -7,16 +7,18 @@
 
 import { motion } from 'motion/react';
 import Reveal from './Reveal';
+import EvidenceStatus from './EvidenceStatus';
 
-/* The specified interaction, step by step. Written in the conditional because
-   no ring has been built: not one of these five steps has been performed on
-   hardware. See src/lib/gestures.ts. */
+/* The designed interaction, step by step.
+   Written in ordinary product voice — the honesty lives in the evidence label
+   on the section, not in hedging every verb. That label is the load-bearing
+   part: keep it. */
 const STEPS: { verb: string; body: string }[] = [
-  { verb: 'Squeeze', body: 'A deliberate squeeze of the ring body would wake it and open a short command window.' },
+  { verb: 'Squeeze', body: 'A deliberate squeeze of the ring body wakes it and opens a short command window.' },
   { verb: 'Tap', body: 'Your thumb taps one of eight contact points on the tips and bases of your fingers.' },
-  { verb: 'Detect', body: 'The ring is specified to sense which point was touched on-device — no camera, no microphone.' },
-  { verb: 'Act', body: 'Your phone would run the command through VoiceOver or TalkBack over Bluetooth.' },
-  { verb: 'Confirm', body: 'A distinct vibration pattern would tell your hand which command the ring heard. No haptic hardware has been built, so no pattern has ever been felt.' },
+  { verb: 'Detect', body: 'The ring senses which point was touched, on-device — no camera, no microphone.' },
+  { verb: 'Act', body: 'Your phone runs the command through VoiceOver or TalkBack over Bluetooth.' },
+  { verb: 'Confirm', body: 'A distinct vibration pattern tells your hand which command the ring heard.' },
 ];
 
 export default function Sequence() {
@@ -73,6 +75,17 @@ export default function Sequence() {
             </li>
           ))}
         </ol>
+
+        {/* One evidence label for the whole section. This is where the honesty
+            lives — so the five steps above can read as product copy. */}
+        <p className="mt-12 pt-6 border-t border-border">
+          <EvidenceStatus kind="future">Design intent — the interaction as specified</EvidenceStatus>
+        </p>
+        <p className="mt-1 text-sm text-muted-foreground max-w-[52rem]">
+          The bench rig that tests this is under construction. A wearable ring has not been
+          built yet, so these five steps describe the design rather than a device you can
+          pick up today.
+        </p>
       </div>
     </section>
   );

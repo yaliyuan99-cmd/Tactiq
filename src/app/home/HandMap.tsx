@@ -15,7 +15,7 @@
  */
 import { useRef, useState } from 'react';
 import { motion } from 'motion/react';
-import { List, Hand as HandIcon } from 'lucide-react';
+import { List } from 'lucide-react';
 import { gesturePoints, shortcutNameFor, type GesturePoint } from '../../lib/gestures';
 
 /** Visual kind per point — fixed / shortcut / emergency are distinguished. */
@@ -81,7 +81,6 @@ function CommandList() {
 
 export default function HandMap() {
   const [selectedId, setSelectedId] = useState<string>(gesturePoints[0].id);
-  const [showList, setShowList] = useState(false);
   const buttonsRef = useRef<(HTMLButtonElement | null)[]>([]);
 
   const selected = gesturePoints.find((p) => p.id === selectedId) ?? gesturePoints[0];
@@ -103,14 +102,6 @@ export default function HandMap() {
           <h2 id="handmap-heading" className="text-3xl sm:text-4xl">
             The hand is the interface
           </h2>
-          <button
-            onClick={() => setShowList((v) => !v)}
-            aria-pressed={showList}
-            className="inline-flex items-center gap-2 h-11 px-4 border border-border rounded-md text-[0.95rem] hover:bg-secondary transition-colors"
-          >
-            {showList ? <HandIcon className="w-4 h-4" aria-hidden /> : <List className="w-4 h-4" aria-hidden />}
-            {showList ? 'View the hand map' : 'View all commands as a list'}
-          </button>
         </div>
         <p className="text-muted-foreground max-w-[42rem] mb-10">
           Every command lives on skin you can feel without looking. Seven fixed commands,
@@ -118,9 +109,7 @@ export default function HandMap() {
           the emergency, by duration.
         </p>
 
-        {showList ? (
-          <CommandList />
-        ) : (
+        {(
           <div className="grid md:grid-cols-2 gap-10 items-start">
             {/* Interactive map */}
             <div
@@ -208,8 +197,26 @@ export default function HandMap() {
           </div>
         )}
 
+        {/* The full command list, always in the DOM.
+            This is a native <details>, not a JavaScript toggle: the interactive
+            map above needs JS to be operable, so the list is the path that has
+            to survive without it. It previously sat behind useState(false),
+            which meant the accessible alternative did not exist in the served
+            HTML at all (F-35). */}
+        <details className="mt-10 border-t border-border pt-6 group">
+          <summary className="inline-flex items-center gap-2 cursor-pointer list-none font-medium hover:text-primary-strong [&::-webkit-details-marker]:hidden">
+            <List className="w-4 h-4 shrink-0" aria-hidden />
+            View all nine commands as a list
+            <span aria-hidden className="text-muted-foreground text-xl leading-none group-open:hidden">+</span>
+            <span aria-hidden className="text-muted-foreground text-xl leading-none hidden group-open:inline">−</span>
+          </summary>
+          <div className="pt-6">
+            <CommandList />
+          </div>
+        </details>
+
         {/* Legend — colour is never the only carrier: shapes + text labels */}
-        {!showList && (
+        {(
           <ul className="mt-10 flex flex-wrap gap-x-8 gap-y-2 text-sm text-muted-foreground">
             <li className="flex items-center gap-2">
               <span aria-hidden className="w-3.5 h-3.5 rounded-full bg-foreground inline-block" />

@@ -43,3 +43,61 @@ export function applyA11yPrefs(prefs: A11yPrefs = loadA11yPrefs()) {
   root.style.fontSize = sizes[prefs.textSize];
   root.classList.toggle('force-reduced-motion', prefs.reducedMotion);
 }
+
+// ---------------------------------------------------------------------------
+// Motion gate
+//
+// The CSS rule in theme.css zeroes animation-duration and transition-duration,
+// which stops CSS animation and Motion transitions but has NO effect on a
+// requestAnimationFrame loop inside a canvas. Anything that drives its own
+// frame loop must gate on shouldAnimate() as well, or it keeps running for a
+// visitor who asked it not to.
+//
+// This is the one place that combines the OS media query with the site's own
+// stored preference. Do not hand-roll `matchMedia` at a call site.
+// ---------------------------------------------------------------------------
+
+const REDUCE_QUERY = '(prefers-reduced-motion: reduce)';
+
+/** True when the OS asks for reduced motion. SSR-safe (returns false). */
+export function prefersReducedMotion(): boolean {
+  if (typeof window === 'undefined' || !window.matchMedia) return false;
+  return window.matchMedia(REDUCE_QUERY).matches;
+}
+
+/**
+ * Whether animation may run at all: false if either the OS or the site's own
+ * accessibility setting asks for reduced motion.
+ *
+ * When this is false, render one full-fidelity frame and stop the loop — never
+ * a degraded image and never a blank panel. Reduced motion must not mean
+ * reduced information.
+ */
+export function shouldAnimate(): boolean {
+  if (typeof window === 'undefined') return false;
+  if (prefersReducedMotion()) return false;
+  return !document.documentElement.classList.contains('force-reduced-motion');
+}
+
+/**
+ * Subscribes to motion-preference changes (OS query plus the site's own class).
+ * Returns an unsubscribe function.
+ */
+export function onMotionPreferenceChange(callback: () => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+
+  const media = window.matchMedia?.(REDUCE_QUERY);
+  media?.addEventListener('change', callback);
+
+  // The site's own toggle flips a class on <html> rather than the media query.
+  const observer = new MutationObserver(callback);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class'],
+  });
+
+  return () => {
+    media?.removeEventListener('change', callback);
+    observer.disconnect();
+  };
+}

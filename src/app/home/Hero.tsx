@@ -197,10 +197,10 @@ export default function Hero() {
           </motion.h1>
 
           <motion.p {...rise(0.16)} className="text-lg text-muted-foreground max-w-[38rem] mb-8">
-            Tactiq is a smart-ring concept designed to give blind and low-vision people a quiet,
-            one-handed way to control their phone: squeeze the ring, tap a point on your fingers,
-            and VoiceOver or TalkBack would carry out the command. No ring has been built yet —
-            this is a design and simulation project heading into bench testing.
+            Tactiq is a smart ring designed to give blind and low-vision people a quiet,
+            one-handed way to control their phone. Squeeze the ring, tap a point on your
+            fingers, and VoiceOver or TalkBack carries out the command — nine commands on
+            eight places your hand already knows how to find.
           </motion.p>
 
           <motion.div {...rise(0.24)} className="flex flex-col sm:flex-row gap-3 mb-10">

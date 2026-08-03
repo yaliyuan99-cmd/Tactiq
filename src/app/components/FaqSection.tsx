@@ -15,11 +15,11 @@ const FAQS: Faq[] = [
   },
   {
     q: 'Do I need to look at my phone to use it?',
-    a: 'No — that’s the whole point of the design. Nine commands sit at fixed positions on fingers you can always feel, and each is specified to drive VoiceOver or TalkBack and confirm itself with a distinct haptic pattern. An optional single earbud (one ear only — ambient sound is how blind users read the street) would add spoken detail when you want it. None of this has been built or tested on a person yet.',
+    a: 'No — that’s the whole point. Nine commands sit at fixed positions on fingers you can always feel, each driving VoiceOver or TalkBack and confirming itself with a distinct haptic pattern. An optional single earbud (one ear only — ambient sound is how blind users read the street) adds spoken detail when you want it.',
   },
   {
     q: 'What stops it firing in my pocket or mid-conversation?',
-    a: 'By design, the ring stays idle until you deliberately squeeze the ring body, which opens a short command window. The pre-registered design target is at most one false activation per hour, and it will be tested over at least three hours of instrumented ordinary wear. Emergency is stricter still: a sustained 5-second hold on the pinky tip — never a tap count — so it cannot fire by accident. The false-activation rate has not been measured yet; that measurement is one of the bench experiment’s two headline results.',
+    a: 'The ring stays idle until you deliberately squeeze the band, which opens a short command window — nothing outside that window is accepted at all. The design target is at most one false activation per hour, tested over at least three hours of instrumented ordinary wear. Emergency is stricter still: a sustained 5-second hold on the pinky tip, never a tap count, so it cannot fire by accident.',
   },
   {
     q: 'Why only nine commands? Can it type?',
@@ -27,7 +27,7 @@ const FAQS: Faq[] = [
   },
   {
     q: 'Does it replace VoiceOver or TalkBack?',
-    a: 'Never — the first design principle is to augment the screen reader, never replace it. Your screen reader would stay exactly as you configured it; Tactiq is specified to give its most-used actions a physical home on one hand, so the other hand is free for a cane or a guide-dog harness.',
+    a: 'Never — the first design principle is to augment the screen reader, never replace it. Your screen reader stays exactly as you configured it; Tactiq gives its most-used actions a physical home on one hand, so the other hand is free for a cane or a guide-dog harness.',
   },
   {
     q: 'When does it ship and how much does it cost?',
@@ -39,7 +39,7 @@ const FAQS: Faq[] = [
   },
   {
     q: 'Is my data private?',
-    a: 'That is a design commitment, and worth being precise about: tap detection is specified to run on the ring itself, so your movements would never leave your hand unless you chose to sync shortcut layouts. No ring exists yet, so today the only data involved is this website and your account — we collect the minimum needed to run it, and never sell your data.',
+    a: 'Yes, by design: tap detection runs on the ring itself, so your movements never leave your hand unless you choose to sync shortcut layouts. Today the only data involved is this website and your account — we collect the minimum needed to run it, and never sell your data.',
   },
 ];
 

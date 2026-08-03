@@ -7,6 +7,7 @@ import { useEffect, type ReactNode } from 'react';
 import SiteHeader from './home/SiteHeader';
 import SiteFooter from './components/SiteFooter';
 import Sequence from './home/Sequence';
+import TryIt from './home/TryIt';
 import HandMap from './home/HandMap';
 import Prototype from './home/Prototype';
 import DesignEvolution from './home/DesignEvolution';
@@ -37,6 +38,7 @@ export function HowItWorksPage() {
   return (
     <PageShell title="How it works">
       <Sequence />
+      <TryIt />
       <HandMap />
     </PageShell>
   );

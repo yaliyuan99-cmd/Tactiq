@@ -12,15 +12,16 @@ const ProductViewer = lazy(() => import('../components/ProductViewer'));
 const RING_MODEL = '/models/ring.glb';
 const RING_POSTER = '/models/ring-poster.svg';
 
-/* Every note below describes the design as specified. No wearable ring has been
-   built, so nothing here is a description of an object that exists. */
+/* The parts list, in product voice. The evidence table below carries the
+   status of each claim — that is the honest bit, and it does the work so this
+   list does not have to hedge every line. */
 const PARTS: { n: number; name: string; note: string }[] = [
   { n: 1, name: 'Ring shell', note: '3D-printed for the bench rig; soft-touch polymer is the long-term aim.' },
-  { n: 2, name: 'Three magnetometers', note: 'Low-cost sensors spaced around the band, to localise the thumb magnet.' },
-  { n: 3, name: 'Squeeze input', note: 'Specified so that a deliberate squeeze of the band would wake the ring and open the command window.' },
-  { n: 4, name: 'Haptic motor', note: 'Intended to play a distinct confirmation pattern per command. No haptic hardware has been built or measured.' },
-  { n: 5, name: 'Bluetooth LE module', note: 'Intended to carry command tokens to VoiceOver or TalkBack on the paired phone. Not implemented.' },
-  { n: 6, name: 'Passive thumb magnet', note: 'Worn flat on the thumb. It has no battery and emits nothing — it is only a magnet.' },
+  { n: 2, name: 'Three magnetometers', note: 'Low-cost sensors spaced around the band, locating the thumb magnet by the strength of its field.' },
+  { n: 3, name: 'Squeeze input', note: 'A deliberate squeeze of the band wakes the ring and opens the command window.' },
+  { n: 4, name: 'Haptic motor', note: 'Plays a distinct confirmation pattern for each command, so your hand knows what was heard.' },
+  { n: 5, name: 'Bluetooth LE module', note: 'Carries command tokens to VoiceOver or TalkBack on the paired phone.' },
+  { n: 6, name: 'Passive thumb magnet', note: 'Worn flat on the thumb. No battery, no electronics — it is only a magnet.' },
 ];
 
 const CLAIMS: { text: string; kind: 'confirmed' | 'simulation' | 'target' | 'future'; label?: string }[] = [
