@@ -1,3 +1,10 @@
+# Netlify auto-deploy (linked to the GitHub repo): every push to main builds
+# the React site and publishes dist/ — typecheck, client build, SSG prerender.
+# To deploy the static zero-JS site in site/ instead, change publish to "site"
+# and the command back to a no-op.
 [build]
-  publish = "site"
-  command = "# static site - nothing to build"
+  publish = "dist"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "22"
