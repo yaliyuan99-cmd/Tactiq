@@ -376,10 +376,10 @@ function Hero() {
 
         <div className="t-rise-3 mt-10 flex flex-col items-center gap-4 sm:flex-row">
           <Link
-            to="/project#follow"
+            to="/project"
             className="t-btn-solid inline-flex min-h-12 items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold"
           >
-            Get early access
+            Learn more
             <ArrowUpRight className="h-5 w-5" />
           </Link>
           <a

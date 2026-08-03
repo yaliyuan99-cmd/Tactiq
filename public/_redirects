@@ -1,9 +1,8 @@
 # Public routes are prerendered to real HTML files, so Netlify serves them
 # directly. Auth-gated and client-only routes get the SPA shell; legacy URLs
 # redirect permanently; everything unknown gets a genuine 404.
-/product        /             301
-/project        /             301
-/showcase       /index.html   200
+/product        /project      301
+/showcase       /             301
 /dashboard      /index.html   200
 /dashboard/*    /index.html   200
 /account        /dashboard    301

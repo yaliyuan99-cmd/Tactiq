@@ -3,9 +3,10 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import { AuthProvider } from './auth/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
-// The canonical research site is the homepage (eager, no Suspense flash).
-// The standalone section pages reuse the same already-loaded components, so
-// they are eager too. The earlier cinematic homepage is archived at /showcase.
+// The cinematic intro is the homepage (eager, no Suspense flash); the research
+// site lives at /project and anchors the standalone section pages, which reuse
+// its components and are eager too.
+import ShowcasePage from './showcase/ShowcasePage';
 import LandingPage from './LandingPage';
 import {
   HowItWorksPage,
@@ -18,7 +19,6 @@ import {
 
 // Everything else is split into its own chunk so a first-time visitor never
 // downloads the dashboard / admin / showcase code. Each loads behind Suspense.
-const ShowcasePage = lazy(() => import('./showcase/ShowcasePage'));
 const LoginPage = lazy(() => import('./auth/LoginPage'));
 const SignUpPage = lazy(() => import('./auth/SignUpPage'));
 const ForgotPasswordPage = lazy(() => import('./auth/ForgotPasswordPage'));
@@ -57,19 +57,19 @@ export function AppRoutes() {
     <AuthProvider>
       <Suspense fallback={<RouteFallback />}>
         <Routes>
-          {/* Canonical public site */}
-          <Route path="/" element={<LandingPage />} />
+          {/* Cinematic intro is the front door; "Learn more" leads to the
+              research homepage at /project, which anchors the section routes. */}
+          <Route path="/" element={<ShowcasePage />} />
+          <Route path="/project" element={<LandingPage />} />
           <Route path="/how-it-works" element={<HowItWorksPage />} />
           <Route path="/prototype" element={<PrototypePage />} />
           <Route path="/research" element={<ResearchPage />} />
           <Route path="/status" element={<StatusPage />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/help" element={<HelpPage />} />
-          {/* Design-history archive (the earlier cinematic homepage) */}
-          <Route path="/showcase" element={<ShowcasePage />} />
           {/* Legacy aliases */}
-          <Route path="/project" element={<Navigate to="/" replace />} />
-          <Route path="/product" element={<Navigate to="/" replace />} />
+          <Route path="/showcase" element={<Navigate to="/" replace />} />
+          <Route path="/product" element={<Navigate to="/project" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />

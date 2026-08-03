@@ -12,6 +12,7 @@ import { dirname, join } from 'node:path';
 
 const ROUTES = [
   ['/', 'index.html'],
+  ['/project', 'project/index.html'],
   ['/how-it-works', 'how-it-works/index.html'],
   ['/prototype', 'prototype/index.html'],
   ['/research', 'research/index.html'],
