@@ -62,8 +62,11 @@ export default function SiteFooter() {
 
         <p className="mt-10 pt-6 border-t border-border text-sm text-muted-foreground max-w-[75ch]">
           © 2026 Tactiq — a student research project from Sydney, Australia. “Tactiq” is a working
-          title. All ring performance figures are pre-registered targets or simulation results,
-          not achieved results.
+          title. <strong>No wearable ring exists</strong>, and no figure on this site has been
+          physically measured. Results labelled <em>simulation</em> are completed, reproducible
+          computations; <em>design targets</em> are thresholds fixed before testing; anything
+          describing how the ring behaves when worn is design intent. The bench experiment
+          (August–October 2026) is what turns targets into data.
         </p>
       </div>
     </footer>

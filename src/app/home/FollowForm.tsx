@@ -69,17 +69,20 @@ export default function FollowForm() {
         <div>
           <h2 className="text-3xl sm:text-4xl mb-4">Designed around ordinary components</h2>
           <p className="text-muted-foreground mb-4 max-w-[42rem]">
-            The bench prototype is built from off-the-shelf parts for under $60 — three
-            magnetometers, a small magnet, a haptic motor and a Bluetooth module. That is the
-            point of the design: nothing in it requires exotic hardware.
+            The bench rig is specified from off-the-shelf parts — three magnetometers, a small
+            magnet, a non-ferrous jig and a microcontroller — for a planned ≈A$40 against a
+            ≤A$60 design criterion. That is the point of the design: nothing in it requires
+            exotic hardware. The parts list was finalised on 28 July 2026 and construction is
+            scheduled from early August; receipts are not in yet.
           </p>
           <p className="text-muted-foreground mb-4 max-w-[42rem]">
             The long-term aim is consumer-electronics pricing — the kind of money people spend
-            on earbuds, not the $799–$15,500 of refreshable braille hardware. No retail price or
-            release date has been confirmed, and there is nothing to buy today.
+            on earbuds, not the US$799–US$15,500 of refreshable braille hardware (mainstream
+            20–40 cell displays cluster at US$2,000–3,800). No retail price or release date has
+            been confirmed, there is no published cost model, and there is nothing to buy today.
           </p>
           <p className="mb-2">
-            <EvidenceStatus kind="confirmed">Prototype component cost — under $60</EvidenceStatus>
+            <EvidenceStatus kind="target">Bench components — ≈A$40 planned, ≤A$60 criterion, receipts pending</EvidenceStatus>
           </p>
           <p>
             <EvidenceStatus kind="future">Retail pricing — no confirmed price or date</EvidenceStatus>

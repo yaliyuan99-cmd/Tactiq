@@ -5,7 +5,6 @@
  * Findings look like research findings, not testimonial cards.
  */
 import type { ReactNode } from 'react';
-import EvidenceStatus from './EvidenceStatus';
 
 const DETAILS: { summary: string; body: ReactNode }[] = [
   {
@@ -19,8 +18,11 @@ const DETAILS: { summary: string; body: ReactNode }[] = [
           worst command's accuracy collapses from 87% to roughly 50%.
         </p>
         <p className="mt-3">
-          For context: Apple's AssistiveTouch ships 4 gestures, Meta's sEMG wristband handles
-          roughly 9, and EFRing reached 89.5% accuracy on 9. Nine commands is where reliable sits.
+          For context: Apple's AssistiveTouch ships 4 gestures. EFRing reached 89.5%
+          within-user accuracy on 9. Meta's sEMG wristband exceeds 90% on 9 gestures for
+          unseen users — but was trained on thousands of participants, a scale no student
+          project can match, so it sets the ceiling rather than the benchmark. Nine commands
+          is where reliable sits.
         </p>
       </>
     ),
@@ -31,10 +33,18 @@ const DETAILS: { summary: string; body: ReactNode }[] = [
       <>
         <p>
           A passive magnet on the thumb creates a field that falls off with the cube of distance.
-          Three magnetometers in the ring each read that field; solving the inverse problem gives
-          the thumb's position. In simulation this resolves the thumb to about 1.65 mm at the
-          array centre and about 4.4 mm off-centre — an order of magnitude finer than the
-          20–25 mm spacing between contact points.
+          Constrain the geometry so the magnet stands vertical and every sensor sits in its
+          equatorial plane, and the field's dependence on orientation collapses to exactly one —
+          three plain magnitude readings then replace a full nine-component vector fit. That
+          single mechanical constraint is why the method works; without it, field strength varies
+          twofold with orientation alone.
+        </p>
+        <p className="mt-3">
+          At the scale of a hand, simulation puts the worst contact point at 1.7 mm from sensor
+          noise alone — comfortably inside the 11 mm decision radius around each point. Sensor
+          noise, in other words, is not the problem. The estimator also sits at the
+          Cramér–Rao bound, meaning no better estimator exists for this geometry: the three
+          magnitude readings carry all the information the vector fit would.
         </p>
         <p className="mt-3">
           The simulation assumes magnet tilt under ~12°, per-sensor gain calibration, and a
@@ -46,13 +56,24 @@ const DETAILS: { summary: string; body: ReactNode }[] = [
   {
     summary: 'What the bench experiment will test',
     body: (
-      <p>
-        The honest risk in the design is not sensor noise — it is thumb aim. The bench experiment
-        (August–October 2026) therefore measures real thumbs first: per-contact accuracy across
-        repeated prompted trials, false activations per hour of ordinary wear, and how quickly the
-        squeeze-wake window feels natural. The protocol and targets were written down before the
-        experiment, so results cannot quietly become claims.
-      </p>
+      <>
+        <p>
+          The honest risk in the design is not sensor noise — it is thumb aim, and it decides
+          everything. Model a worn ring with 4 mm of thumb-placement scatter and the worst
+          contact point drops to <strong>86% accuracy against a 95% criterion</strong>. At 3 mm
+          of scatter every contact clears 95%; at 5 mm the grid needs redesigning, not the
+          physics. <strong>Thumb-placement scatter has never been measured.</strong> That single
+          unmeasured number is the difference between a design that works and one that does not.
+        </p>
+        <p className="mt-3">
+          The bench experiment (August–October 2026) therefore measures real thumbs first:
+          thumb-placement scatter at felt landmarks, per-contact accuracy over 200 prompted taps
+          per contact, false activations across at least three hours of ordinary wear, and how
+          quickly the squeeze-wake window feels natural. The protocol, the sample sizes and the
+          pass thresholds were all written down before the experiment, so results cannot quietly
+          become claims — and a failed criterion will be reported as a failed criterion.
+        </p>
+      </>
     ),
   },
   {
@@ -72,8 +93,9 @@ const SOURCES: { label: string; href?: string }[] = [
   { label: 'WebAIM Screen Reader Survey #10 (2024) — mobile screen-reader and braille usage', href: 'https://webaim.org/projects/screenreadersurvey10/' },
   { label: 'Ballati et al. (2018), "Hey Siri, do you understand me?" — voice assistants and dysarthric speech' },
   { label: 'Journal of Speech, Language, and Hearing Research (2024) — word error rates of unadapted ASR on disordered speech' },
-  { label: 'Tactiq paper 1 — design principles and contact-point capacity analysis (available on request)' },
-  { label: 'Tactiq paper 2 — magnet trilateration simulation (available on request)' },
+  { label: 'Study of five commercial speech-recognition systems — racial disparity in word error rate (0.35 vs 0.19)' },
+  { label: 'Tactiq paper 1 — design principles and contact-point capacity analysis' },
+  { label: 'Tactiq paper 2 — magnet trilateration simulation' },
 ];
 
 export default function Research() {
@@ -89,9 +111,17 @@ export default function Research() {
         </p>
         <p className="text-muted-foreground mb-4">
           91.3% of blind and low-vision screen-reader users rely on one on mobile, yet only 38%
-          use braille output at all — and refreshable braille hardware runs from $799 to $15,500.
-          Voice control is conditionally reliable: it fails in noise, broadcasts your business,
-          and for atypical speech mainstream assistants have measured accuracy around 50–60%.
+          use braille output at all — and refreshable braille hardware runs from US$799 to
+          US$15,500, with mainstream 20–40 cell displays clustering at US$2,000–3,800.
+        </p>
+        <p className="text-muted-foreground mb-4">
+          Voice control is conditionally reliable, and it fails in three separate ways. It fails
+          in noise and broadcasts your business to the room. It carries measured demographic
+          disparity: one study of five commercial systems found a word error rate of 0.35 for
+          Black speakers against 0.19 for white speakers. And on dysarthric speech, mainstream
+          assistants land around 50–60% accuracy, while unadapted state-of-the-art recognisers
+          were still at roughly 50% word error rate on read disordered speech in 2024 — and
+          about 71% conversationally.
         </p>
         <p className="text-muted-foreground mb-10">
           Tactiq's answer is deliberately small: nine commands on eight contact points, driven by
@@ -113,7 +143,7 @@ export default function Research() {
         </div>
 
         <h3 className="mb-3">Sources</h3>
-        <ul className="space-y-2 mb-8">
+        <ul className="space-y-2 mb-4">
           {SOURCES.map((s) => (
             <li key={s.label} className="text-sm text-muted-foreground">
               {s.href ? (
@@ -126,13 +156,25 @@ export default function Research() {
             </li>
           ))}
         </ul>
-
-        <p className="flex items-start gap-2">
-          <EvidenceStatus kind="target" />
+        <p className="text-sm text-muted-foreground mb-8">
+          The two Tactiq papers are being prepared for submission and are not published yet.
+          To read a draft, email{' '}
+          <a href="mailto:hello@tactiq.app" className="underline underline-offset-4 hover:text-primary-strong">
+            hello@tactiq.app
+          </a>
+          .
         </p>
-        <p className="text-sm text-muted-foreground mt-1">
-          All ring performance figures on this site are pre-registered targets or simulation
-          results, not achieved results. The bench experiment is what turns them into data.
+
+        <h3 className="mb-3">How to read the labels on this site</h3>
+        <p className="text-sm text-muted-foreground mb-8 max-w-[65ch]">
+          <strong>No figure on this site has been physically measured yet</strong> — nothing has
+          reached <em>measured</em> status, because the bench rig is still being built. What we
+          do have is real: <em>simulation results</em> are completed, reproducible computations
+          from five seeded scripts, independently re-implemented from scratch as a check.{' '}
+          <em>Design targets</em> are acceptance thresholds fixed in advance, so they cannot be
+          moved to fit whatever the experiment returns. <em>Design intent</em> describes the
+          system as specified — no wearable ring exists, so anything about haptics, wear or
+          screen-reader integration is intent, not behaviour.
         </p>
       </div>
     </section>

@@ -26,8 +26,8 @@ const POINTS: { x: number; y: number; kind: 'fixed' | 'shortcut' | 'emergency' }
   { x: 150, y: 220, kind: 'fixed' },     // middle base — next
   { x: 192, y: 112, kind: 'fixed' },     // ring tip — read/repeat
   { x: 192, y: 224, kind: 'fixed' },     // ring base — previous
-  { x: 228, y: 232, kind: 'shortcut' },  // pinky base — shortcut 1
-  { x: 228, y: 140, kind: 'emergency' }, // pinky tip — shortcut 2 + emergency hold
+  { x: 228, y: 232, kind: 'shortcut' },  // pinky base — shortcut 2
+  { x: 228, y: 140, kind: 'emergency' }, // pinky tip — shortcut 1 + emergency hold
 ];
 
 const TARGET = POINTS[0]; // index tip — Confirm
@@ -197,9 +197,10 @@ export default function Hero() {
           </motion.h1>
 
           <motion.p {...rise(0.16)} className="text-lg text-muted-foreground max-w-[38rem] mb-8">
-            Tactiq is a smart-ring concept that gives blind and low-vision people a quiet,
-            one-handed way to control their phone. Squeeze the ring, tap a point on your
-            fingers and VoiceOver or TalkBack carries out the command.
+            Tactiq is a smart-ring concept designed to give blind and low-vision people a quiet,
+            one-handed way to control their phone: squeeze the ring, tap a point on your fingers,
+            and VoiceOver or TalkBack would carry out the command. No ring has been built yet —
+            this is a design and simulation project heading into bench testing.
           </motion.p>
 
           <motion.div {...rise(0.24)} className="flex flex-col sm:flex-row gap-3 mb-10">

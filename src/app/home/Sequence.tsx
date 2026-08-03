@@ -8,12 +8,15 @@
 import { motion } from 'motion/react';
 import Reveal from './Reveal';
 
+/* The specified interaction, step by step. Written in the conditional because
+   no ring has been built: not one of these five steps has been performed on
+   hardware. See src/lib/gestures.ts. */
 const STEPS: { verb: string; body: string }[] = [
-  { verb: 'Squeeze', body: 'A deliberate squeeze of the ring body wakes it and opens a short command window.' },
+  { verb: 'Squeeze', body: 'A deliberate squeeze of the ring body would wake it and open a short command window.' },
   { verb: 'Tap', body: 'Your thumb taps one of eight contact points on the tips and bases of your fingers.' },
-  { verb: 'Detect', body: 'The ring senses which point was touched, on-device — no camera, no microphone.' },
-  { verb: 'Act', body: 'Your phone runs the command through VoiceOver or TalkBack over Bluetooth.' },
-  { verb: 'Confirm', body: 'A distinct vibration pattern tells your hand which command the ring heard.' },
+  { verb: 'Detect', body: 'The ring is specified to sense which point was touched on-device — no camera, no microphone.' },
+  { verb: 'Act', body: 'Your phone would run the command through VoiceOver or TalkBack over Bluetooth.' },
+  { verb: 'Confirm', body: 'A distinct vibration pattern would tell your hand which command the ring heard. No haptic hardware has been built, so no pattern has ever been felt.' },
 ];
 
 export default function Sequence() {
