@@ -4,7 +4,7 @@
  * navigation, no placeholder social icons. "Sign in" lives here, quietly.
  */
 import { Link } from 'react-router';
-import { Hand, Mail, Github } from 'lucide-react';
+import { Hand, Mail } from 'lucide-react';
 
 export default function SiteFooter() {
   return (
@@ -33,15 +33,9 @@ export default function SiteFooter() {
               <Mail className="w-4 h-4" aria-hidden />
               hello@tactiq.app
             </a>
-            <a
-              href="https://github.com/yaliyuan99-cmd/Tactiq-product"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <Github className="w-4 h-4" aria-hidden />
-              Research code and bench tools
-            </a>
+            {/* No source-code link here. AUSSEF requires de-identified
+                submissions, and the repository URL carries a personal account
+                handle. Do not re-add one that identifies an author. */}
             <Link to="/accessibility" className="text-muted-foreground hover:text-foreground transition-colors">
               Accessibility statement
             </Link>
