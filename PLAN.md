@@ -43,6 +43,11 @@ Not committed; see the de-identification note below.
 | 12 | [Decisions log](#12-decisions-log) |
 | 13 | [Working agreements](#13-working-agreements) |
 
+**Companion document:** [`VISUAL-PLAN.md`](./VISUAL-PLAN.md) — the visual and
+interaction proposal (3D field rendering, the σ_tap instrument, the
+progressive-enhancement architecture). It consumes this ledger and invents no
+figures of its own.
+
 ---
 
 ## 1. Evidence status vocabulary
@@ -438,12 +443,12 @@ incorrect findings, and F-31 leaves the residual F-31r, open in §9.2.
 | F-32 | "targets barely 8 mm apart" had no ledger row | Unsourced figure removed |
 | F-33 | Timeline said bench hardware was "built" while §6 records it as not assembled | Corrected. A follow-up sweep also removed the softer replacements ("assembly under way", "the rig is being built now"), which asserted progress the project cannot evidence while Q2 is open. Both now read "scheduled from early August 2026" |
 | F-28 | The deploy target changed — `netlify.toml` publishes `dist/` from `npm run build`, so the React app is live and `site/` is not | Resolved 3 Aug 2026 with Q9: the React app is the AUSSEF artifact. See §12 |
+| F-27 | The site footer linked to a URL containing a personal account handle, on every page of the live site — a live de-identification breach against AUSSEF's requirement | Link removed rather than repointed: nothing depended on it and there is no de-identified destination yet. A comment in `SiteFooter.tsx` marks why, so it is not re-added |
 
 ### 9.2 Open
 
 | ID | Finding | Where | Blocks / notes |
 | --- | --- | --- | --- |
-| **F-27** | **De-identification: the site footer links to a URL containing the repo owner's personal account handle, on every page of the live site** | `src/app/components/SiteFooter.tsx` | **Highest priority — live now.** AUSSEF requires de-identified submissions. Remove the link immediately; the choice between deleting it outright and repointing it at a neutral destination does not block removal |
 | F-1 | Paper titles — *Beyond Screen Readers* is attached to the design study, but in the source it is the physics/engineering paper | `src/app/home/Research.tsx` | **Blocked on Q1.** The React app currently says only "Tactiq paper 1 / paper 2", so nothing is *wrong*; the titles are simply missing |
 | F-13 | PRD §6.1/§6.3 specify flex + pressure + IMU sensing; the paper and portfolio select magnetic trilateration | source bundle | **Blocked on Q6.** Paper track, first task |
 | F-14 | Superseded two-ring summary still in the repo, carrying every retracted claim | `src/imports/pasted_text/tactiq-project-summary.md` | Delete or quarantine |
@@ -576,9 +581,9 @@ CSS disabled, readable with JavaScript disabled.
 - [ ] Add the σ_tap result and what it decided
 - [ ] Failed criteria stay visible, with what changed as a result
 
-#### W4 — Repository hygiene (F-14, F-15, F-34 blocked on Q7; F-27 and F-29 are not)
+#### W4 — Repository hygiene (F-14, F-15, F-34 blocked on Q7; F-29 is not)
 
-- [ ] **Fix F-27** — the account handle in the footer. Not blocked on anything
+- [x] **F-27 — the account handle in the footer.** Closed 3 Aug 2026
 - [ ] Delete or quarantine `src/imports/pasted_text/tactiq-project-summary.md` (F-14)
 - [ ] Decide the fate of `checkout/`, `admin/` and `/showcase` (F-15, F-34)
 - [ ] Update `README.md` to describe one canonical site (F-29)
@@ -653,7 +658,7 @@ scripts.
 
 | Priority | Who | Action |
 | --- | --- | --- |
-| 1 | Anyone | **Fix F-27** — the account handle in the site footer. Live de-identification breach; independent of everything else |
+| 1 | Track W | **Fix F-35** — the hand map's list alternative does not render without JavaScript, on the site whose accessibility rebuild was redesign cycle 7. Scheduled as V0 in [`VISUAL-PLAN.md`](./VISUAL-PLAN.md) |
 | 2 | Team | Answer **Q1** — it is the last thing blocking W1 |
 | 3 | Team | Answer **Q7** — unblocks F-14, F-15, F-34 and the rest of W4 |
 | 4 | Team | Answer **Q2/Q3** — assemble the bench rig, photograph every stage, keep receipts |
@@ -678,7 +683,8 @@ Append-only. Date every entry.
 | 2026-08-03 | The consolidated `PLAN.md` is committed to the repository, superseding the earlier rule that the working documents stay outside it | One de-identified spine in version control beats three files on a personal machine. The source bundle stays uncommitted |
 | 2026-08-03 | W1 output put through adversarial verification before publication — four independent reviewers over numbers, de-identification, code claims and completeness | It found two overstated closures (F-2, F-9) that had been reported as complete. Both are now genuinely fixed, and working agreement 9 exists because of it |
 | 2026-08-03 | The site now states the *unflattering* half — 86% worst-contact under worn conditions against a 95% criterion, σ_tap unmeasured | Omitting it was the "flattering half" problem. A pre-registered criterion the project might fail is stronger evidence of scientific honesty than a criterion it is certain to pass |
-| 2026-08-03 | F-27 reclassified from "check before citing the URL" to a **live breach** | The handle is published on every page of the live site right now, independent of whether the URL is ever cited |
+| 2026-08-03 | F-27 reclassified from "check before citing the URL" to a **live breach**, then closed by removing the link | The handle was published on every page of the live site, independent of whether the URL is ever cited |
+| 2026-08-03 | Visual direction chosen by judged comparison of four independent proposals, recorded in [`VISUAL-PLAN.md`](./VISUAL-PLAN.md) | The winning direction keeps the audited light theme and multiply-blends WebGL onto it. A dark bloomed aesthetic was rejected: bloom on near-black simulates halation, the light-scatter artefact low-vision users already experience |
 
 ---
 
