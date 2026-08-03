@@ -9,7 +9,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const { user } = useAuth();
-  const next = params.get('next') || '/account';
+  const next = params.get('next') || '/dashboard';
   const intent = params.get('intent');
   const isBuyIntent = intent === 'buy';
 

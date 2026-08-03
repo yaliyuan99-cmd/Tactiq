@@ -44,13 +44,15 @@ const POINTS: V1Point[] = [
   { id: 'palm-return', finger: 'Palm', position: 'Side', x: '70%', y: '74%', type: 'return', label: 'Return', description: 'Palm (pinky-side tap) — sends Return/Enter.', gestures: ['Side tap: Return/Enter'] },
 ];
 
-const COLORS: Record<V1Type, { bg: string; border: string }> = {
-  modifier: { bg: 'bg-blue-500', border: 'border-blue-400' },
-  fixed: { bg: 'bg-green-500', border: 'border-green-400' },
-  letter: { bg: 'bg-yellow-500', border: 'border-yellow-400' },
-  custom: { bg: 'bg-purple-500', border: 'border-purple-400' },
-  return: { bg: 'bg-red-500', border: 'border-red-400' },
-  space: { bg: 'bg-slate-600', border: 'border-slate-400' },
+/* Shades chosen for ≥4.5:1 label contrast: dark text on the yellow keypad
+   dots, white text on darkened blue/green/purple/red/slate. */
+const COLORS: Record<V1Type, { bg: string; border: string; text: string }> = {
+  modifier: { bg: 'bg-blue-700', border: 'border-blue-500', text: 'text-white' },
+  fixed: { bg: 'bg-green-700', border: 'border-green-500', text: 'text-white' },
+  letter: { bg: 'bg-yellow-500', border: 'border-yellow-600', text: 'text-yellow-950' },
+  custom: { bg: 'bg-purple-700', border: 'border-purple-500', text: 'text-white' },
+  return: { bg: 'bg-red-700', border: 'border-red-500', text: 'text-white' },
+  space: { bg: 'bg-slate-700', border: 'border-slate-500', text: 'text-white' },
 };
 
 const LEGEND: { type: V1Type; label: string }[] = [
@@ -128,8 +130,8 @@ export default function ConceptV1Demo() {
                     transition={{ type: 'spring', stiffness: 500, damping: 18 }}
                     className={
                       isBar
-                        ? `relative w-full h-9 ${colors.bg} rounded-lg border-2 ${colors.border} flex items-center justify-center text-white font-semibold text-xs tracking-[0.3em] uppercase`
-                        : `relative w-12 h-12 ${colors.bg} rounded-full border-2 ${colors.border} flex items-center justify-center text-white font-semibold text-[0.65rem]`
+                        ? `relative w-full h-9 ${colors.bg} rounded-lg border-2 ${colors.border} flex items-center justify-center ${colors.text} font-semibold text-xs tracking-[0.3em] uppercase`
+                        : `relative w-12 h-12 ${colors.bg} rounded-full border-2 ${colors.border} flex items-center justify-center ${colors.text} font-semibold text-[0.65rem]`
                     }
                   >
                     {isActive && !isBar && (
@@ -166,12 +168,12 @@ export default function ConceptV1Demo() {
               >
                 <div className="flex items-center gap-3 mb-4">
                   <span
-                    className={`w-10 h-10 shrink-0 ${COLORS[active.type].bg} rounded-full flex items-center justify-center text-white text-[0.6rem] font-semibold`}
+                    className={`w-10 h-10 shrink-0 ${COLORS[active.type].bg} rounded-full flex items-center justify-center ${COLORS[active.type].text} text-[0.6rem] font-semibold`}
                   >
                     {active.label}
                   </span>
                   <div>
-                    <h4>{active.finger}</h4>
+                    <h3 className="text-base">{active.finger}</h3>
                     <p className="text-sm text-muted-foreground">{active.position} knuckle</p>
                   </div>
                 </div>
@@ -197,7 +199,7 @@ export default function ConceptV1Demo() {
                 <span className="w-14 h-14 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4 text-muted-foreground">
                   <Pointer className="w-6 h-6" aria-hidden />
                 </span>
-                <h4 className="mb-2">Type with the 9-grid keypad</h4>
+                <h3 className="text-base mb-2">Type with the 9-grid keypad</h3>
                 <p className="text-muted-foreground text-[0.95rem] max-w-[38ch] mx-auto">
                   The index, middle and ring fingers formed a phone-dialpad alphabet;
                   the thumb and pinky handled modifiers and shortcuts.

@@ -30,7 +30,7 @@ export default function NotFoundPage() {
               Back to home
             </Link>
             <Link
-              to="/project#how-it-works"
+              to="/how-it-works"
               className="px-6 py-3 border border-border rounded-xl hover:bg-secondary transition-colors font-medium"
             >
               See how the ring works

@@ -14,7 +14,7 @@ export default function SignUpPage() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const { user } = useAuth();
-  const next = params.get('next') || '/account';
+  const next = params.get('next') || '/dashboard';
   const intent = params.get('intent');
   const plan = params.get('plan');
   const isBuyIntent = intent === 'buy';

@@ -225,15 +225,27 @@
   }
 
   /* Reduced motion: strip non-essential animation and transitions globally.
-     Content must remain complete — nothing is visibility-gated on motion. */
+     Content must remain complete — nothing is visibility-gated on motion.
+     `.force-reduced-motion` mirrors the media query for users who enable the
+     site-level setting regardless of their OS preference. */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
     *::after {
+      scroll-behavior: auto !important;
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+  }
+
+  .force-reduced-motion *,
+  .force-reduced-motion *::before,
+  .force-reduced-motion *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 
   label {

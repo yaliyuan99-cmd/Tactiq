@@ -134,7 +134,7 @@ export default function CheckoutPage() {
               and you'll be first to know if there is ever a build to try.
             </p>
             <Link
-              to="/account"
+              to="/dashboard"
               className="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity font-medium"
             >
               Go to your account

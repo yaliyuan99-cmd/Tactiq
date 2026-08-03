@@ -5,6 +5,7 @@
  * removed entirely under prefers-reduced-motion (theme.css global rule).
  */
 
+import { motion } from 'motion/react';
 import Reveal from './Reveal';
 
 const STEPS: { verb: string; body: string }[] = [
@@ -33,10 +34,23 @@ export default function Sequence() {
         </p>
 
         <ol className="relative grid gap-10 md:grid-cols-5 md:gap-6 list-none">
-          {/* Connecting path: vertical rule on mobile, horizontal on desktop */}
-          <div
+          {/* Connecting path draws on once as the sequence enters the viewport
+              (transform-only; the line is simply full-length without JS). */}
+          <motion.div
             aria-hidden
-            className="absolute left-[1.05rem] top-2 bottom-2 w-px bg-border md:left-0 md:right-0 md:top-[1.05rem] md:bottom-auto md:w-auto md:h-px"
+            initial={{ scaleY: 0 }}
+            whileInView={{ scaleY: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="md:hidden absolute left-[1.05rem] top-2 bottom-2 w-px bg-border origin-top"
+          />
+          <motion.div
+            aria-hidden
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="hidden md:block absolute left-0 right-0 top-[1.05rem] h-px bg-border origin-left"
           />
           {STEPS.map((step, i) => (
             <li key={step.verb} className="relative pl-12 md:pl-0 md:pt-12">

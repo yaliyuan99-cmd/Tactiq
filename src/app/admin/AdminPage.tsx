@@ -213,7 +213,7 @@ export default function AdminPage() {
             ask an existing admin to grant you access.
           </p>
           <Link
-            to="/account"
+            to="/dashboard"
             className="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity font-medium"
           >
             Back to your dashboard
@@ -242,7 +242,7 @@ export default function AdminPage() {
             </span>
           </Link>
           <Link
-            to="/account"
+            to="/dashboard"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             Dashboard
@@ -252,7 +252,7 @@ export default function AdminPage() {
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Link
-          to="/account"
+          to="/dashboard"
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />

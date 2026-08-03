@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  Hand,
-  ArrowLeft,
   Save,
   Loader2,
   Check,
@@ -12,14 +10,18 @@ import {
   Layers,
   Trash2,
   Plus,
+  Lock,
+  Vibrate,
 } from 'lucide-react';
 import {
   editableGesturePoints,
+  gesturePoints,
   colorMap,
   COMMAND_LIBRARY,
   COMMAND_CATEGORIES,
   DEFAULT_LAYOUT,
   commandLabelFor,
+  PRODUCT,
 } from '../../lib/gestures';
 import type { GestureLayout } from '../../lib/database.types';
 import {
@@ -145,37 +147,13 @@ export default function CustomizePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Top bar */}
-      <header className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <Hand className="w-6 h-6" />
-            <span className="text-xl font-semibold">Tactiq</span>
-          </Link>
-          <Link
-            to="/account"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Back to dashboard
-          </Link>
-        </div>
-      </header>
-
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <Link
-          to="/account"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to dashboard
-        </Link>
-
+    <div className="max-w-5xl">
         <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-semibold mb-1">Customise your shortcuts</h1>
-            <p className="text-muted-foreground">
-              Pick a shortcut point, assign a command, then save it as a reusable layout.
+            <h1 className="text-3xl mb-1">Command layout</h1>
+            <p className="text-muted-foreground max-w-[56ch]">
+              The seven fixed commands never move — reliable use depends on muscle memory.
+              Choose what your two personal shortcuts do, then save the layout.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -262,6 +240,23 @@ export default function CustomizePage() {
                   <RotateCcw className="w-3.5 h-3.5" /> Reset slot
                 </button>
               </div>
+
+              {selectedPoint && (
+                <div className="flex flex-wrap items-center gap-3 mb-5 text-sm text-muted-foreground">
+                  <span>Haptic confirmation: {selectedPoint.haptic.toLowerCase()}.</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if ('vibrate' in navigator) navigator.vibrate?.([60, 80, 60]);
+                    }}
+                    className="inline-flex items-center gap-1.5 h-9 px-3 border border-border rounded-md hover:bg-secondary transition-colors"
+                  >
+                    <Vibrate className="w-3.5 h-3.5" aria-hidden />
+                    Test the vibration
+                  </button>
+                  <span className="text-xs">(vibrates on phones; visual only on computers)</span>
+                </div>
+              )}
 
               {/* category tabs */}
               <div className="flex flex-wrap gap-2 mb-5">
@@ -431,7 +426,33 @@ export default function CustomizePage() {
             </section>
           </div>
         </div>
-      </main>
+
+        {/* Fixed commands — protected */}
+        <section className="mt-10 border-t border-border pt-8">
+          <h2 className="text-lg mb-2">Fixed commands (protected)</h2>
+          <p className="text-[0.95rem] text-muted-foreground max-w-[60ch] mb-5">
+            These seven commands cannot be remapped, on purpose: they are the safety and
+            navigation core of the system, and moving them would break the muscle memory the
+            whole design depends on. {PRODUCT.emergency}
+          </p>
+          <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-3">
+            {gesturePoints
+              .filter((p) => !p.editable)
+              .map((p) => (
+                <li key={p.id} className="flex items-start gap-3 text-[0.95rem]">
+                  <Lock className="w-4 h-4 text-muted-foreground mt-1 shrink-0" aria-hidden />
+                  <div>
+                    <p>
+                      <span className="text-muted-foreground">{p.finger} {p.position.toLowerCase()}</span>
+                      {' — '}
+                      <span className="font-medium">{p.description.split('—')[0].trim()}</span>
+                    </p>
+                    <p className="text-sm text-muted-foreground">Haptic confirmation: {p.haptic.toLowerCase()}</p>
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </section>
     </div>
   );
 }

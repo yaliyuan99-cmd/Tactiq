@@ -54,6 +54,9 @@ export default function SiteFooter() {
             <Link to="/login" className="text-muted-foreground hover:text-foreground transition-colors">
               Sign in
             </Link>
+            <Link to="/showcase" className="text-muted-foreground hover:text-foreground transition-colors">
+              Design showcase (archive)
+            </Link>
           </div>
         </div>
 

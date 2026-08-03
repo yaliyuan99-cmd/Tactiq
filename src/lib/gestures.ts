@@ -1,16 +1,15 @@
 /**
- * Shared command model.
- *
- * Both the marketing hand demo (`InteractiveHandDemo`) and the in-account
- * shortcut customizer (`CustomizePage`) read from this single source of truth so
- * the two never drift apart.
+ * THE product-configuration file — the single source of truth for Tactiq's
+ * command system. Every public page and every dashboard page reads from here,
+ * so the command model cannot drift between surfaces.
  *
  * The concept: one ring on the index finger of either hand. The thumb taps
  * eight contact points — the tips and bases of the four fingers — carrying nine
- * fixed commands. Seven commands never move; only the two shortcut points are
- * remappable. Emergency shares the pinky tip but is separated by duration
- * (a sustained 5-second hold — never a tap count). Text entry is deliberately
- * excluded, as is any clear-field/delete gesture.
+ * commands. Seven commands never move; only the two personal-shortcut points
+ * are customisable. Emergency shares the pinky tip but is separated by
+ * duration (a sustained 5-second hold — never a tap count) and can never be
+ * remapped. Text entry is deliberately excluded, as is any clear-field or
+ * delete gesture.
  */
 import {
   Play,
@@ -55,9 +54,25 @@ export interface GesturePoint {
   label: string;
   description: string;
   gestures?: string[];
-  /** Whether this slot can be remapped in the customizer. */
+  /** Whether this contact point's command is customisable. */
   editable: boolean;
+  /** Haptic confirmation pattern played when this command is recognised. */
+  haptic: string;
+  /** Complete accessible name for screen readers. */
+  srLabel: string;
 }
+
+/** Product-level facts shared by every page. */
+export const PRODUCT = {
+  contactPoints: 8,
+  commands: 9,
+  fixedCommands: 7,
+  personalShortcuts: 2,
+  activation:
+    'The ring is idle until a deliberate squeeze of the ring body opens a short command window. Design target: at most one false activation per hour.',
+  emergency:
+    'Emergency is a sustained five-second hold on the pinky tip — never a tap count. It is the only shared contact point, separated by duration, and it can never be remapped.',
+} as const;
 
 export const gesturePoints: GesturePoint[] = [
   // Index finger — Confirm / Dismiss
@@ -73,6 +88,8 @@ export const gesturePoints: GesturePoint[] = [
       'Confirm — activate the focused item, answer a call, accept a suggestion. The "yes" of the whole system, on the finger wearing the ring.',
     gestures: ['Brief tap: Confirm'],
     editable: false,
+    haptic: 'One short pulse',
+    srLabel: 'Index finger tip: Confirm. Fixed command. Haptic: one short pulse.',
   },
   {
     id: 'index-base',
@@ -86,6 +103,8 @@ export const gesturePoints: GesturePoint[] = [
       'Dismiss / Back — decline a call, go back a screen, silence an alarm. The "no" that mirrors Confirm on the same finger.',
     gestures: ['Brief tap: Dismiss / Back'],
     editable: false,
+    haptic: 'Two short pulses',
+    srLabel: 'Index finger base: Dismiss or Back. Fixed command. Haptic: two short pulses.',
   },
 
   // Middle finger — Undo / Next
@@ -101,6 +120,8 @@ export const gesturePoints: GesturePoint[] = [
       'Undo — reverse the last action and recover from a mis-tap. Every Tactiq command is recoverable; that is why there is no delete or clear-field gesture at all.',
     gestures: ['Brief tap: Undo'],
     editable: false,
+    haptic: 'Long then short pulse',
+    srLabel: 'Middle finger tip: Undo. Fixed command. Haptic: a long then short pulse.',
   },
   {
     id: 'middle-base',
@@ -114,6 +135,8 @@ export const gesturePoints: GesturePoint[] = [
       'Next — move to the next item, element, or track. Paired with Previous on the ring finger for symmetric navigation.',
     gestures: ['Brief tap: Next'],
     editable: false,
+    haptic: 'Rising double pulse',
+    srLabel: 'Middle finger base: Next. Fixed command. Haptic: rising double pulse.',
   },
 
   // Ring finger — Read/Repeat / Previous
@@ -129,6 +152,8 @@ export const gesturePoints: GesturePoint[] = [
       'Read / Repeat — speak the current item again or repeat the last announcement through VoiceOver or TalkBack.',
     gestures: ['Brief tap: Read / Repeat'],
     editable: false,
+    haptic: 'Soft sustained pulse',
+    srLabel: 'Ring finger tip: Read or Repeat. Fixed command. Haptic: soft sustained pulse.',
   },
   {
     id: 'ring-base',
@@ -142,6 +167,8 @@ export const gesturePoints: GesturePoint[] = [
       'Previous — move to the previous item, element, or track. Paired with Next on the middle finger.',
     gestures: ['Brief tap: Previous'],
     editable: false,
+    haptic: 'Falling double pulse',
+    srLabel: 'Ring finger base: Previous. Fixed command. Haptic: falling double pulse.',
   },
 
   // Pinky — the personal points
@@ -157,6 +184,8 @@ export const gesturePoints: GesturePoint[] = [
       'Shortcut 1 — one of the two points that are yours to map: speak the time, call a favourite, play a podcast, share your location…',
     gestures: ['Brief tap: your chosen shortcut'],
     editable: true,
+    haptic: 'Three short pulses',
+    srLabel: 'Pinky base: Personal shortcut one. Customisable. Haptic: three short pulses.',
   },
   {
     id: 'pinky-tip',
@@ -173,6 +202,8 @@ export const gesturePoints: GesturePoint[] = [
       'Sustained 5-second hold: Emergency',
     ],
     editable: true,
+    haptic: 'Three short pulses; continuous strong pulse for emergency',
+    srLabel: 'Pinky tip: Personal shortcut two on a brief tap; Emergency on a sustained five-second hold. Shortcut is customisable, Emergency is not. Haptic: three short pulses, or a continuous strong pulse for emergency.',
   },
 ];
 
