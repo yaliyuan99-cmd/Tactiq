@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://tactiq0.netlify.app/sitemap.xml
