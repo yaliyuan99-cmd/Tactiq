@@ -99,9 +99,9 @@ export default function DesignEvolution() {
           <Reveal delay={0.12}>
             <h3 className="mb-3">Why the keyboard had to go</h3>
             <p className="text-muted-foreground mb-4 max-w-[52ch]">
-              Sixty-plus gestures on fifteen points meant targets barely 8&nbsp;mm apart, multi-tap
-              counting, and a delete cluster one mis-tap away from clearing a field. It typed
-              English — and demanded pinpoint thumb accuracy all day.
+              Sixty-plus gestures on fifteen points meant crowded targets, multi-tap counting,
+              and a delete cluster one mis-tap away from clearing a field. It typed English —
+              and demanded pinpoint thumb accuracy all day.
             </p>
             <p className="text-muted-foreground mb-6 max-w-[52ch]">
               The capacity analysis found the knee: pushing past eight points adds almost no

@@ -12,18 +12,22 @@ const ProductViewer = lazy(() => import('../components/ProductViewer'));
 const RING_MODEL = '/models/ring.glb';
 const RING_POSTER = '/models/ring-poster.svg';
 
+/* Every note below describes the design as specified. No wearable ring has been
+   built, so nothing here is a description of an object that exists. */
 const PARTS: { n: number; name: string; note: string }[] = [
-  { n: 1, name: 'Ring shell', note: '3D-printed for the bench prototype; soft-touch polymer is the long-term aim.' },
-  { n: 2, name: 'Three magnetometers', note: 'Low-cost sensors spaced around the band to localise the thumb magnet.' },
-  { n: 3, name: 'Squeeze input', note: 'A deliberate squeeze of the band wakes the ring and opens the command window.' },
-  { n: 4, name: 'Haptic motor', note: 'Plays a distinct confirmation pattern for each command.' },
-  { n: 5, name: 'Bluetooth LE module', note: 'Talks to VoiceOver and TalkBack on the paired phone.' },
-  { n: 6, name: 'Passive thumb magnet', note: 'Worn on the thumb; it has no battery and emits nothing.' },
+  { n: 1, name: 'Ring shell', note: '3D-printed for the bench rig; soft-touch polymer is the long-term aim.' },
+  { n: 2, name: 'Three magnetometers', note: 'Low-cost sensors spaced around the band, to localise the thumb magnet.' },
+  { n: 3, name: 'Squeeze input', note: 'Specified so that a deliberate squeeze of the band would wake the ring and open the command window.' },
+  { n: 4, name: 'Haptic motor', note: 'Intended to play a distinct confirmation pattern per command. No haptic hardware has been built or measured.' },
+  { n: 5, name: 'Bluetooth LE module', note: 'Intended to carry command tokens to VoiceOver or TalkBack on the paired phone. Not implemented.' },
+  { n: 6, name: 'Passive thumb magnet', note: 'Worn flat on the thumb. It has no battery and emits nothing — it is only a magnet.' },
 ];
 
 const CLAIMS: { text: string; kind: 'confirmed' | 'simulation' | 'target' | 'future'; label?: string }[] = [
-  { text: 'Prototype component cost under $60, built from off-the-shelf parts', kind: 'confirmed', label: 'Prototype component cost' },
-  { text: 'Thumb localised to ~1.65 mm at the array centre, ~4.4 mm off-centre — against 20–25 mm between contact points', kind: 'simulation' },
+  { text: 'No wearable ring exists. The parts above describe the design as specified; the bench rig is the only hardware, and its parts list was finalised 28 July 2026', kind: 'future', label: 'Design intent — not built' },
+  { text: 'Bench-rig components ≈A$40 planned, against a ≤A$60 design criterion. Receipts pending', kind: 'target', label: 'Design target — receipts pending' },
+  { text: 'At the hand scale, sensor noise alone localises the worst contact point to 1.7 mm — well inside the 11 mm decision radius around each point', kind: 'simulation' },
+  { text: 'Under modelled worn conditions (4 mm thumb-placement scatter, 2 mm ring shift) worst-contact accuracy falls to 86%, against a 95% criterion. Thumb-placement scatter has never been measured — that is what the bench experiment is for', kind: 'simulation', label: 'Simulation result — the governing risk' },
   { text: 'At least 95% per-contact accuracy', kind: 'target' },
   { text: 'At most one false activation per hour', kind: 'target' },
   { text: 'Physical dimensions and weight', kind: 'future', label: 'Not yet measured' },

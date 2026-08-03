@@ -16,7 +16,7 @@
 import { useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { List, Hand as HandIcon } from 'lucide-react';
-import { gesturePoints, type GesturePoint } from '../../lib/gestures';
+import { gesturePoints, shortcutNameFor, type GesturePoint } from '../../lib/gestures';
 
 /** Visual kind per point — fixed / shortcut / emergency are distinguished. */
 function kindOf(p: GesturePoint): 'fixed' | 'shortcut' | 'emergency' {
@@ -61,7 +61,7 @@ function CommandList() {
         <ol className="space-y-2 list-decimal list-inside">
           {personal.map((p) => (
             <li key={p.id} className="text-[0.95rem]">
-              <span className="font-medium">{p.id === 'pinky-tip' ? 'Shortcut 2' : 'Shortcut 1'}</span>
+              <span className="font-medium">{shortcutNameFor(p.id)}</span>
               <span className="text-muted-foreground">
                 {' '}
                 — {p.finger.toLowerCase()} {p.position.toLowerCase()}, a brief tap runs a command you choose:

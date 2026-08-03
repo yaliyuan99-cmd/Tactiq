@@ -47,12 +47,12 @@ const SCENARIOS: { figure: ReactNode; heading: string; body: string }[] = [
   {
     figure: <CaneFigure />,
     heading: 'One hand is already busy',
-    body: 'A cane or a guide-dog harness occupies one hand outdoors. Tactiq puts every command on the free hand, so nothing has to be put down.',
+    body: 'A cane or a guide-dog harness occupies one hand outdoors. Tactiq is designed to put every command on the free hand, so nothing has to be put down.',
   },
   {
     figure: <PhoneRingFigure />,
     heading: 'A call in a loud place',
-    body: 'On a train platform, voice control fails and a touchscreen demands attention. A tap on the index finger answers the call; a tap below it declines.',
+    body: 'On a train platform, voice control fails and a touchscreen demands attention. In the design, a tap on the index finger answers the call; a tap below it declines.',
   },
   {
     figure: <QuietBrowseFigure />,

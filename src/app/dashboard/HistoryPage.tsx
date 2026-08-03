@@ -5,7 +5,7 @@
  */
 import { useEffect, useMemo, useState } from 'react';
 import { History } from 'lucide-react';
-import { gesturePoints, commandLabelFor, DEFAULT_LAYOUT } from '../../lib/gestures';
+import { gesturePoints, commandLabelFor, shortcutNameFor, DEFAULT_LAYOUT } from '../../lib/gestures';
 
 interface SampleEvent {
   point: string;
@@ -21,11 +21,11 @@ const SAMPLE: SampleEvent[] = [
   { point: 'middle-base', command: 'Next', minutesAgo: 9, ok: true },
   { point: 'ring-tip', command: 'Read / Repeat', minutesAgo: 12, ok: true },
   { point: 'index-base', command: 'Dismiss / Back', minutesAgo: 21, ok: true },
-  { point: 'pinky-base', command: `Shortcut 1 — ${commandLabelFor(DEFAULT_LAYOUT, 'pinky-base')}`, minutesAgo: 34, ok: true },
+  { point: 'pinky-base', command: `${shortcutNameFor('pinky-base')} — ${commandLabelFor(DEFAULT_LAYOUT, 'pinky-base')}`, minutesAgo: 34, ok: true },
   { point: 'middle-tip', command: 'Undo', minutesAgo: 35, ok: true },
   { point: 'ring-base', command: 'Previous', minutesAgo: 58, ok: true },
   { point: 'index-tip', command: 'Confirm', minutesAgo: 61, ok: false },
-  { point: 'pinky-tip', command: `Shortcut 2 — ${commandLabelFor(DEFAULT_LAYOUT, 'pinky-tip')}`, minutesAgo: 75, ok: true },
+  { point: 'pinky-tip', command: `${shortcutNameFor('pinky-tip')} — ${commandLabelFor(DEFAULT_LAYOUT, 'pinky-tip')}`, minutesAgo: 75, ok: true },
 ];
 
 function pointName(id: string): string {

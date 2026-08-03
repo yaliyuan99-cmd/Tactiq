@@ -11,15 +11,15 @@ interface Faq {
 const FAQS: Faq[] = [
   {
     q: 'How does the ring know which point I tapped?',
-    a: 'A passive magnet and three low-cost magnetometers in the ring localize the thumb using the inverse-cube law. In simulation that resolves position to about 1.65 mm at the array centre — against 20–25 mm between contact points. It all happens on-device: no camera, no microphone, no cloud round-trip. These are simulation results; the bench experiment (August–October 2026) measures real thumbs.',
+    a: 'The design uses a passive magnet on the thumb and three low-cost magnetometers in the ring, locating the thumb by the inverse-cube fall-off of the field. At the scale of a hand, simulation resolves the worst contact point to about 1.7 mm from sensor noise alone — well inside the 11 mm decision radius around each point. Detection is specified to run on-device: no camera, no microphone, no cloud round-trip. These are simulation results, not measurements; the bench experiment (August–October 2026) measures real thumbs. The open risk is not sensor noise but thumb aim, which has never been measured.',
   },
   {
     q: 'Do I need to look at my phone to use it?',
-    a: 'No — that’s the whole point. Nine fixed commands on the fingers you can always feel drive VoiceOver or TalkBack, and a distinct haptic pattern confirms each one. An optional single earbud (one ear only — ambient sound is how blind users read the street) adds spoken detail when you want it.',
+    a: 'No — that’s the whole point of the design. Nine commands sit at fixed positions on fingers you can always feel, and each is specified to drive VoiceOver or TalkBack and confirm itself with a distinct haptic pattern. An optional single earbud (one ear only — ambient sound is how blind users read the street) would add spoken detail when you want it. None of this has been built or tested on a person yet.',
   },
   {
     q: 'What stops it firing in my pocket or mid-conversation?',
-    a: 'The ring is idle until you deliberately squeeze the ring body, which opens a short command window. The pre-registered design target is at most one false activation per hour. Emergency is stricter still: a sustained 5-second hold on the pinky tip — never a tap count — so it cannot fire by accident.',
+    a: 'By design, the ring stays idle until you deliberately squeeze the ring body, which opens a short command window. The pre-registered design target is at most one false activation per hour, and it will be tested over at least three hours of instrumented ordinary wear. Emergency is stricter still: a sustained 5-second hold on the pinky tip — never a tap count — so it cannot fire by accident. The false-activation rate has not been measured yet; that measurement is one of the bench experiment’s two headline results.',
   },
   {
     q: 'Why only nine commands? Can it type?',
@@ -27,11 +27,11 @@ const FAQS: Faq[] = [
   },
   {
     q: 'Does it replace VoiceOver or TalkBack?',
-    a: 'Never — it augments them over Bluetooth. Your screen reader stays exactly as you configured it; Tactiq just gives its most-used actions a physical home on one hand, so the other hand is free for a cane or a guide-dog harness.',
+    a: 'Never — the first design principle is to augment the screen reader, never replace it. Your screen reader would stay exactly as you configured it; Tactiq is specified to give its most-used actions a physical home on one hand, so the other hand is free for a cane or a guide-dog harness.',
   },
   {
     q: 'When does it ship and how much does it cost?',
-    a: 'It doesn’t — yet. Tactiq is a student research project: the bench experiment runs August–October 2026, the AUSSEF submission is due 11 November 2026, and ISEF 2027 is the pathway after that. The bench prototype costs under $60 in parts, and the positioning aim is consumer-electronics pricing — there is deliberately no firm retail price to promise.',
+    a: 'It doesn’t — yet, and there is no wearable ring at all. Tactiq is a student research project: the bench experiment runs August–October 2026, the AUSSEF submission is due 11 November 2026, and ISEF 2027 is the pathway after that. The bench rig is planned at ≈A$40 in parts against a ≤A$60 design criterion, with receipts still pending, and the positioning aim is consumer-electronics pricing — there is deliberately no firm retail price to promise.',
   },
   {
     q: 'Is Tactiq only for blind or low-vision users?',
@@ -39,7 +39,7 @@ const FAQS: Faq[] = [
   },
   {
     q: 'Is my data private?',
-    a: 'Yes. Tap detection runs on the ring itself, so your movements never leave your hand unless you choose to sync shortcut layouts. We collect the minimum needed to run your account, and never sell your data.',
+    a: 'That is a design commitment, and worth being precise about: tap detection is specified to run on the ring itself, so your movements would never leave your hand unless you chose to sync shortcut layouts. No ring exists yet, so today the only data involved is this website and your account — we collect the minimum needed to run it, and never sell your data.',
   },
 ];
 

@@ -10,8 +10,8 @@ type Stage = 'done' | 'current' | 'future';
 
 const STAGES: { name: string; when: string; state: Stage; note: string }[] = [
   { name: 'Design study', when: 'completed', state: 'done', note: 'Nine design principles; capacity analysis found the knee at eight contact points.' },
-  { name: 'Physics simulation', when: 'completed', state: 'done', note: 'Magnet trilateration simulated: ~1.65 mm localisation at the array centre.' },
-  { name: 'Prototype construction', when: 'now', state: 'current', note: 'Bench hardware built from off-the-shelf parts — under $60 in components.' },
+  { name: 'Physics simulation', when: 'completed', state: 'done', note: 'Magnet trilateration simulated across five seeded scripts, independently re-implemented from scratch as a check.' },
+  { name: 'Bench-rig construction', when: 'scheduled from early Aug 2026', state: 'current', note: 'Parts list finalised 28 July 2026; assembly scheduled from early August. No wearable ring exists — the bench rig is the only hardware, planned at ≈A$40 against a ≤A$60 criterion, receipts pending.' },
   { name: 'Bench experiment', when: 'Aug–Oct 2026', state: 'future', note: 'Real thumbs, prompted trials, pre-registered accuracy and false-activation targets.' },
   { name: 'Analysis & write-up', when: 'Oct–Nov 2026', state: 'future', note: 'Results against the pre-registered targets, whatever they turn out to be.' },
   { name: 'AUSSEF submission', when: '11 Nov 2026', state: 'future', note: 'Australian Science and Engineering Fair entry; a possible ISEF 2027 pathway follows.' },

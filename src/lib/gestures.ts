@@ -56,22 +56,33 @@ export interface GesturePoint {
   gestures?: string[];
   /** Whether this contact point's command is customisable. */
   editable: boolean;
-  /** Haptic confirmation pattern played when this command is recognised. */
+  /**
+   * Haptic confirmation pattern *specified* for this command.
+   * DESIGN INTENT — no haptic hardware has been built, so no pattern here has
+   * ever been felt or measured. Surfaces must not present these as behaviour.
+   */
   haptic: string;
   /** Complete accessible name for screen readers. */
   srLabel: string;
 }
 
-/** Product-level facts shared by every page. */
+/**
+ * Product-level facts shared by every page.
+ *
+ * Everything in this file describes the design **as specified**. No wearable
+ * ring exists; the bench rig is the only hardware. Nothing here is a measured
+ * property, and no surface should render it in the present tense as though the
+ * device were in someone's hand.
+ */
 export const PRODUCT = {
   contactPoints: 8,
   commands: 9,
   fixedCommands: 7,
   personalShortcuts: 2,
   activation:
-    'The ring is idle until a deliberate squeeze of the ring body opens a short command window. Design target: at most one false activation per hour.',
+    'By design the ring stays idle until a deliberate squeeze of the ring body opens a short command window. Design target: at most one false activation per hour — not yet measured.',
   emergency:
-    'Emergency is a sustained five-second hold on the pinky tip — never a tap count. It is the only shared contact point, separated by duration, and it can never be remapped.',
+    'Emergency is specified as a sustained five-second hold on the pinky tip — never a tap count. It is the only shared contact point, separated by duration, and it can never be remapped.',
 } as const;
 
 export const gesturePoints: GesturePoint[] = [
@@ -171,22 +182,11 @@ export const gesturePoints: GesturePoint[] = [
     srLabel: 'Ring finger base: Previous. Fixed command. Haptic: falling double pulse.',
   },
 
-  // Pinky — the personal points
-  {
-    id: 'pinky-base',
-    finger: 'Pinky',
-    position: 'Base',
-    x: '76%',
-    y: '58%',
-    type: 'custom',
-    label: 'S1',
-    description:
-      'Shortcut 1 — one of the two points that are yours to map: speak the time, call a favourite, play a podcast, share your location…',
-    gestures: ['Brief tap: your chosen shortcut'],
-    editable: true,
-    haptic: 'Three short pulses',
-    srLabel: 'Pinky base: Personal shortcut one. Customisable. Haptic: three short pulses.',
-  },
+  // Pinky — the personal points.
+  // Order matters and is easy to get wrong: Shortcut 1 is on the TIP (sharing
+  // the point with Emergency), Shortcut 2 is on the BASE. This matches the
+  // paper and the design portfolio; an earlier version of this file had them
+  // the other way round.
   {
     id: 'pinky-tip',
     finger: 'Pinky',
@@ -194,16 +194,31 @@ export const gesturePoints: GesturePoint[] = [
     x: '76%',
     y: '35%',
     type: 'return',
-    label: 'S2·SOS',
+    label: 'S1·SOS',
     description:
-      'Shortcut 2 and Emergency share this point, separated by duration — the only shared point in the system. A brief tap fires your second shortcut; Emergency requires a sustained 5-second hold, never a tap count, so it cannot fire by accident.',
+      'Shortcut 1 and Emergency share this point, separated by duration — the only shared point in the system. A brief tap fires your first shortcut; Emergency requires a sustained 5-second hold, never a tap count, so it cannot fire by accident.',
     gestures: [
-      'Brief tap: Shortcut 2 (yours to map)',
+      'Brief tap: Shortcut 1 (yours to map)',
       'Sustained 5-second hold: Emergency',
     ],
     editable: true,
     haptic: 'Three short pulses; continuous strong pulse for emergency',
-    srLabel: 'Pinky tip: Personal shortcut two on a brief tap; Emergency on a sustained five-second hold. Shortcut is customisable, Emergency is not. Haptic: three short pulses, or a continuous strong pulse for emergency.',
+    srLabel: 'Pinky tip: Personal shortcut one on a brief tap; Emergency on a sustained five-second hold. Shortcut is customisable, Emergency is not. Haptic: three short pulses, or a continuous strong pulse for emergency.',
+  },
+  {
+    id: 'pinky-base',
+    finger: 'Pinky',
+    position: 'Base',
+    x: '76%',
+    y: '58%',
+    type: 'custom',
+    label: 'S2',
+    description:
+      'Shortcut 2 — the second of the two points that are yours to map: speak the time, call a favourite, play a podcast, share your location…',
+    gestures: ['Brief tap: your chosen shortcut'],
+    editable: true,
+    haptic: 'Three short pulses',
+    srLabel: 'Pinky base: Personal shortcut two. Customisable. Haptic: three short pulses.',
   },
 ];
 
@@ -222,6 +237,19 @@ export const colorMap: Record<
 
 /** Slots a user is allowed to remap — only the two shortcut points. */
 export const editableGesturePoints = gesturePoints.filter((p) => p.editable);
+
+/**
+ * Display name for a shortcut slot ("Shortcut 1" / "Shortcut 2"), derived from
+ * the order of `gesturePoints` above.
+ *
+ * Always call this instead of hard-coding the number at a call site. Shortcut 1
+ * is on the pinky **tip** and Shortcut 2 on the **base**; hard-coded labels had
+ * these reversed on two surfaces even after the canonical map was corrected.
+ */
+export function shortcutNameFor(slotId: string): string {
+  const index = editableGesturePoints.findIndex((p) => p.id === slotId);
+  return index === -1 ? 'Shortcut' : `Shortcut ${index + 1}`;
+}
 
 // ---------------------------------------------------------------------------
 // Command library — what a shortcut slot can be mapped to.
