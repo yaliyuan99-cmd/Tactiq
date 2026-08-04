@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Only self-canonical public pages are listed; the /how-it-works … /faq
+     section routes canonicalise to /project, so they are omitted. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://tactiq0.netlify.app/</loc></url>
+  <url><loc>https://tactiq0.netlify.app/project</loc></url>
+  <url><loc>https://tactiq0.netlify.app/help</loc></url>
+  <url><loc>https://tactiq0.netlify.app/accessibility</loc></url>
+  <url><loc>https://tactiq0.netlify.app/privacy</loc></url>
+  <url><loc>https://tactiq0.netlify.app/terms</loc></url>
+</urlset>

@@ -23,7 +23,6 @@ const LoginPage = lazy(() => import('./auth/LoginPage'));
 const SignUpPage = lazy(() => import('./auth/SignUpPage'));
 const ForgotPasswordPage = lazy(() => import('./auth/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('./auth/ResetPasswordPage'));
-const CheckoutPage = lazy(() => import('./checkout/CheckoutPage'));
 const CustomizePage = lazy(() => import('./customize/CustomizePage'));
 const AdminPage = lazy(() => import('./admin/AdminPage'));
 const DashboardLayout = lazy(() => import('./dashboard/DashboardLayout'));
@@ -74,7 +73,8 @@ export function AppRoutes() {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
+          {/* Nothing is for sale — the old checkout URL goes to the follow form. */}
+          <Route path="/checkout" element={<Navigate to="/project#follow" replace />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/accessibility" element={<AccessibilityPage />} />
@@ -84,7 +84,9 @@ export function AppRoutes() {
               <Route index element={<OverviewPage />} />
               <Route path="commands" element={<CustomizePage />} />
               <Route path="device" element={<DevicePage />} />
-              <Route path="activity" element={<HistoryPage />} />
+              <Route path="history" element={<HistoryPage />} />
+              {/* Old name for the command-history page. */}
+              <Route path="activity" element={<Navigate to="/dashboard/history" replace />} />
               <Route path="accessibility" element={<DashboardAccessibilityPage />} />
               <Route path="account" element={<AccountSettingsPage />} />
             </Route>

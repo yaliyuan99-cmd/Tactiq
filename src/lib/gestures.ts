@@ -79,6 +79,13 @@ export const PRODUCT = {
   commands: 9,
   fixedCommands: 7,
   personalShortcuts: 2,
+  /**
+   * THE canonical arithmetic sentence — reuse this verbatim wherever the
+   * command count is explained, so pages can never disagree about whether
+   * Emergency is a tenth command (it is not).
+   */
+  canonical:
+    'Eight contact points carry nine commands: seven fixed commands and two personal shortcuts. Emergency is not a tenth command — it is a sustained five-second hold on one shared point, an activation variation that can never be remapped.',
   activation:
     'By design the ring stays idle until a deliberate squeeze of the ring body opens a short command window. Design target: at most one false activation per hour — not yet measured.',
   emergency:

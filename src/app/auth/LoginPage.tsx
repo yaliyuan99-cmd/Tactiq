@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router';
-import { Loader2, ShoppingBag } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { signIn } from '../../lib/api';
 import { useAuth } from './AuthContext';
 import AuthLayout, { fieldClass } from './AuthLayout';
@@ -10,8 +10,6 @@ export default function LoginPage() {
   const [params] = useSearchParams();
   const { user } = useAuth();
   const next = params.get('next') || '/dashboard';
-  const intent = params.get('intent');
-  const isBuyIntent = intent === 'buy';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -36,21 +34,13 @@ export default function LoginPage() {
     }
   };
 
-  // Preserve next/intent/plan when bouncing over to sign-up.
+  // Preserve next when bouncing over to sign-up.
   const signUpHref = `/signup${params.toString() ? `?${params.toString()}` : ''}`;
 
   return (
     <AuthLayout
       title="Welcome back"
-      subtitle="Sign in to manage your account and gesture layouts."
-      banner={
-        isBuyIntent ? (
-          <div className="mb-4 flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm">
-            <ShoppingBag className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-            <span>Sign in to continue your purchase — your cart is waiting.</span>
-          </div>
-        ) : null
-      }
+      subtitle="Sign in to manage your account and command layouts."
       footer={
         <>
           New to Tactiq?{' '}

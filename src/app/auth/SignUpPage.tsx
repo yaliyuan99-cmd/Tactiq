@@ -1,23 +1,15 @@
 import { useState, type FormEvent } from 'react';
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router';
-import { Loader2, ShoppingBag } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { signUp } from '../../lib/api';
 import { useAuth } from './AuthContext';
 import AuthLayout, { fieldClass } from './AuthLayout';
-
-const PLAN_LABELS: Record<string, string> = {
-  essential: 'a Research Reservation',
-  pro: 'a Reservation + Updates',
-};
 
 export default function SignUpPage() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const { user } = useAuth();
   const next = params.get('next') || '/dashboard';
-  const intent = params.get('intent');
-  const plan = params.get('plan');
-  const isBuyIntent = intent === 'buy';
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -61,29 +53,11 @@ export default function SignUpPage() {
   };
 
   const signInHref = `/login${params.toString() ? `?${params.toString()}` : ''}`;
-  const planLabel = plan ? PLAN_LABELS[plan] : null;
 
   return (
     <AuthLayout
-      title={isBuyIntent ? 'Create an account to reserve' : 'Create your account'}
-      subtitle={
-        isBuyIntent
-          ? 'Sign up first — then we’ll take you straight to your reservation.'
-          : 'Join Tactiq to save shortcut layouts and follow the research.'
-      }
-      banner={
-        isBuyIntent ? (
-          <div className="mb-4 flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm">
-            <ShoppingBag className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-            <span>
-              <strong className="font-medium">Sign up, then reserve.</strong> You need a free
-              account to register
-              {planLabel ? <> {planLabel}</> : <> your research reservation</>} — no payment,
-              ever. We’ll send you right there afterwards.
-            </span>
-          </div>
-        ) : null
-      }
+      title="Create your account"
+      subtitle="Save sample command layouts, store your preferences and follow the research. There is nothing to buy — Tactiq is a research prototype."
       footer={
         <>
           Already have an account?{' '}
@@ -157,7 +131,7 @@ export default function SignUpPage() {
 
         <div>
           <label htmlFor="su-category" className="block text-sm mb-1.5">
-            I'm joining as… <span className="text-muted-foreground">(optional)</span>
+            How would you like to be involved? <span className="text-muted-foreground">(optional)</span>
           </label>
           <select
             id="su-category"
@@ -165,14 +139,18 @@ export default function SignUpPage() {
             onChange={(e) => setUserCategory(e.target.value)}
             className={`${fieldClass} text-muted-foreground`}
           >
-            <option value="">Select one…</option>
-            <option value="blind-low-vision">Blind or low-vision user</option>
-            <option value="elderly">Elderly or motor-impaired user</option>
-            <option value="motor-accessibility">Accessibility user</option>
-            <option value="developer">Developer / Tech enthusiast</option>
-            <option value="early-adopter">Early adopter</option>
+            <option value="">Prefer not to say</option>
+            <option value="blind-low-vision">Exploring as a blind or low-vision phone user</option>
+            <option value="testing-interest">Interested in prototype testing</option>
+            <option value="researcher">Researcher or educator</option>
+            <option value="accessibility-professional">Accessibility professional</option>
+            <option value="supporter">Supporter</option>
             <option value="other">Other</option>
           </select>
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            This helps us understand who is following the research. It changes nothing about
+            your account and you can leave it blank.
+          </p>
         </div>
 
         {error && (
@@ -191,8 +169,6 @@ export default function SignUpPage() {
               <Loader2 className="w-5 h-5 animate-spin" />
               Creating account…
             </>
-          ) : isBuyIntent ? (
-            'Sign up & continue to checkout'
           ) : (
             'Create account'
           )}

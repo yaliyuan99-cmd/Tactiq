@@ -53,7 +53,7 @@ export type OrderRow = {
   updated_at: string;
 };
 
-/** A saved gesture layout: maps each key id to the command assigned to it. */
+/** A saved command layout: maps each key id to the command assigned to it. */
 export type GestureLayout = Record<string, string>;
 
 export type GestureConfigRow = {

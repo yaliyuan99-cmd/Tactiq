@@ -10,25 +10,29 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
+// [route, output file, unique <title>, canonical URL (null = self)]
+const SITE = 'https://tactiq0.netlify.app';
+const DEFAULT_TITLE = 'Tactiq — silent, eyes-free phone control for blind users';
 const ROUTES = [
-  ['/', 'index.html'],
-  ['/project', 'project/index.html'],
-  ['/how-it-works', 'how-it-works/index.html'],
-  ['/prototype', 'prototype/index.html'],
-  ['/research', 'research/index.html'],
-  ['/status', 'status/index.html'],
-  ['/faq', 'faq/index.html'],
-  ['/help', 'help/index.html'],
-  ['/privacy', 'privacy/index.html'],
-  ['/terms', 'terms/index.html'],
-  ['/accessibility', 'accessibility/index.html'],
-  ['/login', 'login/index.html'],
-  ['/signup', 'signup/index.html'],
-  ['/forgot-password', 'forgot-password/index.html'],
-  ['/reset-password', 'reset-password/index.html'],
+  ['/', 'index.html', DEFAULT_TITLE, null],
+  ['/project', 'project/index.html', 'The research project · Tactiq', null],
+  // Section pages reuse /project's content, so they canonicalise to it.
+  ['/how-it-works', 'how-it-works/index.html', 'How it works · Tactiq', '/project'],
+  ['/prototype', 'prototype/index.html', 'The ring — prototype · Tactiq', '/project'],
+  ['/research', 'research/index.html', 'Research · Tactiq', '/project'],
+  ['/status', 'status/index.html', 'Project status · Tactiq', '/project'],
+  ['/faq', 'faq/index.html', 'FAQ · Tactiq', '/project'],
+  ['/help', 'help/index.html', 'Help · Tactiq', null],
+  ['/privacy', 'privacy/index.html', 'Privacy Policy · Tactiq', null],
+  ['/terms', 'terms/index.html', 'Terms of Service · Tactiq', null],
+  ['/accessibility', 'accessibility/index.html', 'Accessibility statement · Tactiq', null],
+  ['/login', 'login/index.html', 'Sign in · Tactiq', null],
+  ['/signup', 'signup/index.html', 'Create your account · Tactiq', null],
+  ['/forgot-password', 'forgot-password/index.html', 'Reset your password · Tactiq', null],
+  ['/reset-password', 'reset-password/index.html', 'Choose a new password · Tactiq', null],
   // No /404 route exists, so this renders the catch-all NotFoundPage —
   // Netlify serves dist/404.html for every unknown path with a real 404 status.
-  ['/404', '404.html'],
+  ['/404', '404.html', 'Page not found · Tactiq', null],
 ];
 
 const template = readFileSync('dist/index.html', 'utf8');
@@ -40,13 +44,23 @@ if (!template.includes('<div id="root"></div>')) {
 const { render } = await import('./dist-ssr/prerender-entry.js');
 
 let failures = 0;
-for (const [route, outFile] of ROUTES) {
+for (const [route, outFile, title, canonicalTo] of ROUTES) {
   try {
     const appHtml = await render(route);
-    const page = template.replace(
+    const canonicalPath = canonicalTo ?? route;
+    const canonicalUrl = canonicalPath === '/' ? `${SITE}/` : `${SITE}${canonicalPath}`;
+    let page = template.replace(
       '<div id="root"></div>',
       `<div id="root">${appHtml}</div>`,
     );
+    page = page.replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`);
+    // The 404 page is served for arbitrary unknown URLs, so it gets no canonical.
+    if (route !== '/404') {
+      page = page.replace(
+        '</head>',
+        `  <link rel="canonical" href="${canonicalUrl}" />\n    </head>`,
+      );
+    }
     const target = join('dist', outFile);
     mkdirSync(dirname(target), { recursive: true });
     writeFileSync(target, page);

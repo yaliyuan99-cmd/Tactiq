@@ -102,7 +102,7 @@ export default function OverviewPage() {
                 Once a ring exists, recognised commands appear here. For now the page shows
                 clearly labelled sample data so you can see how it will read.
               </p>
-              <Link to="/dashboard/activity" className="text-[0.95rem] text-primary-strong underline underline-offset-4 hover:no-underline">
+              <Link to="/dashboard/history" className="text-[0.95rem] text-primary-strong underline underline-offset-4 hover:no-underline">
                 View sample command history
               </Link>
             </div>

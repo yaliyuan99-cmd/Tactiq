@@ -798,7 +798,9 @@ export async function isAdmin(): Promise<boolean> {
     return Boolean(data?.is_admin);
   }
 
-  // --- Local fallback -------------------------------------------------------
+  // --- Local fallback (DEV builds only — compiled out of production, so no
+  // allowlist or bootstrap logic ever ships in the public bundle) ------------
+  if (!import.meta.env.DEV) return false;
   const session = getLocalSessionUser();
   if (!session) return false;
   // An explicit per-account flag (set in the admin console) always wins.

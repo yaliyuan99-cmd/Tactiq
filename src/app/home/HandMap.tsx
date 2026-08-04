@@ -16,7 +16,7 @@
 import { useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { List, Hand as HandIcon } from 'lucide-react';
-import { gesturePoints, shortcutNameFor, type GesturePoint } from '../../lib/gestures';
+import { gesturePoints, shortcutNameFor, PRODUCT, type GesturePoint } from '../../lib/gestures';
 
 /** Visual kind per point — fixed / shortcut / emergency are distinguished. */
 function kindOf(p: GesturePoint): 'fixed' | 'shortcut' | 'emergency' {
@@ -113,9 +113,7 @@ export default function HandMap() {
           </button>
         </div>
         <p className="text-muted-foreground max-w-[42rem] mb-10">
-          Every command lives on skin you can feel without looking. Seven fixed commands,
-          two personal shortcuts, and one emergency hold — separated by position and, for
-          the emergency, by duration.
+          Every command lives on skin you can feel without looking. {PRODUCT.canonical}
         </p>
 
         {showList ? (

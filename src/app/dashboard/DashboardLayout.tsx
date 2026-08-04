@@ -24,7 +24,7 @@ const NAV = [
   { to: '/dashboard', label: 'Overview', Icon: LayoutDashboard, end: true },
   { to: '/dashboard/commands', label: 'Commands', Icon: Settings2 },
   { to: '/dashboard/device', label: 'Device', Icon: Bluetooth },
-  { to: '/dashboard/activity', label: 'Command history', Icon: History },
+  { to: '/dashboard/history', label: 'Command history', Icon: History },
   { to: '/dashboard/accessibility', label: 'Accessibility', Icon: PersonStanding },
   { to: '/dashboard/account', label: 'Account', Icon: UserRound },
 ];

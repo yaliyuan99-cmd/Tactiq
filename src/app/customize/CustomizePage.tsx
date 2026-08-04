@@ -35,6 +35,10 @@ import { fieldClass } from '../auth/AuthLayout';
 export default function CustomizePage() {
   const [params] = useSearchParams();
 
+  useEffect(() => {
+    document.title = 'Commands · Tactiq';
+  }, []);
+
   const [layout, setLayout] = useState<GestureLayout>({ ...DEFAULT_LAYOUT });
   const [name, setName] = useState('My Layout');
   const [configId, setConfigId] = useState<string | undefined>();
@@ -179,7 +183,7 @@ export default function CustomizePage() {
             </div>
             {slotGroups.map((group) => (
               <div key={group.finger} className="space-y-2">
-                <h3 className="text-xs font-medium text-muted-foreground/80 px-1">
+                <h3 className="text-xs font-medium text-muted-foreground px-1">
                   {group.finger}
                 </h3>
                 {group.points.map((point) => {

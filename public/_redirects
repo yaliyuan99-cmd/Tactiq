@@ -8,5 +8,5 @@
 /account        /dashboard    301
 /customize      /dashboard/commands  301
 /admin          /index.html   200
-/checkout       /index.html   200
+/checkout       /project#follow  301
 /*              /404.html     404

@@ -1,7 +1,7 @@
 /** Shared shell for the sign-in / sign-up / password screens. */
+import { useEffect, type ReactNode } from 'react';
 import { Link } from 'react-router';
 import { Hand } from 'lucide-react';
-import type { ReactNode } from 'react';
 
 /** Shared input styling used across the auth forms. */
 export const fieldClass =
@@ -20,6 +20,11 @@ export default function AuthLayout({
   children: ReactNode;
   footer?: ReactNode;
 }) {
+  // Every auth screen gets its own tab title (P1-4 in AUDIT.md).
+  useEffect(() => {
+    document.title = `${title} · Tactiq`;
+  }, [title]);
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="px-4 sm:px-6 lg:px-8 py-5">

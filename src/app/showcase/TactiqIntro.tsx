@@ -79,7 +79,7 @@ const STEPS = [
   {
     n: '05',
     name: 'Confirm',
-    desc: 'A distinct haptic pattern confirms what the ring heard. Nine fixed commands, always on your hand — the interface disappears and the control stays.',
+    desc: 'A distinct haptic pattern confirms what the ring heard. Nine commands, always on your hand — the interface disappears and the control stays.',
   },
 ];
 
@@ -90,7 +90,7 @@ const CAPS = [
   {
     icon: Fingerprint,
     title: 'Meet the ring',
-    body: 'One feather-light smart ring on the index finger of either hand. Your thumb taps eight contact points on your own fingers — nine fixed commands you can always feel.',
+    body: 'One feather-light smart ring on the index finger of either hand. Your thumb taps eight contact points on your own fingers — nine commands you can always feel.',
     tags: ['One ring', 'Bluetooth LE', 'On-device', 'Haptic feedback'],
   },
   {
@@ -319,6 +319,15 @@ function Hero() {
         }}
       />
 
+      {/* Skip link — first focusable element on the page */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-md"
+        style={{ background: 'var(--t-violet)', color: '#fff' }}
+      >
+        Skip to content
+      </a>
+
       {/* Nav */}
       <nav className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6 md:px-10">
         <a
@@ -344,18 +353,22 @@ function Hero() {
           to="/project#follow"
           className="t-btn-outline inline-flex min-h-11 items-center rounded-full px-5 text-sm font-medium"
         >
-          Get early access
+          Follow the project
         </Link>
       </nav>
 
       {/* Hero copy */}
-      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-6 py-16 text-center">
+      <div
+        id="main-content"
+        tabIndex={-1}
+        className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-6 py-16 text-center focus:outline-none"
+      >
         <span className="t-rise mb-6 inline-flex items-center gap-2 rounded-full border border-[rgba(240,238,252,0.22)] bg-[rgba(11,10,20,0.35)] px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-[var(--t-muted)] backdrop-blur-sm">
           <span
             className="h-1.5 w-1.5 rounded-full"
             style={{ background: 'var(--t-green)' }}
           />
-          Next-gen wearable control
+          Student research prototype
         </span>
 
         <h1
@@ -697,7 +710,7 @@ function ClosingCTA() {
               to="/project#follow"
               className="t-btn-solid inline-flex min-h-12 items-center gap-2 rounded-full px-9 py-4 text-base font-semibold"
             >
-              Get early access
+              Follow the project
               <ArrowUpRight className="h-5 w-5" />
             </Link>
             <Magnet padding={80} strength={4}>
