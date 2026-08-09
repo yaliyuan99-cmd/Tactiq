@@ -2,12 +2,14 @@
  * Protected dashboard shell: persistent sidebar on desktop, accessible
  * drawer on mobile, shared by every /dashboard page via <Outlet/>.
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, Link, Outlet, useNavigate } from 'react-router';
 import {
   Hand,
   LayoutDashboard,
   Settings2,
+  Grip,
+  GraduationCap,
   Bluetooth,
   History,
   PersonStanding,
@@ -19,10 +21,15 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import { signOut } from '../../lib/api';
+import { useAuth } from '../auth/AuthContext';
+import { deviceManager } from '../../services/device/manager';
+import LiveRegions from '../components/LiveRegions';
 
 const NAV = [
   { to: '/dashboard', label: 'Overview', Icon: LayoutDashboard, end: true },
   { to: '/dashboard/commands', label: 'Commands', Icon: Settings2 },
+  { to: '/dashboard/simulator', label: 'Simulator', Icon: Grip },
+  { to: '/dashboard/training', label: 'Training', Icon: GraduationCap },
   { to: '/dashboard/device', label: 'Device', Icon: Bluetooth },
   { to: '/dashboard/history', label: 'Command history', Icon: History },
   { to: '/dashboard/accessibility', label: 'Accessibility', Icon: PersonStanding },
@@ -83,9 +90,17 @@ function NavItems({ onNavigate }: { onNavigate?: () => void }) {
 
 export default function DashboardLayout() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { user } = useAuth();
+
+  // Point the device manager at this user's paired-ring list (simulator,
+  // training, and device pages all share the one store).
+  useEffect(() => {
+    deviceManager.setNamespace(user?.id ?? null);
+  }, [user?.id]);
 
   return (
     <div className="min-h-screen bg-background">
+      <LiveRegions />
       <a
         href="#dash-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md"

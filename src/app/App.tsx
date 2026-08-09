@@ -27,6 +27,8 @@ const CustomizePage = lazy(() => import('./customize/CustomizePage'));
 const AdminPage = lazy(() => import('./admin/AdminPage'));
 const DashboardLayout = lazy(() => import('./dashboard/DashboardLayout'));
 const OverviewPage = lazy(() => import('./dashboard/OverviewPage'));
+const SimulatorPage = lazy(() => import('./dashboard/SimulatorPage'));
+const TrainingPage = lazy(() => import('./dashboard/TrainingPage'));
 const DevicePage = lazy(() => import('./dashboard/DevicePage'));
 const HistoryPage = lazy(() => import('./dashboard/HistoryPage'));
 const DashboardAccessibilityPage = lazy(() => import('./dashboard/AccessibilityPage'));
@@ -83,6 +85,8 @@ export function AppRoutes() {
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<OverviewPage />} />
               <Route path="commands" element={<CustomizePage />} />
+              <Route path="simulator" element={<SimulatorPage />} />
+              <Route path="training" element={<TrainingPage />} />
               <Route path="device" element={<DevicePage />} />
               <Route path="history" element={<HistoryPage />} />
               {/* Old name for the command-history page. */}

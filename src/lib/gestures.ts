@@ -44,8 +44,19 @@ export type GestureType =
   | 'return'
   | 'space';
 
+/** The eight canonical contact points — the vocabulary of the whole system. */
+export type ContactId =
+  | 'index-tip'
+  | 'index-base'
+  | 'middle-tip'
+  | 'middle-base'
+  | 'ring-tip'
+  | 'ring-base'
+  | 'pinky-tip'
+  | 'pinky-base';
+
 export interface GesturePoint {
-  id: string;
+  id: ContactId;
   finger: string;
   position: string;
   x: string;
@@ -64,6 +75,8 @@ export interface GesturePoint {
   haptic: string;
   /** Complete accessible name for screen readers. */
   srLabel: string;
+  /** Number key that stands in for this contact in the simulator. */
+  simKey: string;
 }
 
 /**
@@ -90,6 +103,12 @@ export const PRODUCT = {
     'By design the ring stays idle until a deliberate squeeze of the ring body opens a short command window. Design target: at most one false activation per hour — not yet measured.',
   emergency:
     'Emergency is specified as a sustained five-second hold on the pinky tip — never a tap count. It is the only shared contact point, separated by duration, and it can never be remapped.',
+  /** Engagement-hold default from the PRD (GATE-2); tunable, placeholder until τ* is derived. */
+  gateHoldMsDefault: 150,
+  /** How long the command window stays open after a wake squeeze (design value for the simulator). */
+  commandWindowMs: 4000,
+  /** Emergency sustained-hold duration (GES-3 / P6). */
+  emergencyHoldMs: 5000,
 } as const;
 
 export const gesturePoints: GesturePoint[] = [
@@ -108,6 +127,7 @@ export const gesturePoints: GesturePoint[] = [
     editable: false,
     haptic: 'One short pulse',
     srLabel: 'Index finger tip: Confirm. Fixed command. Haptic: one short pulse.',
+    simKey: '1',
   },
   {
     id: 'index-base',
@@ -123,6 +143,7 @@ export const gesturePoints: GesturePoint[] = [
     editable: false,
     haptic: 'Two short pulses',
     srLabel: 'Index finger base: Dismiss or Back. Fixed command. Haptic: two short pulses.',
+    simKey: '2',
   },
 
   // Middle finger — Undo / Next
@@ -140,6 +161,7 @@ export const gesturePoints: GesturePoint[] = [
     editable: false,
     haptic: 'Long then short pulse',
     srLabel: 'Middle finger tip: Undo. Fixed command. Haptic: a long then short pulse.',
+    simKey: '3',
   },
   {
     id: 'middle-base',
@@ -155,6 +177,7 @@ export const gesturePoints: GesturePoint[] = [
     editable: false,
     haptic: 'Rising double pulse',
     srLabel: 'Middle finger base: Next. Fixed command. Haptic: rising double pulse.',
+    simKey: '4',
   },
 
   // Ring finger — Read/Repeat / Previous
@@ -172,6 +195,7 @@ export const gesturePoints: GesturePoint[] = [
     editable: false,
     haptic: 'Soft sustained pulse',
     srLabel: 'Ring finger tip: Read or Repeat. Fixed command. Haptic: soft sustained pulse.',
+    simKey: '5',
   },
   {
     id: 'ring-base',
@@ -187,6 +211,7 @@ export const gesturePoints: GesturePoint[] = [
     editable: false,
     haptic: 'Falling double pulse',
     srLabel: 'Ring finger base: Previous. Fixed command. Haptic: falling double pulse.',
+    simKey: '6',
   },
 
   // Pinky — the personal points.
@@ -211,6 +236,7 @@ export const gesturePoints: GesturePoint[] = [
     editable: true,
     haptic: 'Three short pulses; continuous strong pulse for emergency',
     srLabel: 'Pinky tip: Personal shortcut one on a brief tap; Emergency on a sustained five-second hold. Shortcut is customisable, Emergency is not. Haptic: three short pulses, or a continuous strong pulse for emergency.',
+    simKey: '7',
   },
   {
     id: 'pinky-base',
@@ -226,8 +252,41 @@ export const gesturePoints: GesturePoint[] = [
     editable: true,
     haptic: 'Three short pulses',
     srLabel: 'Pinky base: Personal shortcut two. Customisable. Haptic: three short pulses.',
+    simKey: '8',
   },
 ];
+
+export const CONTACTS_BY_ID: Record<string, GesturePoint> = Object.fromEntries(
+  gesturePoints.map((p) => [p.id, p]),
+);
+
+/** Visual/semantic kind of a contact point — fixed, shortcut, or the shared
+ * shortcut+emergency point. */
+export type PointKind = 'fixed' | 'shortcut' | 'emergency';
+
+export function kindOf(p: GesturePoint): PointKind {
+  if (p.id === 'pinky-tip') return 'emergency';
+  return p.editable ? 'shortcut' : 'fixed';
+}
+
+export const KIND_LABEL: Record<PointKind, string> = {
+  fixed: 'Fixed command',
+  shortcut: 'Personal shortcut',
+  emergency: 'Shortcut + emergency hold',
+};
+
+/**
+ * What the phone's screen reader would say when each fixed command lands.
+ * Used only by the simulator's simulated VoiceOver/TalkBack response line.
+ */
+export const FIXED_COMMAND_RESPONSES: Record<string, string> = {
+  'index-tip': 'Selected.',
+  'index-base': 'Back.',
+  'middle-tip': 'Action undone.',
+  'middle-base': 'Next item.',
+  'ring-tip': 'Reading current item.',
+  'ring-base': 'Previous item.',
+};
 
 export const colorMap: Record<
   GestureType,
@@ -269,32 +328,34 @@ export interface CommandDef {
   label: string;
   category: string;
   icon: LucideIcon;
+  /** Simulated phone response used by the simulator and training pages. */
+  response: string;
 }
 
 export const COMMAND_LIBRARY: CommandDef[] = [
   // Media
-  { id: 'media-playpause', label: 'Play / Pause', category: 'Media', icon: Play },
-  { id: 'media-next', label: 'Next track', category: 'Media', icon: SkipForward },
-  { id: 'media-prev', label: 'Previous track', category: 'Media', icon: SkipBack },
-  { id: 'rewind-10', label: 'Rewind 10 seconds', category: 'Media', icon: Rewind },
-  { id: 'forward-30', label: 'Forward 30 seconds', category: 'Media', icon: FastForward },
-  { id: 'volume-up', label: 'Volume up', category: 'Media', icon: Volume2 },
-  { id: 'volume-down', label: 'Volume down', category: 'Media', icon: Volume1 },
+  { id: 'media-playpause', label: 'Play / Pause', category: 'Media', icon: Play, response: 'Playing.' },
+  { id: 'media-next', label: 'Next track', category: 'Media', icon: SkipForward, response: 'Next track.' },
+  { id: 'media-prev', label: 'Previous track', category: 'Media', icon: SkipBack, response: 'Previous track.' },
+  { id: 'rewind-10', label: 'Rewind 10 seconds', category: 'Media', icon: Rewind, response: 'Rewound 10 seconds.' },
+  { id: 'forward-30', label: 'Forward 30 seconds', category: 'Media', icon: FastForward, response: 'Skipped forward 30 seconds.' },
+  { id: 'volume-up', label: 'Volume up', category: 'Media', icon: Volume2, response: 'Volume up.' },
+  { id: 'volume-down', label: 'Volume down', category: 'Media', icon: Volume1, response: 'Volume down.' },
   // Phone & messages
-  { id: 'call-favorite', label: 'Call favourite contact', category: 'Phone', icon: PhoneCall },
-  { id: 'read-last-message', label: 'Read last message', category: 'Messages', icon: MessageSquare },
-  { id: 'reply-voice', label: 'Reply by voice', category: 'Messages', icon: Mic },
+  { id: 'call-favorite', label: 'Call favourite contact', category: 'Phone', icon: PhoneCall, response: 'Calling your favourite contact.' },
+  { id: 'read-last-message', label: 'Read last message', category: 'Messages', icon: MessageSquare, response: 'Reading your last message.' },
+  { id: 'reply-voice', label: 'Reply by voice', category: 'Messages', icon: Mic, response: 'Reply by voice. Speak after the tone.' },
   // Apps
-  { id: 'open-navigation', label: 'Open navigation', category: 'Apps', icon: Navigation },
-  { id: 'open-camera', label: 'Open camera', category: 'Apps', icon: Camera },
-  { id: 'open-assistant', label: 'Open voice assistant', category: 'Apps', icon: Bot },
-  { id: 'open-notes', label: 'New note', category: 'Apps', icon: NotebookPen },
+  { id: 'open-navigation', label: 'Open navigation', category: 'Apps', icon: Navigation, response: 'Navigation open.' },
+  { id: 'open-camera', label: 'Open camera', category: 'Apps', icon: Camera, response: 'Camera open.' },
+  { id: 'open-assistant', label: 'Open voice assistant', category: 'Apps', icon: Bot, response: 'Assistant listening.' },
+  { id: 'open-notes', label: 'New note', category: 'Apps', icon: NotebookPen, response: 'New note. Recording.' },
   // Utility & accessibility
-  { id: 'share-location', label: 'Share my location', category: 'Utility', icon: MapPin },
-  { id: 'announce-time', label: 'Announce time', category: 'Utility', icon: Clock },
-  { id: 'announce-battery', label: 'Announce battery', category: 'Utility', icon: BatteryCharging },
-  { id: 'magnifier', label: 'Toggle magnifier', category: 'Utility', icon: ZoomIn },
-  { id: 'screen-reader', label: 'Toggle screen reader', category: 'Utility', icon: Eye },
+  { id: 'share-location', label: 'Share my location', category: 'Utility', icon: MapPin, response: 'Location shared with your chosen contact.' },
+  { id: 'announce-time', label: 'Announce time', category: 'Utility', icon: Clock, response: 'It is currently the announced time.' },
+  { id: 'announce-battery', label: 'Announce battery', category: 'Utility', icon: BatteryCharging, response: 'Phone battery announced.' },
+  { id: 'magnifier', label: 'Toggle magnifier', category: 'Utility', icon: ZoomIn, response: 'Magnifier on.' },
+  { id: 'screen-reader', label: 'Toggle screen reader', category: 'Utility', icon: Eye, response: 'Screen reader toggled.' },
 ];
 
 export const COMMANDS_BY_ID: Record<string, CommandDef> = Object.fromEntries(
@@ -315,4 +376,45 @@ export const DEFAULT_LAYOUT: GestureLayout = {
 export function commandLabelFor(layout: GestureLayout, slotId: string): string {
   const cmdId = layout[slotId] ?? DEFAULT_LAYOUT[slotId];
   return cmdId ? (COMMANDS_BY_ID[cmdId]?.label ?? 'Unassigned') : 'Unassigned';
+}
+
+/**
+ * The name a landed gesture displays, given the active layout: fixed commands
+ * come from the point label; shortcut slots resolve through the layout.
+ */
+export function effectiveCommandFor(
+  layout: GestureLayout,
+  contactId: ContactId,
+  hold = false,
+): { name: string; response: string; kind: PointKind } {
+  if (contactId === 'pinky-tip' && hold) {
+    return {
+      name: 'Emergency (platform SOS)',
+      response: 'Emergency. Contacting the platform S O S pathway.',
+      kind: 'emergency',
+    };
+  }
+  const point = CONTACTS_BY_ID[contactId];
+  if (point?.editable) {
+    const cmdId = layout[contactId] ?? DEFAULT_LAYOUT[contactId];
+    const cmd = cmdId ? COMMANDS_BY_ID[cmdId] : undefined;
+    return {
+      name: cmd?.label ?? 'Unassigned shortcut',
+      response: cmd?.response ?? 'No command assigned to this shortcut.',
+      kind: 'shortcut',
+    };
+  }
+  const fixedNames: Record<string, string> = {
+    'index-tip': 'Confirm',
+    'index-base': 'Dismiss / Back',
+    'middle-tip': 'Undo',
+    'middle-base': 'Next',
+    'ring-tip': 'Read / Repeat',
+    'ring-base': 'Previous',
+  };
+  return {
+    name: fixedNames[contactId] ?? point?.label ?? 'Command',
+    response: FIXED_COMMAND_RESPONSES[contactId] ?? 'Done.',
+    kind: 'fixed',
+  };
 }

@@ -4,6 +4,7 @@
  * an *opt-in* 3D concept model (never auto-loaded, never auto-rotating).
  */
 import { lazy, Suspense, useState } from 'react';
+import { Link } from 'react-router';
 import { Box } from 'lucide-react';
 import EvidenceStatus from './EvidenceStatus';
 
@@ -171,6 +172,21 @@ export default function Prototype() {
                 </li>
               ))}
             </ul>
+
+            <div className="mt-8 border border-border rounded-lg p-5">
+              <h3 className="mb-1.5">Try the whole loop yourself</h3>
+              <p className="text-[0.95rem] text-muted-foreground mb-4">
+                A free account opens the simulator — squeeze to wake, tap the eight points,
+                drill the emergency hold — and a five-lesson training mode. All simulated, and
+                labelled as such; no hardware exists yet.
+              </p>
+              <Link
+                to="/signup?next=%2Fdashboard%2Fsimulator"
+                className="inline-flex items-center h-11 px-5 bg-primary text-primary-foreground rounded-md font-medium hover:opacity-90 transition-opacity"
+              >
+                Open the simulator
+              </Link>
+            </div>
           </div>
         </div>
       </div>

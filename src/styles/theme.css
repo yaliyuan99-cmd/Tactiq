@@ -329,6 +329,23 @@
   }
 }
 
+/* One-shot flash when the simulator recognises a gesture on a contact point.
+   Decorative only — the recognised command is also announced in text. */
+@keyframes sim-flash-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 55%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 14px transparent;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sim-flash {
+    animation: sim-flash-ring 0.7s ease-out;
+  }
+}
+
 /* Command-strip marquee: two identical rows slide by exactly one row's width,
    so the loop is seamless. CSS-only (runs without JS); the reduced-motion
    global rule freezes it into a static row. */
