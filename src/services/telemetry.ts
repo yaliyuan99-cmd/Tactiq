@@ -106,9 +106,13 @@ export function startTelemetry(userId: string | null) {
   });
 }
 
+/** Stable reference for the signed-out state — useSyncExternalStore requires
+ * getSnapshot to return identical values when nothing changed. */
+const NO_EVENTS: ActivityEvent[] = [];
+
 /** All recorded events, newest first. */
 export function listEvents(): ActivityEvent[] {
-  if (!namespace) return [];
+  if (!namespace) return NO_EVENTS;
   return load();
 }
 
