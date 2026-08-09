@@ -14,11 +14,12 @@
  * The 3D module is lazy-loaded; without WebGL the page quietly serves the
  * poster and the component list — nothing is lost but the rotation.
  */
-import { Suspense, lazy, useEffect, useMemo, useState, Component, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
-import { Minus, Plus, Grip, Bluetooth } from 'lucide-react';
+import { Grip, Bluetooth } from 'lucide-react';
 import EvidenceStatus from '../home/EvidenceStatus';
 import SensorDemo from '../components/SensorDemo';
+import RingExploded2D from '../components/RingExploded2D';
 import { SimHand, HandLegend } from '../components/SimHand';
 import { RING_PARTS, type PartId } from '../ring3d/ringParts';
 import { useDeviceSnapshot } from '../../services/device/useDevice';
@@ -27,39 +28,7 @@ import { loadA11yPrefs } from '../../lib/a11yPrefs';
 import { gesturePoints, kindOf, KIND_LABEL, PRODUCT, type ContactId } from '../../lib/gestures';
 import { cn } from '../../lib/utils';
 
-const RingScene = lazy(() => import('../ring3d/RingScene'));
-
 type Mode = 'hardware' | 'sensors' | 'commands';
-
-function webglAvailable(): boolean {
-  try {
-    const canvas = document.createElement('canvas');
-    return !!(canvas.getContext('webgl2') || canvas.getContext('webgl'));
-  } catch {
-    return false;
-  }
-}
-
-/** If the 3D canvas throws (lost context, odd driver), fall back quietly. */
-class SceneBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
-  state = { failed: false };
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-  render() {
-    return this.state.failed ? this.props.fallback : this.props.children;
-  }
-}
-
-function RingPoster() {
-  return (
-    <img
-      src="/models/ring-poster.svg"
-      alt="Concept illustration of the Tactiq ring"
-      className="w-full max-w-xs mx-auto opacity-90"
-    />
-  );
-}
 
 function DeviceHud() {
   const device = useDeviceSnapshot();
@@ -110,18 +79,11 @@ export default function RingPage() {
   const [mode, setMode] = useState<Mode>('hardware');
   const [explode, setExplode] = useState(0);
   const [selected, setSelected] = useState<PartId | null>(null);
-  const [zoom, setZoom] = useState(3.4);
   const [selectedContact, setSelectedContact] = useState<ContactId | null>(null);
-  const [webgl, setWebgl] = useState(true);
   const prefs = useMemo(() => loadA11yPrefs(), []);
-  const reducedMotion = useMemo(
-    () => prefs.reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-    [prefs],
-  );
 
   useEffect(() => {
     document.title = 'Ring · Tactiq';
-    setWebgl(webglAvailable());
   }, []);
 
   const contactDetail = selectedContact
@@ -170,54 +132,15 @@ export default function RingPage() {
       {mode === 'hardware' && (
         <div className="grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] gap-10 items-start">
           <div>
-            <div className="relative aspect-square max-h-[440px] w-full">
-              {webgl ? (
-                <SceneBoundary fallback={<RingPoster />}>
-                  <Suspense
-                    fallback={
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-40 h-40 rounded-full border-[14px] border-muted animate-pulse" aria-hidden />
-                        <span className="sr-only">Loading the 3D ring…</span>
-                      </div>
-                    }
-                  >
-                    <RingScene
-                      explode={explode / 100}
-                      selected={selected}
-                      onSelect={setSelected}
-                      reducedMotion={reducedMotion}
-                      zoom={zoom}
-                    />
-                  </Suspense>
-                </SceneBoundary>
-              ) : (
-                <RingPoster />
-              )}
-
-              {webgl && (
-                <div className="absolute bottom-2 right-2 flex gap-1.5">
-                  <button
-                    onClick={() => setZoom((z) => Math.min(5, z + 0.5))}
-                    aria-label="Zoom out"
-                    className="w-11 h-11 flex items-center justify-center rounded-md border border-border bg-background/90 hover:bg-secondary transition-colors active:scale-[0.97]"
-                  >
-                    <Minus className="w-4 h-4" aria-hidden />
-                  </button>
-                  <button
-                    onClick={() => setZoom((z) => Math.max(2.2, z - 0.5))}
-                    aria-label="Zoom in"
-                    className="w-11 h-11 flex items-center justify-center rounded-md border border-border bg-background/90 hover:bg-secondary transition-colors active:scale-[0.97]"
-                  >
-                    <Plus className="w-4 h-4" aria-hidden />
-                  </button>
-                </div>
-              )}
-            </div>
-            {webgl && (
-              <p className="font-mono-label text-muted-foreground text-center mt-2" aria-hidden>
-                Drag to rotate · click a part to inspect
-              </p>
-            )}
+            <RingExploded2D
+              explode={explode / 100}
+              selected={selected}
+              onSelect={setSelected}
+              className="w-full max-h-[440px] h-auto select-none text-foreground"
+            />
+            <p className="font-mono-label text-muted-foreground text-center mt-2" aria-hidden>
+              Click a part to inspect it
+            </p>
 
             {/* Assembly slider — the physical control of the page. */}
             <div className="mt-6">

@@ -1,61 +1,25 @@
 /**
  * "Inside the ring" — the interactive exploded-assembly experience, on the
  * public front page. Same digital twin as the dashboard (one part list, one
- * 3D scene), dressed in the showcase's light violet-paper language.
+ * drawing), dressed in the showcase's light violet-paper language.
  *
- * Performance: the 3D module (three.js) loads only when this section
- * scrolls into view in a real browser — the prerendered page ships the
- * poster and the full component list, so nothing depends on WebGL.
+ * The drawing is a 2D SVG engineering elevation — no WebGL, no heavy
+ * chunks: it prerenders with the page and animates with CSS transitions
+ * that the global reduced-motion kill switch disables wholesale.
  */
-import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
-import { useReducedMotion } from 'motion/react';
+import { useState } from 'react';
 import { FadeIn } from './components';
+import RingExploded2D from '../components/RingExploded2D';
 import { RING_PARTS, type PartId } from '../ring3d/ringParts';
-
-const RingScene = lazy(() => import('../ring3d/RingScene'));
 
 export default function RingAssembly() {
   const [explode, setExplode] = useState(0);
   const [selected, setSelected] = useState<PartId | null>(null);
-  const [mounted, setMounted] = useState(false);
-  const [inView, setInView] = useState(false);
-  const [webgl, setWebgl] = useState(true);
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const prefersReduced = useReducedMotion();
-  const reducedMotion = useMemo(() => !!prefersReduced, [prefersReduced]);
-
-  useEffect(() => {
-    setMounted(true);
-    try {
-      const canvas = document.createElement('canvas');
-      setWebgl(!!(canvas.getContext('webgl2') || canvas.getContext('webgl')));
-    } catch {
-      setWebgl(false);
-    }
-  }, []);
-
-  // Fetch three.js only when the visitor actually reaches this section.
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el || !mounted) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '300px' },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [mounted]);
 
   const selectedPart = RING_PARTS.find((p) => p.id === selected) ?? null;
 
   return (
     <section
-      ref={sectionRef}
       id="t-ring"
       aria-labelledby="t-ring-h"
       className="bg-[#f4f2fb] px-6 pb-24 pt-4 text-[#14122a] sm:pb-28 md:px-10"
@@ -80,35 +44,17 @@ export default function RingAssembly() {
         </FadeIn>
 
         <div className="mt-12 grid items-start gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
-          {/* --------------------------------------------------- 3D + slider */}
+          {/* ----------------------------------------------- drawing + slider */}
           <FadeIn y={24}>
-            <div className="relative aspect-square w-full max-h-[420px]">
-              {mounted && inView && webgl ? (
-                <Suspense
-                  fallback={
-                    <div className="absolute inset-0 flex items-center justify-center" aria-hidden>
-                      <div className="h-36 w-36 animate-pulse rounded-full border-[13px] border-[rgba(20,18,42,0.12)]" />
-                    </div>
-                  }
-                >
-                  <RingScene
-                    explode={explode / 100}
-                    selected={selected}
-                    onSelect={setSelected}
-                    reducedMotion={reducedMotion}
-                    zoom={3.6}
-                  />
-                </Suspense>
-              ) : (
-                <img
-                  src="/models/ring-poster.svg"
-                  alt="Concept illustration of the Tactiq ring"
-                  className="mx-auto h-full w-auto opacity-90"
-                />
-              )}
-            </div>
+            <RingExploded2D
+              explode={explode / 100}
+              selected={selected}
+              onSelect={setSelected}
+              accent="var(--t-violet-deep)"
+              className="w-full max-h-[430px] h-auto select-none text-[#14122a]"
+            />
             <p aria-hidden className="mt-1 text-center font-mono text-xs tracking-wide text-[#4a4668]">
-              Drag to rotate · tap a part to inspect
+              Tap a part to inspect it
             </p>
 
             <div className="mt-6">
@@ -129,7 +75,7 @@ export default function RingAssembly() {
               />
             </div>
 
-            {/* Selected part readout under the model */}
+            {/* Selected part readout under the drawing */}
             <div aria-live="polite" className="mt-3 min-h-14">
               {selectedPart && (
                 <p className="text-[0.95rem] leading-relaxed text-[#4a4668]">
