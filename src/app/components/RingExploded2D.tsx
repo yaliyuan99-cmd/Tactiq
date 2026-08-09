@@ -1,140 +1,69 @@
 /**
- * The exploded ring as a 2D engineering drawing — front elevation, parts
- * travelling along the same staged vectors the 3D view used (the choreography
- * lives in ringParts.ts and is shared). CSS transitions give the movement its
- * eased, damped feel; the site's global reduced-motion kill switch turns them
- * off wholesale.
+ * The exploded ring as a 2D engineering drawing — an axonometric product
+ * view where the assembly separates vertically along one axis, the way a
+ * classic exploded product sheet does. Rings are ellipses in perspective;
+ * each layer travels within its own choreography window (shared with
+ * ringParts.ts), so the shell lifts away first and the electronics separate
+ * last, with thin leader lines carrying part numbers to the margins.
  *
- * Engineering details: dashed leader lines tie each part back to its seat as
- * it departs, and the two-digit part numbers fade in once the assembly opens.
+ * CSS transitions give the motion its eased, damped feel; the global
+ * reduced-motion kill switch disables them wholesale.
  *
  * Accessibility: the drawing is presentation (aria-hidden); the numbered
  * component list rendered next to it by every caller is the real control.
- * Parts are still pointer-clickable for sighted users, mirroring the list.
+ * Parts stay pointer-clickable, mirroring the list.
  */
+import type { ReactNode } from 'react';
 import { RING_PARTS, type RingPart, type PartId } from '../ring3d/ringParts';
 
 const CX = 220;
-const CY = 212;
-const R = 88; // band radius in px — ringParts positions are in units of R
-const UNIT = 70; // px travelled per unit of explodeDistance
+const CY = 232; // assembled resting centre
+const RX = 105; // band ellipse radii (perspective)
+const RY = 34;
 
 const EASE = (t: number) => t * t * (3 - 2 * t);
 
-/** ringParts coords are y-up; SVG is y-down. Parts that explode along the
- * 3D z-axis get a hand-picked 2D direction instead. */
-const DIR_2D: Partial<Record<PartId, [number, number]>> = {
-  shell: [0, -1], // lifts away upward
-  carrier: [0, 0.45], // settles slightly downward
+/** Vertical travel per layer at 100% explode (negative = upward). */
+const OFFSET: Record<PartId, number> = {
+  shell: -152,
+  carrier: -80,
+  'mag-1': -20,
+  'mag-2': -20,
+  'mag-3': -20,
+  squeeze: 44,
+  haptic: 90,
+  ble: 134,
+  battery: 174,
+  'thumb-magnet': 0,
 };
 
-function dir2d(part: RingPart): [number, number] {
-  const override = DIR_2D[part.id];
-  if (override) return override;
-  return [part.explodeDir[0], -part.explodeDir[1]];
+/** Which margin a layer's leader line runs to (mags get local numbers). */
+const LEADER: Partial<Record<PartId, 'left' | 'right'>> = {
+  shell: 'left',
+  carrier: 'right',
+  squeeze: 'right',
+  haptic: 'left',
+  ble: 'right',
+  battery: 'left',
+};
+
+/** Position around the band ellipse (degrees; 0 = right, 90 = front). */
+function onEllipse(deg: number, layerY: number, scale = 0.9): [number, number] {
+  const rad = (deg * Math.PI) / 180;
+  return [CX + Math.cos(rad) * RX * scale, layerY + Math.sin(rad) * RY * scale];
 }
 
-function seat2d(part: RingPart): [number, number] {
-  return [CX + part.assembled[0] * R, CY - part.assembled[1] * R];
+/** Annulus (ring band) seen in perspective, as an evenodd ellipse pair. */
+function bandPath(cy: number, rxOuter: number, ryOuter: number, rxInner: number, ryInner: number): string {
+  return (
+    `M ${CX - rxOuter} ${cy} a ${rxOuter} ${ryOuter} 0 1 0 ${rxOuter * 2} 0 a ${rxOuter} ${ryOuter} 0 1 0 ${-rxOuter * 2} 0 Z ` +
+    `M ${CX - rxInner} ${cy} a ${rxInner} ${ryInner} 0 1 0 ${rxInner * 2} 0 a ${rxInner} ${ryInner} 0 1 0 ${-rxInner * 2} 0 Z`
+  );
 }
 
-/** This part's eased progress within its choreography window. */
 function localT(part: RingPart, explode: number): number {
   const [start, end] = part.window;
   return EASE(Math.min(1, Math.max(0, (explode - start) / (end - start))));
-}
-
-/** Band angle (degrees, math convention) for tangent-mounted parts. */
-const BAND_ANGLE: Partial<Record<PartId, number>> = {
-  'mag-1': 90,
-  'mag-2': 210,
-  'mag-3': 330,
-  squeeze: 150,
-  ble: 30,
-};
-
-function arcPath(deg: number, spread: number, r: number): string {
-  const a0 = ((deg - spread) * Math.PI) / 180;
-  const a1 = ((deg + spread) * Math.PI) / 180;
-  const x0 = CX + Math.cos(a0) * r;
-  const y0 = CY - Math.sin(a0) * r;
-  const x1 = CX + Math.cos(a1) * r;
-  const y1 = CY - Math.sin(a1) * r;
-  return `M ${x0} ${y0} A ${r} ${r} 0 0 0 ${x1} ${y1}`;
-}
-
-function PartShape({ part }: { part: RingPart }) {
-  const [sx, sy] = seat2d(part);
-  const angle = BAND_ANGLE[part.id];
-  switch (part.id) {
-    case 'shell':
-      return <circle cx={CX} cy={CY} r={R} fill="none" stroke={part.color} strokeWidth={30} />;
-    case 'carrier':
-      return <circle cx={CX} cy={CY} r={R} fill="none" stroke={part.color} strokeWidth={13} />;
-    case 'mag-1':
-    case 'mag-2':
-    case 'mag-3':
-      return (
-        <rect
-          x={-11}
-          y={-8}
-          width={22}
-          height={16}
-          rx={2.5}
-          fill={part.color}
-          transform={`translate(${sx} ${sy}) rotate(${90 - (angle ?? 0)})`}
-        />
-      );
-    case 'squeeze':
-      return (
-        <path
-          d={arcPath(150, 19, R)}
-          fill="none"
-          stroke={part.color}
-          strokeWidth={13}
-          strokeLinecap="round"
-        />
-      );
-    case 'haptic':
-      return (
-        <g transform={`translate(${sx} ${sy})`}>
-          <circle r={11} fill={part.color} />
-          <circle r={4.5} fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth={1.5} />
-        </g>
-      );
-    case 'ble':
-      return (
-        <g transform={`translate(${sx} ${sy}) rotate(${90 - (angle ?? 0)})`}>
-          <rect x={-16} y={-9} width={32} height={18} rx={2.5} fill={part.color} />
-          {/* traces */}
-          <line x1={-9} y1={-3} x2={9} y2={-3} stroke="rgba(255,255,255,0.4)" strokeWidth={1.2} />
-          <line x1={-9} y1={2} x2={4} y2={2} stroke="rgba(255,255,255,0.4)" strokeWidth={1.2} />
-        </g>
-      );
-    case 'battery':
-      return (
-        <g transform={`translate(${sx} ${sy})`}>
-          <circle r={12} fill={part.color} />
-          <text
-            textAnchor="middle"
-            dominantBaseline="central"
-            fill="rgba(255,255,255,0.75)"
-            style={{ font: '600 8px ui-monospace, monospace' }}
-          >
-            +
-          </text>
-        </g>
-      );
-    case 'thumb-magnet':
-      return (
-        <g transform={`translate(${sx} ${sy})`}>
-          <circle r={10} fill={part.color} />
-          <circle r={3.5} fill="rgba(255,255,255,0.6)" />
-        </g>
-      );
-    default:
-      return null;
-  }
 }
 
 export default function RingExploded2D({
@@ -152,102 +81,286 @@ export default function RingExploded2D({
   accent?: string;
   className?: string;
 }) {
+  const parts = Object.fromEntries(RING_PARTS.map((p) => [p.id, p])) as Record<PartId, RingPart>;
+  const y = (id: PartId) => CY + OFFSET[id] * localT(parts[id], explode);
+  const opened = explode > 0.06;
+
+  /** Layers hidden inside the band at rest — they materialise as it opens. */
+  const INTERNAL = new Set<PartId>(['squeeze', 'haptic', 'ble', 'battery']);
+
+  /** Shared wrapper for a selectable layer. */
+  const layer = (id: PartId, children: ReactNode, haloRy = RY + 10, haloRx = RX + 14) => {
+    const isSelected = selected === id;
+    const dimmed = selected !== null && !isSelected;
+    const side = LEADER[id];
+    const cy = y(id);
+    const t = localT(parts[id], explode);
+    const reveal = INTERNAL.has(id) ? Math.min(1, Math.max(0, (explode - 0.05) * 5)) : 1;
+    return (
+      <g
+        key={id}
+        style={{ opacity: reveal * (dimmed ? 0.22 : 1), transition: 'opacity 0.3s ease' }}
+      >
+        <g
+          style={{
+            transform: `translateY(${cy - CY}px)`,
+            transition: 'transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)',
+            cursor: 'pointer',
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(isSelected ? null : id);
+          }}
+        >
+          {children}
+          {isSelected && (
+            <ellipse
+              cx={CX}
+              cy={CY}
+              rx={haloRx}
+              ry={haloRy}
+              fill="none"
+              stroke={accent}
+              strokeWidth={1.5}
+              strokeDasharray="5 4"
+            />
+          )}
+          {/* Leader line + part number, drawn as the assembly opens. */}
+          {side && (
+            <g style={{ opacity: Math.max(0, (t - 0.45) * 2.2), transition: 'opacity 0.3s ease' }}>
+              <line
+                x1={side === 'left' ? 34 : CX + RX + 14}
+                x2={side === 'left' ? CX - RX - 14 : 406}
+                y1={CY}
+                y2={CY}
+                stroke="currentColor"
+                strokeOpacity={0.35}
+                strokeWidth={1}
+              />
+              <text
+                x={side === 'left' ? 22 : 418}
+                y={CY}
+                textAnchor="middle"
+                dominantBaseline="central"
+                fill={isSelected ? accent : 'currentColor'}
+                fillOpacity={isSelected ? 1 : 0.6}
+                style={{ font: '600 11px ui-monospace, monospace', letterSpacing: '0.05em' }}
+              >
+                {parts[id].number}
+              </text>
+            </g>
+          )}
+        </g>
+      </g>
+    );
+  };
+
+  /** A small part riding a layer, with its number beside it once opened. */
+  const rider = (
+    id: PartId,
+    deg: number,
+    children: ReactNode,
+    numberDx = 0,
+    numberDy = -16,
+  ) => {
+    const isSelected = selected === id;
+    const dimmed = selected !== null && !isSelected;
+    const part = parts[id];
+    const cy = y(id);
+    const t = localT(part, explode);
+    const [px, py] = onEllipse(deg, CY);
+    return (
+      <g key={id} style={{ opacity: dimmed ? 0.22 : 1, transition: 'opacity 0.3s ease' }}>
+        <g
+          style={{
+            transform: `translateY(${cy - CY}px)`,
+            transition: 'transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)',
+            cursor: 'pointer',
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(isSelected ? null : id);
+          }}
+        >
+          <g transform={`translate(${px} ${py})`}>
+            {children}
+            {isSelected && (
+              <circle r={20} fill="none" stroke={accent} strokeWidth={1.5} strokeDasharray="4 4" />
+            )}
+            <text
+              x={numberDx}
+              y={numberDy}
+              textAnchor="middle"
+              fill={isSelected ? accent : 'currentColor'}
+              fillOpacity={Math.max(0, (t - 0.4) * 2.2) * (isSelected ? 1 : 0.6)}
+              style={{ font: '600 10px ui-monospace, monospace', letterSpacing: '0.05em', transition: 'fill-opacity 0.3s ease' }}
+            >
+              {part.number}
+            </text>
+          </g>
+        </g>
+      </g>
+    );
+  };
+
+  const magnetT = localT(parts['thumb-magnet'], explode);
+  const magnetVisible = explode >= (parts['thumb-magnet'].appearsAt ?? 0.72);
+
   return (
     <svg
-      viewBox="0 0 440 430"
+      viewBox="0 0 440 470"
       aria-hidden
       className={className ?? 'w-full h-auto select-none'}
       onClick={() => onSelect(null)}
     >
-      {/* Draw order: carrier first so the shell reveals it as it lifts away. */}
-      {[...RING_PARTS].reverse().map((part) => {
-        const t = localT(part, explode);
-        const [dx, dy] = dir2d(part);
-        const travel = part.explodeDistance * UNIT * t;
-        const tx = dx * travel;
-        const ty = dy * travel;
-        const [sx, sy] = seat2d(part);
-        const appeared = part.appearsAt === undefined || explode >= part.appearsAt;
-        const isSelected = selected === part.id;
-        const dimmed = selected !== null && !isSelected;
-        // Number label sits just beyond the part (coords are inside the
-        // translated group, so seat-relative only). Shell's label goes to the
-        // upper-left so it never collides with magnetometer 1 at the top.
-        const lx =
-          part.id === 'shell' ? CX - R - 26 : sx + dx * 26 + (dx === 0 ? 26 : 0);
-        const ly =
-          part.id === 'shell'
-            ? CY - R + 4
-            : sy + dy * 26 - (part.id === 'carrier' ? -(R + 10) : 0);
+      {/* Faint assembly axis, revealed as the stack opens. */}
+      <line
+        x1={CX}
+        x2={CX}
+        y1={y('shell') + 4}
+        y2={y('battery') - 4}
+        stroke="currentColor"
+        strokeOpacity={opened ? 0.18 : 0}
+        strokeWidth={1}
+        strokeDasharray="3 5"
+        style={{ transition: 'stroke-opacity 0.3s ease' }}
+      />
 
-        return (
-          <g key={part.id} style={{ opacity: appeared ? (dimmed ? 0.25 : 1) : 0, transition: 'opacity 0.3s ease' }}>
-            {/* Leader line back to the seat, drawn as the part departs. */}
-            {t > 0.04 && part.id !== 'shell' && part.id !== 'carrier' && part.id !== 'thumb-magnet' && (
-              <line
-                x1={sx}
-                y1={sy}
-                x2={sx + tx}
-                y2={sy + ty}
-                stroke="currentColor"
-                strokeOpacity={0.3 * t}
-                strokeWidth={1}
-                strokeDasharray="2 4"
-              />
+      {/* Bottom-up draw order so upper layers overlap naturally. */}
+      {layer(
+        'battery',
+        <g>
+          <path d={bandPath(CY + 5, 26, 9, 0.01, 0.01)} fill={parts.battery.color} fillRule="evenodd" />
+          <rect x={CX - 26} y={CY - 3} width={52} height={8} fill={parts.battery.color} />
+          <ellipse cx={CX} cy={CY - 3} rx={26} ry={9} fill="#5a6d8c" />
+          <text
+            x={CX}
+            y={CY - 3}
+            textAnchor="middle"
+            dominantBaseline="central"
+            fill="rgba(255,255,255,0.8)"
+            style={{ font: '600 9px ui-monospace, monospace' }}
+          >
+            +
+          </text>
+        </g>,
+        18,
+        44,
+      )}
+
+      {layer(
+        'ble',
+        <g>
+          <rect x={CX - 34} y={CY - 12} width={68} height={24} rx={3} fill={parts.ble.color} transform={`rotate(-6 ${CX} ${CY})`} />
+          <line x1={CX - 20} y1={CY - 4} x2={CX + 22} y2={CY - 8} stroke="rgba(255,255,255,0.45)" strokeWidth={1.4} />
+          <line x1={CX - 20} y1={CY + 3} x2={CX + 8} y2={CY} stroke="rgba(255,255,255,0.45)" strokeWidth={1.4} />
+          <circle cx={CX + 24} cy={CY + 4} r={2.2} fill="rgba(255,255,255,0.6)" />
+        </g>,
+        22,
+        48,
+      )}
+
+      {layer(
+        'haptic',
+        <g>
+          <path d={bandPath(CY + 4, 15, 6, 0.01, 0.01)} fill={parts.haptic.color} fillRule="evenodd" />
+          <rect x={CX - 15} y={CY - 2} width={30} height={6} fill={parts.haptic.color} />
+          <ellipse cx={CX} cy={CY - 2} rx={15} ry={6} fill="#9a917f" />
+          <ellipse cx={CX} cy={CY - 2} rx={6} ry={2.4} fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth={1.2} />
+        </g>,
+        16,
+        32,
+      )}
+
+      {layer(
+        'squeeze',
+        <path
+          d={`M ${CX - RX * 0.82} ${CY + RY * 0.35} A ${RX * 0.86} ${RY * 0.86} 0 0 0 ${CX + RX * 0.82} ${CY + RY * 0.35}`}
+          fill="none"
+          stroke={parts.squeeze.color}
+          strokeWidth={11}
+          strokeLinecap="round"
+        />,
+        RY + 6,
+        RX + 8,
+      )}
+
+      {/* Sensing ring with the three magnetometers riding it. */}
+      {layer(
+        'carrier',
+        <path d={bandPath(CY, 92, 28, 78, 21)} fill={parts.carrier.color} fillRule="evenodd" />,
+        38,
+        104,
+      )}
+      {rider(
+        'mag-1',
+        205,
+        <rect x={-10} y={-7} width={20} height={14} rx={2.5} fill={parts['mag-1'].color} />,
+        -20,
+        -12,
+      )}
+      {rider(
+        'mag-2',
+        270,
+        <rect x={-10} y={-7} width={20} height={14} rx={2.5} fill={parts['mag-2'].color} />,
+        0,
+        22,
+      )}
+      {rider(
+        'mag-3',
+        335,
+        <rect x={-10} y={-7} width={20} height={14} rx={2.5} fill={parts['mag-3'].color} />,
+        20,
+        -12,
+      )}
+
+      {/* Outer shell — the thick band that lifts away first. */}
+      {layer(
+        'shell',
+        <path d={bandPath(CY, RX, RY, 74, 20)} fill={parts.shell.color} fillRule="evenodd" />,
+        RY + 8,
+        RX + 10,
+      )}
+
+      {/* The passive thumb magnet — never inside the ring; appears last. */}
+      <g
+        style={{
+          opacity: magnetVisible ? (selected !== null && selected !== 'thumb-magnet' ? 0.22 : 1) : 0,
+          transition: 'opacity 0.4s ease',
+        }}
+      >
+        <g
+          style={{
+            transform: `translate(${18 * magnetT}px, ${12 * magnetT}px)`,
+            transition: 'transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)',
+            cursor: 'pointer',
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(selected === 'thumb-magnet' ? null : 'thumb-magnet');
+          }}
+        >
+          <g transform="translate(374 404)">
+            <ellipse cx={0} cy={3} rx={13} ry={5} fill={parts['thumb-magnet'].color} />
+            <rect x={-13} y={-2} width={26} height={5} fill={parts['thumb-magnet'].color} />
+            <ellipse cx={0} cy={-2} rx={13} ry={5} fill="#3d3830" />
+            <circle cx={0} cy={-2} r={3} fill="rgba(255,255,255,0.55)" />
+            {selected === 'thumb-magnet' && (
+              <circle r={22} fill="none" stroke={accent} strokeWidth={1.5} strokeDasharray="4 4" />
             )}
-
-            <g
-              style={{
-                transform: `translate(${tx}px, ${ty}px)`,
-                transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
-                cursor: 'pointer',
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect(isSelected ? null : part.id);
-              }}
+            <text
+              x={0}
+              y={-18}
+              textAnchor="middle"
+              fill={selected === 'thumb-magnet' ? accent : 'currentColor'}
+              fillOpacity={selected === 'thumb-magnet' ? 1 : 0.6}
+              style={{ font: '600 10px ui-monospace, monospace', letterSpacing: '0.05em' }}
             >
-              <PartShape part={part} />
-              {/* Selection halo */}
-              {isSelected &&
-                (part.id === 'shell' || part.id === 'carrier' ? (
-                  <circle
-                    cx={CX}
-                    cy={CY}
-                    r={R + (part.id === 'shell' ? 22 : 12)}
-                    fill="none"
-                    stroke={accent}
-                    strokeWidth={1.5}
-                    strokeDasharray="4 4"
-                  />
-                ) : part.id === 'squeeze' ? (
-                  <path
-                    d={arcPath(150, 24, R)}
-                    fill="none"
-                    stroke={accent}
-                    strokeWidth={22}
-                    strokeLinecap="round"
-                    strokeOpacity={0.35}
-                  />
-                ) : (
-                  <circle cx={sx} cy={sy} r={22} fill="none" stroke={accent} strokeWidth={1.5} strokeDasharray="4 4" />
-                ))}
-
-              {/* Engineering number, fading in as the assembly opens. */}
-              <text
-                x={lx}
-                y={ly}
-                textAnchor="middle"
-                fill={isSelected ? accent : 'currentColor'}
-                fillOpacity={Math.max(0, Math.min(1, (explode - 0.3) * 3)) * (isSelected ? 1 : 0.55)}
-                style={{ font: '600 11px ui-monospace, monospace', letterSpacing: '0.05em' }}
-              >
-                {part.number}
-              </text>
-            </g>
+              {parts['thumb-magnet'].number}
+            </text>
           </g>
-        );
-      })}
+        </g>
+      </g>
     </svg>
   );
 }
