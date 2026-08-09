@@ -27,6 +27,7 @@ const CustomizePage = lazy(() => import('./customize/CustomizePage'));
 const AdminPage = lazy(() => import('./admin/AdminPage'));
 const DashboardLayout = lazy(() => import('./dashboard/DashboardLayout'));
 const OverviewPage = lazy(() => import('./dashboard/OverviewPage'));
+const RingPage = lazy(() => import('./dashboard/RingPage'));
 const SimulatorPage = lazy(() => import('./dashboard/SimulatorPage'));
 const TrainingPage = lazy(() => import('./dashboard/TrainingPage'));
 const DevicePage = lazy(() => import('./dashboard/DevicePage'));
@@ -84,6 +85,7 @@ export function AppRoutes() {
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<OverviewPage />} />
+              <Route path="ring" element={<RingPage />} />
               <Route path="commands" element={<CustomizePage />} />
               <Route path="simulator" element={<SimulatorPage />} />
               <Route path="training" element={<TrainingPage />} />

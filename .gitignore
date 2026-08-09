@@ -17,3 +17,6 @@ dist-ssr/
 .idea/
 /tactiq-site/
 .claude/
+
+# Local Netlify folder
+.netlify

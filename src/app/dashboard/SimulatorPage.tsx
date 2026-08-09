@@ -51,6 +51,16 @@ const EPISODES = [
 const TAP_MAX_MS = 600;
 const EMERGENCY_MS = PRODUCT.emergencyHoldMs;
 
+/** The interaction model, made visible: each recognised tap travels it. */
+const PIPELINE_STAGES = ['Hand', 'Ring', 'Sensor', 'Command', 'Phone'] as const;
+
+/** Haptic visual language — class-level patterns, never one per command. */
+const HAPTIC_GLYPH: Record<string, string> = {
+  confirm: '•',
+  reject: '• •',
+  emergency: '———',
+};
+
 interface PhoneState {
   focusIndex: number;
   playingIndex: number | null;
@@ -103,6 +113,36 @@ export default function SimulatorPage() {
    * transition immediately (state updaters run later and re-run in
    * StrictMode, so they must stay side-effect-free). */
   const phoneRef = useRef(phone);
+
+  // ---- pipeline strip -------------------------------------------------------
+  const [stage, setStage] = useState(-1);
+  const [stageNote, setStageNote] = useState('');
+  const [hapticKind, setHapticKind] = useState<string | null>(null);
+  const stageTimers = useRef<number[]>([]);
+
+  const runPipeline = useCallback((gated: boolean, kind: 'confirm' | 'reject' | 'emergency') => {
+    stageTimers.current.forEach((t) => clearTimeout(t));
+    stageTimers.current = [];
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const last = gated ? 1 : PIPELINE_STAGES.length - 1;
+    if (reduce) {
+      setStage(last);
+    } else {
+      for (let i = 0; i <= last; i++) {
+        stageTimers.current.push(window.setTimeout(() => setStage(i), i * 160));
+      }
+    }
+    setStageNote(gated ? 'dropped at the gate — ring was idle' : '');
+    setHapticKind(gated ? null : kind);
+    stageTimers.current.push(
+      window.setTimeout(() => {
+        setStage(-1);
+        setHapticKind(null);
+        setStageNote('');
+      }, 2400),
+    );
+  }, []);
+  useEffect(() => () => stageTimers.current.forEach((t) => clearTimeout(t)), []);
 
   // ---- log + emergency -----------------------------------------------------
   const [log, setLog] = useState<LogEntry[]>([]);
@@ -341,6 +381,7 @@ export default function SimulatorPage() {
       if (g.gated) {
         giveFeedback('reject', 'Ignored — the ring is idle. Squeeze first to open the command window.');
         addLog({ gesture: gestureLabel, command: '—', result: 'ignored' });
+        runPipeline(true, 'reject');
         return;
       }
 
@@ -356,12 +397,14 @@ export default function SimulatorPage() {
         giveFeedback('emergency', announcement);
         setSosOpen(true);
         addLog({ gesture: `${gestureLabel} · 5 s hold`, command, result: 'emergency' });
+        runPipeline(false, 'emergency');
         closeWindow('manual');
         return;
       }
 
       const correct = g.contactId === g.intendedContactId;
       giveFeedback(correct ? 'confirm' : 'reject', announcement);
+      runPipeline(false, correct ? 'confirm' : 'reject');
       addLog({
         gesture: gestureLabel,
         command,
@@ -369,7 +412,7 @@ export default function SimulatorPage() {
         confidence: g.confidence,
       });
     },
-    [addLog, applyCommand, closeWindow, windowMs],
+    [addLog, applyCommand, closeWindow, windowMs, runPipeline],
   );
   useDeviceEvents(onDeviceEvent);
 
@@ -431,6 +474,38 @@ export default function SimulatorPage() {
         The complete interaction loop, no hardware needed: squeeze to wake, tap a contact, and
         the command drives the phone below — exactly the pipeline a real ring would feed.
       </p>
+
+      {/* The interaction model, live: hand → ring → sensor → command → phone. */}
+      <div
+        role="status"
+        aria-label="Command pipeline"
+        className="border border-border rounded-lg px-4 py-2.5 mb-6 flex items-center gap-2 overflow-x-auto"
+      >
+        {PIPELINE_STAGES.map((label, i) => (
+          <span key={label} className="flex items-center gap-2 shrink-0">
+            <span
+              className={cn(
+                'font-mono-label transition-colors duration-150',
+                i <= stage ? 'text-primary-strong' : 'text-muted-foreground/60',
+              )}
+            >
+              {label}
+            </span>
+            {i < PIPELINE_STAGES.length - 1 && (
+              <span aria-hidden className={cn('text-xs', i < stage ? 'text-primary-strong' : 'text-muted-foreground/40')}>
+                →
+              </span>
+            )}
+          </span>
+        ))}
+        {stageNote && <span className="font-mono-label text-status-target ml-1 shrink-0">{stageNote}</span>}
+        {hapticKind && stage >= PIPELINE_STAGES.length - 1 && (
+          <span className="font-mono-label text-muted-foreground ml-auto shrink-0">
+            haptic <span aria-hidden className="text-foreground tracking-wider">{HAPTIC_GLYPH[hapticKind]}</span>
+            <span className="sr-only">{hapticKind} pattern</span>
+          </span>
+        )}
+      </div>
 
       <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
         {/* ------------------------------------------------ left: hand ---- */}
