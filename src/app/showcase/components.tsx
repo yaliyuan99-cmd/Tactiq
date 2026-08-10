@@ -9,8 +9,9 @@ import {
 import { motion, useScroll, useTransform } from 'motion/react';
 
 /* ---------------------------------------------------------------------------
- * Reusable building blocks shared by the Jack "3D Creator" portfolio sections.
- * All are scoped visually by their parent `.jack-scope` wrapper.
+ * Reusable building blocks for the cinematic intro at `/`.
+ * Colour comes from the parent `.tactiq-scope` wrapper (showcase.css); these
+ * only handle motion and layout.
  * ------------------------------------------------------------------------- */
 
 const EASE = [0.25, 0.1, 0.25, 1] as const;

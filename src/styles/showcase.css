@@ -1,73 +1,12 @@
 /* ---------------------------------------------------------------------------
- * Showcase page styles — two self-contained brand designs (Velorah + Jack).
+ * Showcase page styles — the cinematic Tactiq intro at `/`.
  *
- * All colour tokens and helpers here are SCOPED to `.velorah-scope` /
- * `.jack-scope` wrappers so they never leak into (or override) Tactiq's global
- * theme in theme.css. Fonts are loaded in fonts.css.
+ * Everything here is SCOPED to the `.tactiq-scope` wrapper so it never leaks
+ * into (or overrides) Tactiq's global product theme in theme.css. Fonts are
+ * loaded in fonts.css.
  * ------------------------------------------------------------------------- */
 
-/* === Velorah scope ======================================================= */
-.velorah-scope {
-  /* Dark navy cinematic theme, expressed as HSL channels like the source spec.
-     Consumed only inside this wrapper via var(--v-*) references below. */
-  --v-background: 201 100% 13%;
-  --v-foreground: 0 0% 100%;
-  --v-muted-foreground: 240 4% 66%;
-
-  --font-display: 'Instrument Serif', serif;
-  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
-
-  background-color: hsl(var(--v-background));
-  color: hsl(var(--v-foreground));
-  font-family: var(--font-body);
-}
-
-.velorah-scope .v-foreground {
-  color: hsl(var(--v-foreground));
-}
-.velorah-scope .v-muted {
-  color: hsl(var(--v-muted-foreground));
-}
-.velorah-scope .v-display {
-  font-family: var(--font-display);
-}
-
-/* The hero sits on an arbitrary video frame, so guarantee legibility of the
-   white type without adding a decorative overlay: a soft shadow only. */
-.velorah-scope .v-legible {
-  text-shadow: 0 1px 40px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.25);
-}
-/* Light type on dark reads lighter — give the display heading extra leading. */
-.velorah-scope h1 {
-  text-wrap: balance;
-}
-
-/* Hero CTAs — solid + bordered, no glassmorphism. The primary action is a
-   confident white fill; the secondary (nav) is a clean outline. Both carry a
-   hairline shadow so they hold against the bright parts of the video. */
-.velorah-scope .v-btn-solid {
-  background: #ffffff;
-  color: hsl(var(--v-background));
-  border: 1px solid #ffffff;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-.velorah-scope .v-btn-solid:hover {
-  background: rgba(255, 255, 255, 0.9);
-}
-.velorah-scope .v-btn-outline {
-  background: transparent;
-  color: hsl(var(--v-foreground));
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  transition: background-color 0.2s ease, border-color 0.2s ease,
-    transform 0.2s ease;
-}
-.velorah-scope .v-btn-outline:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: #ffffff;
-}
-
-/* Entrance animations (Velorah hero). */
+/* Entrance keyframes used by the intro's `t-rise` helpers below. */
 @keyframes fade-rise {
   from {
     opacity: 0;
@@ -77,53 +16,6 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-.animate-fade-rise {
-  animation: fade-rise 0.8s ease-out both;
-}
-.animate-fade-rise-delay {
-  animation: fade-rise 0.8s ease-out 0.2s both;
-}
-.animate-fade-rise-delay-2 {
-  animation: fade-rise 0.8s ease-out 0.4s both;
-}
-
-/* Respect reduced-motion: keep content fully visible, skip the entrance. */
-@media (prefers-reduced-motion: reduce) {
-  .animate-fade-rise,
-  .animate-fade-rise-delay,
-  .animate-fade-rise-delay-2 {
-    animation: none;
-  }
-}
-
-/* Visible keyboard focus for every interactive element in both scopes
-   (the custom buttons strip the browser default, so restore an explicit one). */
-.velorah-scope a:focus-visible,
-.velorah-scope button:focus-visible {
-  outline: 2px solid #ffffff;
-  outline-offset: 3px;
-  border-radius: 6px;
-}
-.jack-scope a:focus-visible,
-.jack-scope button:focus-visible {
-  outline: 2px solid #d7e2ea;
-  outline-offset: 3px;
-  border-radius: 6px;
-}
-
-/* === Jack scope ========================================================== */
-.jack-scope {
-  background-color: #0c0c0c;
-  color: #d7e2ea;
-  font-family: 'Kanit', ui-sans-serif, system-ui, sans-serif;
-  overflow-x: clip;
-}
-
-/* Display heading used across the Jack sections. Solid steel-blue — high
-   contrast on the #0C0C0C canvas, no decorative gradient fill. */
-.jack-scope .hero-heading {
-  color: #bbccd7;
 }
 
 /* === Tactiq cinematic intro scope ======================================== */

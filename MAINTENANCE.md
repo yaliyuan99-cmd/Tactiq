@@ -8,6 +8,51 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-11 — cycle 5
+
+**Inspected:** git state, 17 tests, tsc, lint, build + prerender; live `/`,
+`/project`, `/dashboard/simulator`; console; 375px mobile including the
+resize/rotation path; keyboard operation of the interactive hand; focus and
+reduced-motion CSS coverage.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| P2 | Dead CSS shipping to users — `.velorah-scope` (13 selectors) and `.jack-scope` (5), orphaned by **my own cycle-2 component deletion**, plus three unused `.animate-fade-rise*` helpers | Removed; showcase.css 308 → 200 lines |
+| P2 | `components.tsx` header still described the file as "shared by the Jack '3D Creator' portfolio sections… scoped by `.jack-scope`" — wrong on both counts | Rewritten |
+| — | Mobile overflow on `/dashboard/simulator` reported in cycle 4 (`sw 390 > cw 375`) | **Not a defect.** Cycle 4 measured immediately after a viewport resize, before reflow — the offenders were stale desktop-width boxes. A fresh 375px load gives `sw === cw === 375`, and so does the resize path once settled. Nothing changed |
+| — | Hero `opacity: 0` after the CSS edit | **Not a regression.** The preview tab was hidden, so the `fade-rise` animation held its `from` state (`playState: running`, frames not advancing). A screenshot forced visibility and the hero rendered correctly |
+| — | Keyboard on the hand: roving tabindex (exactly one tabbable), arrows move focus both ways, Enter arms the gate and fires a command (`Ring base → Previous recognised 91%`) | Correct, no action |
+| — | Touch targets at 375px: bottom nav 5/5 ≥44px, hand points 8/8 ≥44px | Correct, no action |
+| — | `:focus-visible` present globally (theme.css:213) and reduced-motion covers `.t-rise*` | Correct, no action |
+
+**Changed:** 2 files, +8 / −115. CSS-only deletion of unreachable rules; no
+component behaviour touched.
+
+**Verified:** 17/17 tests · tsc 0 errors · eslint 0 errors · build + 16
+prerendered routes · **`@keyframes fade-rise` deliberately preserved** — it is
+defined in the deleted Velorah block but still drives the live `.t-rise`
+entrance, so a wholesale line-range delete would have broken the homepage
+hero; checked before cutting · `/` and `/project` screenshotted after the
+change, both render correctly with the violet/stone identities intact.
+
+**Not deployed.** Removes ~2 KB of unreachable CSS with no visual change;
+rides along with the next feature deploy.
+
+**Remaining concerns**
+- Four "findings" across cycles 1–5 turned out to be preview-pane artifacts
+  (stale HMR, collapsed viewport, throttled timers, pre-reflow resize). Any
+  timing- or layout-sensitive reading from the browser pane needs a second
+  measurement before it is believed.
+- Component/routing tests still absent; pure logic only.
+
+**Next likely focus:** the `react-refresh` lint warning on AuthContext — split
+the `useAuth` hook into its own module so the file exports only components,
+clearing the last warning and making Fast Refresh reliable in dev.
+
+---
+
 ## 2026-08-11 — cycle 3
 
 **Inspected:** git state, tsc, lint, build + prerender; live `/`, signed-out
