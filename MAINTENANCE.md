@@ -1,7 +1,10 @@
 # Maintenance log
 
-Hourly inspect → diagnose → prioritise → improve → verify cycles.
-Newest first. Keep entries short.
+Inspect → diagnose → prioritise → improve → verify cycles, running every
+2 hours. Newest first. Keep entries short.
+
+A cycle that finds nothing and changes nothing is a successful cycle — record
+it briefly rather than manufacturing work.
 
 ---
 
