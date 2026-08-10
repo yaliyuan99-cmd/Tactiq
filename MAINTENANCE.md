@@ -8,6 +8,58 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-11 — cycle 3
+
+**Inspected:** git state, tsc, lint, build + prerender; live `/`, signed-out
+`/dashboard/history`, `/login`, `/signup`; login form edge cases (empty submit,
+malformed email, wrong credentials); **and — for the first time — the
+authenticated dashboard end-to-end**, which had been an open gap since cycle 1.
+
+`.env` is absent locally, so dev runs on the DEV-only localStorage auth
+fallback. That made it safe to create a local test account and exercise the
+real flows without any possibility of touching production Supabase.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| P2 | No test infrastructure — the contract asks for a regression test after every bug fix, and none could be written | Added Vitest + 17 tests |
+| — | Simulator taps logged as `dropped` instead of `recognised` | **Not a defect.** The preview pane was backgrounded (`document.hidden`), so a requested 90 ms sleep actually took 475 ms and exceeded the 600 ms tap threshold. A genuinely brief tap (5 ms) gives `Next recognised 98%`. `TAP_MAX_MS` left alone |
+| — | Auth: empty submit blocked, malformed email blocked, bad credentials → "Invalid email or password." with the button re-enabled and `role="alert"` | Correct, and it does not leak whether an account exists. No action |
+| — | `next` round trip survives **signup** as well as login — signed-out `/dashboard/history` landed back on `/dashboard/history` after account creation | Verified, no action |
+| — | History empty state, telemetry→timeline wiring, summary counts, heatmap ARIA labels, session replay | All correct. No action |
+| — | Build warning: `model-viewer` chunk > 500 kB | Unchanged, still benign (opt-in + dynamic import) |
+
+**Changed:** Vitest (dev dependency) with `npm test` / `npm run test:watch`,
+and three suites — `announce` (4), `gestures` (8), `telemetry` (5).
+`withVariation` moved from `LiveRegions.tsx` into `lib/announce.ts`, where it
+belongs (announcement semantics, not rendering) and can be tested without
+React. No production behaviour changed.
+
+**Verified:** 17/17 tests pass · **mutation-tested** — reintroducing the
+zero-width bug fails exactly 2 tests, restoring it makes them pass, so the
+suite genuinely catches the cycle-1 regression · tsc 0 errors · eslint 0
+errors · build + 16 prerendered routes OK · test files absent from `dist` ·
+live regions verified in-browser: repeating one command changes the region
+text (so it re-announces) while the spoken text stays identical · console
+clean.
+
+**Not deployed.** Dev tooling and a no-op refactor; rides along with the next
+feature deploy.
+
+**Remaining concerns**
+- Tests cover pure logic only. Components, routing and the auth guard have no
+  cover — that needs jsdom + Testing Library, a heavier call deferred until
+  there is a component bug worth pinning.
+- A local-only test account (`qa-local@example.test`) now exists in the preview
+  browser's localStorage. Dev-only, never sent anywhere.
+
+**Next likely focus:** a route-level guard test (signed-out `/dashboard/*`
+preserves `next`) — the highest-value untested behaviour, and the one most
+likely to break silently.
+
+---
+
 ## 2026-08-11 — cycle 2
 
 **Inspected:** git state, tsc, lint, production build + prerender, bundle
