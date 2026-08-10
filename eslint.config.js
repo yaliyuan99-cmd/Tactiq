@@ -5,8 +5,10 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  // Build output and generated bundles are never linted.
-  { ignores: ['dist'] },
+  // Build output and generated bundles are never linted. `dist-ssr` holds the
+  // prerender bundle and must be listed explicitly — it is a sibling of
+  // `dist`, not a child, so the `dist` entry does not cover it.
+  { ignores: ['dist', 'dist-ssr'] },
   {
     files: ['**/*.{ts,tsx}'],
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
