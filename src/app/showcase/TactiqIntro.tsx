@@ -38,21 +38,15 @@ const NAV = [
   { label: 'How it works', href: '#t-how' },
 ];
 
-// Kinetic marquee words — Tactiq's value carried as pure typography instead of
-// borrowed portfolio imagery.
+// One slow strip of accurate product words — Tactiq is used WITH one hand,
+// so no "hands-free"; every word here is true of the design.
 const MARQUEE_A = [
-  'GESTURES',
-  'INVISIBLE',
-  'HANDS-FREE',
-  'INDEPENDENCE',
-  'NO SCREENS',
-];
-const MARQUEE_B = [
-  'WEARABLE',
-  'NINE COMMANDS',
-  'ONE RING',
   'EYES-FREE',
-  'ACCESSIBLE',
+  'ONE-HANDED',
+  'SILENT',
+  'TACTILE',
+  'NINE COMMANDS',
+  'NO SCREENS',
 ];
 
 const STEPS = [
@@ -415,7 +409,7 @@ function Hero() {
       {/* Hero stat strip */}
       <div className="relative z-10 mx-auto grid w-full max-w-3xl grid-cols-3 gap-4 px-6 pb-12">
         {[
-          { v: '9', l: 'Fixed commands' },
+          { v: '9', l: 'Commands' },
           { v: '1', l: 'Ring, one hand' },
           { v: '0', l: 'Screens needed' },
         ].map((s) => (
@@ -439,14 +433,14 @@ function Hero() {
   );
 }
 
-/* === Kinetic keyword marquee ============================================= */
+/* === Keyword strip ======================================================= */
+/* One slow row — the site's single piece of scrolling typography. It drifts
+ * gently with scroll (written straight to the DOM in rAF, no re-renders) and
+ * sits perfectly still under reduced motion. */
 function Marquee() {
   const sectionRef = useRef<HTMLElement>(null);
-  const row1Ref = useRef<HTMLDivElement>(null);
-  const row2Ref = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
 
-  // Scroll-linked parallax written straight to the DOM in rAF — no React state,
-  // so the rows never re-render while scrolling. Skipped for reduced-motion.
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     let raf = 0;
@@ -455,11 +449,8 @@ function Marquee() {
       const section = sectionRef.current;
       if (!section) return;
       const top = section.getBoundingClientRect().top + window.scrollY;
-      const offset = (window.scrollY - top + window.innerHeight) * 0.22;
-      if (row1Ref.current)
-        row1Ref.current.style.transform = `translateX(${offset - 200}px)`;
-      if (row2Ref.current)
-        row2Ref.current.style.transform = `translateX(${-(offset - 200)}px)`;
+      const offset = (window.scrollY - top + window.innerHeight) * 0.1;
+      if (rowRef.current) rowRef.current.style.transform = `translateX(${offset - 140}px)`;
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(apply);
@@ -474,39 +465,28 @@ function Marquee() {
 
   const triple = (arr: string[]) => [...arr, ...arr, ...arr];
 
-  const word = (w: string, i: number, filled: boolean) => (
-    <span key={`${w}-${i}`} className="flex flex-shrink-0 items-center gap-6 sm:gap-9">
-      <span
-        className="t-display whitespace-nowrap"
-        style={{
-          fontSize: 'clamp(2rem, 6vw, 4.5rem)',
-          color: filled ? 'var(--t-ink)' : 'transparent',
-          WebkitTextStroke: filled ? '0' : '1.5px var(--t-violet)',
-        }}
-      >
-        {w}
-      </span>
-      <span
-        aria-hidden="true"
-        className="inline-block h-2.5 w-2.5 rotate-45"
-        style={{ background: 'var(--t-violet)' }}
-      />
-    </span>
-  );
-
   return (
     <section
       ref={sectionRef}
       aria-hidden="true"
       className="overflow-hidden border-y border-[rgba(240,238,252,0.08)] bg-[var(--t-bg)] py-8 sm:py-10"
     >
-      <div className="flex flex-col gap-2">
-        <div ref={row1Ref} className="flex gap-6 sm:gap-9" style={{ willChange: 'transform' }}>
-          {triple(MARQUEE_A).map((w, i) => word(w, i, true))}
-        </div>
-        <div ref={row2Ref} className="flex gap-6 sm:gap-9" style={{ willChange: 'transform' }}>
-          {triple(MARQUEE_B).map((w, i) => word(w, i, false))}
-        </div>
+      <div ref={rowRef} className="flex gap-6 sm:gap-9" style={{ willChange: 'transform' }}>
+        {triple(MARQUEE_A).map((w, i) => (
+          <span key={`${w}-${i}`} className="flex flex-shrink-0 items-center gap-6 sm:gap-9">
+            <span
+              className="t-display whitespace-nowrap"
+              style={{ fontSize: 'clamp(1.8rem, 5vw, 3.6rem)', color: 'var(--t-ink)' }}
+            >
+              {w}
+            </span>
+            <span
+              aria-hidden="true"
+              className="inline-block h-2.5 w-2.5 rotate-45"
+              style={{ background: 'var(--t-violet)' }}
+            />
+          </span>
+        ))}
       </div>
     </section>
   );

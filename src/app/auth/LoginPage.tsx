@@ -40,7 +40,7 @@ export default function LoginPage() {
   return (
     <AuthLayout
       title="Welcome back"
-      subtitle="Sign in to manage your account and command layouts."
+      subtitle="Sign in to manage your Tactiq."
       footer={
         <>
           New to Tactiq?{' '}
@@ -97,7 +97,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-xl hover:shadow-lg transition-shadow font-medium flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity font-medium flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {loading ? (
             <>

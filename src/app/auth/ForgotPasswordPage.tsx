@@ -53,7 +53,7 @@ export default function ForgotPasswordPage() {
           </p>
 
           {localMode && (
-            <div className="mt-6 rounded-xl border border-border bg-secondary/40 p-4 text-left text-sm">
+            <div className="mt-6 rounded-md border border-border bg-secondary/40 p-4 text-left text-sm">
               <p className="text-muted-foreground mb-3">
                 <strong className="text-foreground">Dev mode:</strong> no email backend is
                 connected, so use this direct link to set a new password.
@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-xl hover:shadow-lg transition-shadow font-medium flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity font-medium flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>
