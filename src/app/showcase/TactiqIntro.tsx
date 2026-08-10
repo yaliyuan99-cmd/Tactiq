@@ -25,7 +25,6 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { FadeIn, Magnet } from './components';
-import HeroHandDemo from './HeroHandDemo';
 
 const CDN =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/';
@@ -352,54 +351,83 @@ function Hero() {
         </Link>
       </nav>
 
-      {/* Hero: say what it is, then let the visitor try it. */}
+      {/* Hero copy */}
       <div
         id="main-content"
         tabIndex={-1}
-        className="relative z-10 mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 px-6 py-12 focus:outline-none md:px-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16"
+        className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-6 py-16 text-center focus:outline-none"
       >
-        <div className="text-center lg:text-left">
-          <span className="t-rise mb-6 inline-flex items-center gap-2 rounded-full border border-[rgba(240,238,252,0.22)] bg-[rgba(11,10,20,0.35)] px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-[var(--t-muted)] backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 rounded-full" style={{ background: 'var(--t-green)' }} />
-            Accessibility research prototype
-          </span>
+        <span className="t-rise mb-6 inline-flex items-center gap-2 rounded-full border border-[rgba(240,238,252,0.22)] bg-[rgba(11,10,20,0.35)] px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-[var(--t-muted)] backdrop-blur-sm">
+          <span
+            className="h-1.5 w-1.5 rounded-full"
+            style={{ background: 'var(--t-green)' }}
+          />
+          Student research prototype
+        </span>
 
-          <h1
-            className="t-serif t-legible t-rise-2 font-normal leading-[1.02] tracking-[-0.02em]"
-            style={{ fontSize: 'clamp(2.4rem, 5.5vw, 4.4rem)' }}
+        <h1
+          className="t-serif t-legible t-rise-2 max-w-4xl font-normal leading-[0.95] tracking-[-0.02em]"
+          style={{ fontSize: 'clamp(2.75rem, 8vw, 6rem)' }}
+        >
+          Your hands.{' '}
+          <em className="not-italic" style={{ color: 'var(--t-violet)' }}>
+            Your controller.
+          </em>
+        </h1>
+
+        <p className="t-legible t-rise-3 mt-7 max-w-xl text-base leading-relaxed text-[var(--t-muted)] sm:text-lg">
+          Nine commands on the fingers you can always feel. Tactiq is a smart
+          ring for silent, eyes-free phone control — built for blind users,
+          augmenting VoiceOver and TalkBack.
+        </p>
+
+        <div className="t-rise-3 mt-10 flex flex-col items-center gap-4 sm:flex-row">
+          <Link
+            to="/project"
+            className="t-btn-solid inline-flex min-h-12 items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold"
           >
-            Control your phone by{' '}
-            <em className="not-italic" style={{ color: 'var(--t-violet)' }}>
-              tapping your fingers.
-            </em>
-          </h1>
+            Learn more
+            <ArrowUpRight className="h-5 w-5" />
+          </Link>
+          <a
+            href="#t-how"
+            className="t-btn-outline inline-flex min-h-12 items-center rounded-full px-8 py-3.5 text-base font-medium"
+          >
+            See how it works
+          </a>
+        </div>
 
-          <p className="t-legible t-rise-3 mx-auto mt-6 max-w-xl text-base leading-relaxed text-[var(--t-muted)] sm:text-lg lg:mx-0">
-            Tactiq is a smart-ring concept for blind and low-vision users. Tap
-            your thumb against points on your fingers, and the ring turns each
-            tap into a VoiceOver or TalkBack command — no need to reach for the
-            screen. Try it on the hand beside you.
-          </p>
-
-          <div className="t-rise-3 mt-9 flex flex-col items-center gap-4 sm:flex-row lg:justify-start justify-center">
-            <Link
-              to="/project"
-              className="t-btn-solid inline-flex min-h-12 items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold"
-            >
-              Learn more
-              <ArrowUpRight className="h-5 w-5" />
-            </Link>
-          </div>
-
-          <p className="t-rise-3 mt-8 text-sm text-[var(--t-muted)]">
+        {/* Trust row */}
+        <div className="t-rise-3 mt-9 flex items-center gap-3">
+          <span className="text-sm text-[var(--t-muted)]">
             A <span className="font-semibold text-[var(--t-ink)]">student research project</span>{' '}
             from Sydney — all performance figures are pre-registered targets
-          </p>
+          </span>
         </div>
+      </div>
 
-        <div className="t-rise-3 pb-6 lg:pb-0">
-          <HeroHandDemo />
-        </div>
+      {/* Hero stat strip */}
+      <div className="relative z-10 mx-auto grid w-full max-w-3xl grid-cols-3 gap-4 px-6 pb-12">
+        {[
+          { v: '9', l: 'Commands' },
+          { v: '1', l: 'Ring, one hand' },
+          { v: '0', l: 'Screens needed' },
+        ].map((s) => (
+          <div key={s.l} className="text-center">
+            <div
+              className="t-heavy font-black tabular-nums leading-none"
+              style={{
+                fontSize: 'clamp(2rem, 5vw, 3.25rem)',
+                color: 'var(--t-ink)',
+              }}
+            >
+              {s.v}
+            </div>
+            <div className="mt-1 text-xs uppercase tracking-widest text-[var(--t-muted)]">
+              {s.l}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
