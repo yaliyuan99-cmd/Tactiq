@@ -25,7 +25,6 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { FadeIn, Magnet } from './components';
-import RingAssembly from './RingAssembly';
 
 const CDN =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/';
@@ -769,7 +768,6 @@ export default function TactiqIntro() {
       <Marquee />
       <CinematicCapabilities />
       <HowItWorks />
-      <RingAssembly />
       <ClosingCTA />
     </div>
   );

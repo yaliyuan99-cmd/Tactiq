@@ -9,6 +9,7 @@ import SiteFooter from './components/SiteFooter';
 import Sequence from './home/Sequence';
 import HandMap from './home/HandMap';
 import Prototype from './home/Prototype';
+import RingAssemblySection from './home/RingAssemblySection';
 import DesignEvolution from './home/DesignEvolution';
 import Research from './home/Research';
 import Timeline from './home/Timeline';
@@ -46,6 +47,7 @@ export function PrototypePage() {
   return (
     <PageShell title="The ring — prototype">
       <Prototype />
+      <RingAssemblySection />
       <DesignEvolution />
     </PageShell>
   );
