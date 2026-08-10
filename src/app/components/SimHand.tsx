@@ -14,7 +14,7 @@
  * Geometry comes from src/lib/gestures.ts (the x/y percentages), so the map
  * can never drift from the canonical command model.
  */
-import { useRef, useState } from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
 import { cn } from '../../lib/utils';
 import {
   gesturePoints,
@@ -32,6 +32,19 @@ const KIND_DOT: Record<PointKind, string> = {
     'bg-primary text-primary-foreground ring-2 ring-offset-2 ring-primary ring-offset-background',
 };
 
+/* The showcase's dark surface needs literal colours: the Tailwind theme is
+ * inlined at build time, so cascading variable overrides can't re-skin the
+ * utility classes above. */
+const KIND_DOT_DARK: Record<PointKind, CSSProperties> = {
+  fixed: { background: '#ece9fb', color: '#0b0a14' },
+  shortcut: { background: 'var(--t-violet, #7c6cff)', color: '#ffffff' },
+  emergency: {
+    background: 'var(--t-violet, #7c6cff)',
+    color: '#ffffff',
+    boxShadow: '0 0 0 2px #0b0a14, 0 0 0 4px var(--t-violet, #7c6cff)',
+  },
+};
+
 export interface SimHandProps {
   /** "select" highlights a persistent selection; "press" fires momentary presses. */
   mode?: 'select' | 'press';
@@ -46,6 +59,8 @@ export interface SimHandProps {
   emphasizeIds?: ContactId[] | null;
   /** Mirror for left-hand wearers. */
   mirrored?: boolean;
+  /** Literal dark-surface colours (for the showcase's night palette). */
+  dark?: boolean;
   className?: string;
   /** Accessible name for the whole group. */
   label?: string;
@@ -60,6 +75,7 @@ export function SimHand({
   flashId = null,
   emphasizeIds = null,
   mirrored = false,
+  dark = false,
   className,
   label = 'Command map: eight contact points on the hand. Use arrow keys to move between points.',
 }: SimHandProps) {
@@ -89,7 +105,7 @@ export function SimHand({
       aria-label={label}
       className={cn('relative w-full max-w-md select-none', className)}
     >
-      <HandIllustration mirrored={mirrored} />
+      <HandIllustration mirrored={mirrored} dark={dark} />
 
       {gesturePoints.map((point: GesturePoint, i) => {
         const kind = kindOf(point);
@@ -160,11 +176,18 @@ export function SimHand({
                 onPressEnd?.(point.id);
               }
             }}
-            style={{ position: 'absolute', left, top: point.y }}
+            style={{
+              position: 'absolute',
+              left,
+              top: point.y,
+              ...(dark ? KIND_DOT_DARK[kind] : undefined),
+              ...(dark && isSelected ? { outlineColor: '#ece9fb' } : undefined),
+            }}
             className={cn(
               'w-11 h-11 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center text-[0.62rem] font-semibold leading-none transition-transform',
-              KIND_DOT[kind],
-              isSelected && 'scale-110 outline-2 outline-offset-4 outline-primary-strong',
+              !dark && KIND_DOT[kind],
+              isSelected && 'scale-110 outline-2 outline-offset-4',
+              isSelected && !dark && 'outline-primary-strong',
               !isSelected && 'hover:scale-105 active:scale-95',
               isFlashed && 'sim-flash scale-110',
               dimmed && 'opacity-35',
@@ -179,13 +202,22 @@ export function SimHand({
 }
 
 /** The stylised palm-up hand, ring worn on the index finger. */
-export function HandIllustration({ mirrored = false }: { mirrored?: boolean }) {
+export function HandIllustration({
+  mirrored = false,
+  dark = false,
+}: {
+  mirrored?: boolean;
+  dark?: boolean;
+}) {
   return (
     <svg
       viewBox="0 0 320 380"
       aria-hidden
-      className="w-full h-auto text-foreground"
-      style={mirrored ? { transform: 'scaleX(-1)' } : undefined}
+      className={dark ? 'w-full h-auto' : 'w-full h-auto text-foreground'}
+      style={{
+        ...(mirrored ? { transform: 'scaleX(-1)' } : undefined),
+        ...(dark ? { color: 'rgba(236,233,251,0.85)' } : undefined),
+      }}
     >
       <g fill="none" stroke="currentColor" strokeOpacity="0.38" strokeWidth="2">
         {/* wrist */}
