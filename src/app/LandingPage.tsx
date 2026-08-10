@@ -14,7 +14,6 @@ import Sequence from './home/Sequence';
 import HandMap from './home/HandMap';
 import DesignEvolution from './home/DesignEvolution';
 import Prototype from './home/Prototype';
-import RingAssemblySection from './home/RingAssemblySection';
 import Research from './home/Research';
 import Timeline from './home/Timeline';
 import FollowForm from './home/FollowForm';
@@ -32,7 +31,6 @@ export default function LandingPage() {
         <HandMap />
         <DesignEvolution />
         <Prototype />
-        <RingAssemblySection />
         <Research />
         <Timeline />
         <FaqSection />
