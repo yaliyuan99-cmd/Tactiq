@@ -8,6 +8,54 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-11 — cycle 6
+
+**Inspected:** git state, 21 tests, tsc, lint, build + prerender; all seven
+authenticated dashboard routes plus the catch-all, each checked for render,
+`h1`, `document.title` and error boundary; prerendered vs client-rendered 404.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| **P1** | **404 page never set `document.title`.** A direct hit on a bad URL is fine (prerendered `404.html` carries the title), but an in-app link to a dead route left the *previous* page's title — the tab said "Account · Tactiq" while the page said "Page not found". It was the only page in the app with no title effect | Fixed |
+| — | All 7 dashboard routes render with correct `h1` and title, no error boundary, no blank states | Correct, no action |
+| — | `react-refresh` lint warning on AuthContext (last cycle's planned focus) | **Deliberately skipped** — a real accessibility defect outranks a dev-experience warning |
+
+Screen readers announce the document title on navigation, so a stale title
+tells a blind user they are somewhere they are not — WCAG 2.4.2 (Level A), and
+the cost lands on exactly the users Tactiq exists for. That is why this was
+treated as P1 rather than polish.
+
+**Changed:** `NotFoundPage.tsx` sets the title on mount from an exported
+`NOT_FOUND_TITLE`, kept identical to the `/404` entry in `prerender.mjs`; plus
+a 4-test suite pinning that the two declarations agree.
+
+**Verified:** 21/21 tests · **mutation-tested** — changing the prerender title
+alone fails the match test, restoring it passes · tsc 0 errors · eslint 0
+errors · build + 16 prerendered routes · prerendered `404.html` title unchanged
+· in-browser: SPA-navigating from `/dashboard/account` to a dead route now
+flips the title to "Page not found · Tactiq" alongside the matching `h1`.
+
+**Deployed to Netlify** — first user-visible change since the cadence began.
+
+**A mistake worth recording:** the first version of the test used `node:fs`,
+which broke `tsc` and therefore the whole build (`npm run build` runs `tsc`
+first). The tsconfig is browser-scoped *on purpose* so node globals cannot
+leak into browser code. Rewrote the test to read both files through Vite's
+`?raw` imports, which the existing `vite/client` types already cover — no new
+dependency, isolation intact. Caught by the verification step, not by luck.
+
+**Remaining concerns**
+- Component/routing behaviour still untested at runtime; this cycle's test is
+  source-level, which pins the invariant but not the mount behaviour.
+- The `react-refresh` warning on AuthContext remains.
+
+**Next likely focus:** the AuthContext / `useAuth` split, now that no
+user-facing defect is outstanding.
+
+---
+
 ## 2026-08-11 — cycle 5
 
 **Inspected:** git state, 17 tests, tsc, lint, build + prerender; live `/`,

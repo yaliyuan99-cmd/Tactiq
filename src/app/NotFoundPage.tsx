@@ -1,8 +1,25 @@
-/** Real 404 page — served for unknown URLs (and prerendered to dist/404.html). */
+/**
+ * Real 404 page — served for unknown URLs (and prerendered to dist/404.html).
+ *
+ * The title is set here as well as in the prerender, because the two arrive by
+ * different routes: a direct hit on a bad URL gets dist/404.html (correct title
+ * already baked in), but an in-app link to a dead route renders this component
+ * client-side, where the previous page's title would otherwise stick. Screen
+ * readers announce the document title on navigation, so a stale one tells a
+ * blind user they are somewhere they are not (WCAG 2.4.2).
+ */
+import { useEffect } from 'react';
 import { Link } from 'react-router';
 import { Hand, Compass } from 'lucide-react';
 
+/** Kept identical to the `/404` entry in prerender.mjs. */
+export const NOT_FOUND_TITLE = 'Page not found · Tactiq';
+
 export default function NotFoundPage() {
+  useEffect(() => {
+    document.title = NOT_FOUND_TITLE;
+  }, []);
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="px-4 sm:px-6 lg:px-8 py-5">
