@@ -8,7 +8,7 @@ import { Link } from 'react-router';
 import { Box } from 'lucide-react';
 import EvidenceStatus from './EvidenceStatus';
 import RingExploded2D from '../components/RingExploded2D';
-import { RING_PARTS, type PartId } from '../ring3d/ringParts';
+import { RING_PARTS, type PartId } from '../components/ringParts';
 import { cn } from '../../lib/utils';
 
 const ProductViewer = lazy(() => import('../components/ProductViewer'));

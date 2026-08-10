@@ -2,17 +2,16 @@
  * Ring — the dashboard's centrepiece: an inspectable digital twin of the
  * Tactiq hardware concept.
  *
- * Hardware mode: interactive 3D ring (drag to rotate, zoom controls) with a
- * physical exploded-view slider and per-component hotspots. The numbered
- * component list beside the canvas is not a caption — it is the same model
- * in text form, fully keyboard and screen-reader operable, and selection is
- * shared both ways.
+ * Hardware mode: the 2D exploded engineering drawing with its assembly
+ * slider and per-component hotspots. The numbered component list beside it
+ * is not a caption — it is the same model in text form, fully keyboard and
+ * screen-reader operable, and selection is shared both ways.
  *
  * Sensors mode: the localisation demo (drag the passive magnet, watch the
  * three channels). Commands mode: the eight contact points as data.
  *
- * The 3D module is lazy-loaded; without WebGL the page quietly serves the
- * poster and the component list — nothing is lost but the rotation.
+ * Everything here is plain SVG — no WebGL, so it renders everywhere and
+ * costs nothing to load.
  */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
@@ -21,7 +20,7 @@ import EvidenceStatus from '../home/EvidenceStatus';
 import SensorDemo from '../components/SensorDemo';
 import RingExploded2D from '../components/RingExploded2D';
 import { SimHand, HandLegend } from '../components/SimHand';
-import { RING_PARTS, type PartId } from '../ring3d/ringParts';
+import { RING_PARTS, type PartId } from '../components/ringParts';
 import { useDeviceSnapshot } from '../../services/device/useDevice';
 import { deviceManager } from '../../services/device/manager';
 import { loadA11yPrefs } from '../../lib/a11yPrefs';

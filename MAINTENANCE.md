@@ -8,6 +8,52 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-11 — cycle 2
+
+**Inspected:** git state, tsc, lint, production build + prerender, bundle
+sizes, dependency graph, dead-code scan; live `/`, `/project`, `/login`,
+signed-out `/dashboard/history`; console on every route; 375px mobile and
+desktop widths; heading order on `/project`.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| P2 | ~870 lines of orphaned components — `RingScene.tsx` (243), `JackPortfolio.tsx` (522), `VelorahHero.tsx` (105), `figma/ImageWithFallback.tsx` (27). None imported anywhere | Deleted |
+| P2 | `@react-three/fiber` + `@types/three` installed solely for the dead `RingScene` — 22 packages of nothing | Removed |
+| P2 | `src/app/ring3d/` held only the 2D part list after `RingScene` went — a directory name that lies to the next reader | `ringParts.ts` moved to `src/app/components/` |
+| P2 | `RingPage.tsx` header comment still described "interactive 3D ring… lazy-loaded… without WebGL" — untrue since the 2D swap | Rewritten |
+| — | `hOverflow: true` on `/project` | **Not a defect.** The browser pane had collapsed (`clientWidth: 0`), so every element "overflowed" a zero-width viewport. Re-measured at a real 375px and 1280px: `scrollWidth === clientWidth`, no overflow |
+| — | Vite HMR "Failed to reload" errors after the file move | **Not a defect.** Logged while the old import path was briefly unresolvable mid-edit. A fresh tab shows a clean console |
+| — | Build warning: chunk > 500 kB (`model-viewer`, 1.0 MB) | Unchanged and still benign — opt-in button + dynamic `import()` |
+| — | Auth boundary, console, heading order (1× h1, no skips), mobile | Verified clean, no action |
+
+**Changed:** 10 files, +12 / −1202. No user-visible behaviour touched.
+
+**Verified:** tsc 0 errors · eslint 0 errors (1 pre-existing informational
+warning) · build + all 16 prerendered routes OK · `/project` assembly
+re-exercised in the browser after the import move — slider drives the drawing,
+list↔drawing selection sync works, live readout correct, no error boundary ·
+fresh-tab console clean · `node_modules` 188 → 166 packages.
+
+**Not deployed.** Dead-code and dependency hygiene with zero user-visible
+change; rides along with the next feature deploy.
+
+**Note for future cycles:** `three` stays a direct dependency on purpose — it
+is `@google/model-viewer`'s *peer* dependency, so the app is correct to declare
+it even though nothing in `src/` imports it. Do not "clean it up".
+
+**Remaining concerns**
+- Still no automated test infrastructure, so this cleanup has no regression net
+  beyond tsc.
+- `/dashboard/*` still unverified end-to-end (needs an account; signing up
+  would write to the real Supabase).
+
+**Next likely focus:** minimal Vitest setup covering pure logic
+(`withVariation`, telemetry session grouping, `effectiveCommandFor`).
+
+---
+
 ## 2026-08-10 — cycle 1
 
 **Inspected:** repo state (clean, `main`), typecheck, lint, production build +

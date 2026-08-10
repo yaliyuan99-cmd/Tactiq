@@ -14,7 +14,7 @@
  * Parts stay pointer-clickable, mirroring the list.
  */
 import type { ReactNode } from 'react';
-import { RING_PARTS, type RingPart, type PartId } from '../ring3d/ringParts';
+import { RING_PARTS, type RingPart, type PartId } from './ringParts';
 
 const CX = 220;
 const CY = 232; // assembled resting centre
