@@ -6,7 +6,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import { Loader2, Check, Download, LogOut } from 'lucide-react';
-import { useAuth } from '../auth/AuthContext';
+import { useAuth } from '../auth/useAuth';
 import { updateProfile, updatePassword, listGestureConfigs, signOut } from '../../lib/api';
 import { loadA11yPrefs } from '../../lib/a11yPrefs';
 

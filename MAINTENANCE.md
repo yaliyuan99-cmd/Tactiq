@@ -8,6 +8,65 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-12 — cycle 15
+
+**Inspected:** local git state, 125 tests, tsc, lint, build + prerender; the
+**first-run experience** of a genuinely new account (created through the signup
+form against the DEV localStorage fallback) across Overview, History, Training,
+Device and Commands; the signed-out `/dashboard/account` guard and the return
+trip; all nine `useAuth` consumers; console throughout.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| **P2** | **`AuthContext.tsx` exported both a component and a hook**, the project's one remaining lint warning. React Fast Refresh cannot hot-update such a module, so every edit to the auth file remounted the tree and threw away the session and all state below the provider | Fixed |
+| — | A stale comment in `DashboardLayout` still asserted "focus … sits on `<body>` after a nav" — the claim cycle 14 disproved and corrected in this log, but the source copy was missed | Fixed |
+| — | **New-user empty states are genuinely good.** History: "No commands yet" with a *Try the command simulator* CTA. Training: "0 / 5" and an honest "Progress is saved in this browser only". Device: "No ring paired" and "Tactiq rings exist only as a bench prototype right now". Commands: sensible defaults | Correct, no action |
+| — | Signup → dashboard, signed-out guard, sign-in round trip | Correct, no action |
+
+**Changed:** the context and `useAuth` move to `src/app/auth/useAuth.ts`, so
+`AuthContext.tsx` exports only `<AuthProvider>`. Nine consumer imports updated,
+one line each — no behaviour change anywhere. Plus the stale comment.
+
+**Verified:** 125/125 tests · tsc 0 errors · **eslint now reports nothing at
+all — 0 errors and 0 warnings, the first fully clean lint in this log** · build
++ 16 prerendered routes · in-browser, every `useAuth` consumer exercised after
+the split: `ProtectedRoute` still redirects `/dashboard/account` →
+`/login?next=…` and returns after sign-in; `OverviewPage` greets by name
+("Good morning, Fresh"), which is the context actually delivering a user
+through the new module; `AdminPage` still refuses a non-admin with "Admins
+only" and leaks no data; the public `SiteHeader` still shows the signed-in
+affordance; Training and Account render · 0 console errors.
+
+**Not deployed** — the split is internal with identical behaviour, and the
+other change is a comment. Nothing user-visible moved, so per the contract this
+is GitHub-only.
+
+**The probe account** created to inspect first-run (`freshuser@example.test`)
+was removed afterwards, along with its telemetry namespace, and the original
+demo session restored. Supabase is not configured locally, so it never left
+this browser.
+
+**Blocked: still cannot push.** GitHub has been unreachable since cycle 14 —
+`github.com` and `api.github.com` both time out, while Netlify and the npm
+registry answer in under a second, so this is GitHub-specific rather than a
+local network fault. Cycle 14's commit and this one are committed locally and
+`main` is **2 ahead of origin**.
+
+**Remaining concerns**
+- Two commits await a push; `git push origin main` when GitHub is reachable.
+- Only the dashboard announces route changes; the public section routes do not.
+- `ErrorBoundary` still sets no title and does not announce on catch (P3).
+- Component/routing behaviour still untested at runtime (needs jsdom).
+- Netlify GitHub auto-deploy still broken; manual CLI deploy remains the path.
+
+**Next likely focus:** with the lint backlog now empty, no item is outstanding.
+The honest next step is another inspection pass — and if it finds nothing, to
+say so and change nothing.
+
+---
+
 ## 2026-08-12 — cycle 14 — **no code change**
 
 **Inspected:** git state, 125 tests, tsc, lint, build + prerender; focus

@@ -6,7 +6,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { Hand, Menu, X, Sun, Moon } from 'lucide-react';
-import { useAuth } from '../auth/AuthContext';
+import { useAuth } from '../auth/useAuth';
 
 const NAV_LINKS = [
   { label: 'How it works', to: '/how-it-works' },

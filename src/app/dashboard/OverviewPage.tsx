@@ -6,7 +6,7 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight, Grip, ShieldCheck } from 'lucide-react';
-import { useAuth } from '../auth/AuthContext';
+import { useAuth } from '../auth/useAuth';
 import { useDeviceSnapshot } from '../../services/device/useDevice';
 import { listEvents, subscribeTelemetry } from '../../services/telemetry';
 import { listGestureConfigs, isAdmin as checkIsAdmin } from '../../lib/api';

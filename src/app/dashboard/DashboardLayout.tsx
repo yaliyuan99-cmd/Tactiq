@@ -32,7 +32,7 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import { signOut, listGestureConfigs } from '../../lib/api';
-import { useAuth } from '../auth/AuthContext';
+import { useAuth } from '../auth/useAuth';
 import { deviceManager } from '../../services/device/manager';
 import { startTelemetry, setTelemetryLayout } from '../../services/telemetry';
 import { DEFAULT_LAYOUT } from '../../lib/gestures';
@@ -167,11 +167,15 @@ export default function DashboardLayout() {
    * A route change here swaps the whole of the main content without a page
    * load, so the browser gives a screen reader nothing to announce. The
    * document title does change, but SPA title changes are reported
-   * inconsistently across screen reader and browser pairings, and focus stays
-   * put — measured: it sits on <body> after a nav. On a dashboard built for
-   * blind users, silently replacing the page is the wrong default, so the
-   * destination goes through the same polite live region the simulator and
-   * training pages already use.
+   * inconsistently across screen reader and browser pairings. On a dashboard
+   * built for blind users, silently replacing the page is the wrong default,
+   * so the destination goes through the same polite live region the simulator
+   * and training pages already use.
+   *
+   * Focus is deliberately left alone: it stays on the nav item you activated,
+   * which is correct. (An earlier version of this comment claimed focus landed
+   * on <body>; that was a measurement error — it came from element.click(),
+   * which fires a click without moving focus.)
    */
   const routeLabel = useMemo(() => {
     for (const group of NAV_GROUPS) {

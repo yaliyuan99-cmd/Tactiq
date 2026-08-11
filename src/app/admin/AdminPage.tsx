@@ -37,7 +37,7 @@ import {
 } from '../../lib/api';
 import type { AdminUser, AdminStats } from '../../lib/api';
 import type { WaitlistRow, OrderRow, OrderStatus } from '../../lib/database.types';
-import { useAuth } from '../auth/AuthContext';
+import { useAuth } from '../auth/useAuth';
 
 const CATEGORY_LABELS: Record<string, string> = {
   'blind-low-vision': 'Blind / low-vision',

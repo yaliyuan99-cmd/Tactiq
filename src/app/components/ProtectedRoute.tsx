@@ -2,7 +2,7 @@
  *  intended destination) when there's no signed-in user. */
 import { Navigate, Outlet, useLocation } from 'react-router';
 import { Loader2 } from 'lucide-react';
-import { useAuth } from '../auth/AuthContext';
+import { useAuth } from '../auth/useAuth';
 
 export default function ProtectedRoute() {
   const { user, loading } = useAuth();

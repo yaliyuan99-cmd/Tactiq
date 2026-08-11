@@ -1,24 +1,15 @@
 /**
  * App-wide auth state. Wrap the app in <AuthProvider> once, then read the
- * current user anywhere with the useAuth() hook.
+ * current user anywhere with the useAuth() hook from ./useAuth.
+ *
+ * This file exports only the provider component, on purpose: React Fast
+ * Refresh cannot hot-update a module that also exports non-components, and a
+ * remount here would drop the session and all state below it on every save.
+ * The context and the hook live in ./useAuth.ts for that reason.
  */
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { getCurrentUser, onAuthChange, type AuthUser } from '../../lib/api';
-
-interface AuthContextValue {
-  /** The signed-in user, or null when logged out. */
-  user: AuthUser | null;
-  /** True until the initial session lookup resolves. */
-  loading: boolean;
-}
-
-const AuthContext = createContext<AuthContextValue>({ user: null, loading: true });
+import { AuthContext } from './useAuth';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -47,8 +38,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{ user, loading }}>{children}</AuthContext.Provider>
   );
-}
-
-export function useAuth(): AuthContextValue {
-  return useContext(AuthContext);
 }

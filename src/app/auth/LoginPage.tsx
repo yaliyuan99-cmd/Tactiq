@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router';
 import { Loader2 } from 'lucide-react';
 import { signIn } from '../../lib/api';
-import { useAuth } from './AuthContext';
+import { useAuth } from './useAuth';
 import AuthLayout, { fieldClass } from './AuthLayout';
 
 export default function LoginPage() {

@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import EvidenceStatus from '../home/EvidenceStatus';
 import { SimHand, HandLegend } from '../components/SimHand';
-import { useAuth } from '../auth/AuthContext';
+import { useAuth } from '../auth/useAuth';
 import { useDeviceEvents } from '../../services/device/useDevice';
 import { deviceManager } from '../../services/device/manager';
 import { giveFeedback } from '../../lib/feedback';
