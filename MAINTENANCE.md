@@ -8,6 +8,64 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-11 — cycle 13
+
+**Inspected:** git state, 108 tests, tsc, lint, build + prerender; `/help`
+(never visited by any earlier sweep); signed-out `/dashboard/device` redirect
+and the return trip; what the live regions actually contain across a dashboard
+navigation; `ErrorBoundary`; 375 px; console.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| **P2** | **Dashboard route changes were announced to nobody.** Navigating between the nine routes swaps the entire main region with no page load. Measured: both live regions **empty before and after**, focus left on `<body>`, and only `document.title` changed — which screen readers report inconsistently for SPA navigations. `announce()` was already wired for simulator, training and haptic events, but never for navigation. On a dashboard whose users are the reason this product exists, replacing the page in silence is the wrong default | Fixed |
+| — | `/help` had no inbound link in two earlier public sweeps | **Phantom** — it is linked from the signed-in sidebar, so the *public* sweeps could not see it. Renders correctly: title, `h1`, 4 sections, one `main` |
+| — | Signed-out `/dashboard/device` → `/login?next=…` → returns after sign-in | Correct, no action |
+| — | `ErrorBoundary` sets no `document.title` and does not announce or move focus when it catches | Real but **P3** and only on a crash — logged, not acted on this cycle |
+
+**Changed:** `DashboardLayout` derives the destination name from `NAV_GROUPS`
+(the nav it already owns, rather than a second list to drift) and speaks it
+through the polite region already mounted there. Plus
+`routeAnnouncement.test.ts` (17 tests), which enumerates every child route in
+`App.tsx` and asserts each resolves to a name.
+
+**Verified:** 125/125 tests · **mutation-tested twice** — deleting the announce
+call and dropping Home's `end` flag each fail by name, all 125 pass restored ·
+tsc 0 errors · eslint 0 errors · build + 16 prerendered routes · in-browser:
+after a **full page load** the region stays empty, then navigation reads
+"Training page", "Home page", "Device page" in turn, **including on returning
+to the path the session landed on** · 375 px: no overflow, announcement works
+through the mobile bottom nav too · 0 console errors.
+
+**Deployed to Netlify** — user-visible.
+
+**A mistake caught in verification:** the first version guarded with a
+`isFirstRoute` boolean ref. StrictMode runs effects twice on mount, so the
+first pass consumed the flag and the second announced — the browser trace
+showed "Device page" sitting in the live region **after a hard load**, exactly
+the double-announcement the guard existed to prevent. Replaced with a
+last-announced-path ref, which is idempotent under a double invoke and also
+still speaks when you navigate away and back. Both behaviours are now pinned by
+test.
+
+**Remaining concerns**
+- Only the dashboard announces. The public section routes change without one,
+  but `LiveRegions` is mounted in the dashboard shell only, so covering them is
+  a larger change than this cycle should take.
+- Focus still does not move on navigation. Announcing is the less intrusive
+  half of the standard remedy; moving focus to the heading is the other half
+  and deserves its own cycle.
+- Component/routing behaviour still untested at runtime (needs jsdom); these
+  are source-level checks plus a browser trace.
+- Netlify GitHub auto-deploy still broken; manual CLI deploy remains the path.
+
+**Next likely focus:** focus management on route change, as the companion to
+this. The `AuthContext` / `useAuth` lint warning remains the only non-a11y item
+outstanding, deferred eight cycles.
+
+---
+
 ## 2026-08-11 — cycle 12
 
 **Inspected:** git state, 105 tests, tsc, lint, build + prerender; the

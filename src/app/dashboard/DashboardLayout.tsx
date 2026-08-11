@@ -11,7 +11,7 @@
  *  - Mounts the live regions, the ⌘K command palette, and starts the local
  *    telemetry recorder that feeds the Activity page.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, Link, Outlet, useLocation, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
 import {
@@ -36,6 +36,7 @@ import { useAuth } from '../auth/AuthContext';
 import { deviceManager } from '../../services/device/manager';
 import { startTelemetry, setTelemetryLayout } from '../../services/telemetry';
 import { DEFAULT_LAYOUT } from '../../lib/gestures';
+import { announce } from '../../lib/announce';
 import LiveRegions from '../components/LiveRegions';
 import ReducedMotionProvider from '../components/ReducedMotionProvider';
 import CommandPalette from './CommandPalette';
@@ -159,6 +160,43 @@ export default function DashboardLayout() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { user } = useAuth();
   const location = useLocation();
+
+  /**
+   * Say where we just landed.
+   *
+   * A route change here swaps the whole of the main content without a page
+   * load, so the browser gives a screen reader nothing to announce. The
+   * document title does change, but SPA title changes are reported
+   * inconsistently across screen reader and browser pairings, and focus stays
+   * put — measured: it sits on <body> after a nav. On a dashboard built for
+   * blind users, silently replacing the page is the wrong default, so the
+   * destination goes through the same polite live region the simulator and
+   * training pages already use.
+   */
+  const routeLabel = useMemo(() => {
+    for (const group of NAV_GROUPS) {
+      for (const item of group.items) {
+        const matches = item.end
+          ? location.pathname === item.to
+          : location.pathname.startsWith(item.to);
+        if (matches) return item.label;
+      }
+    }
+    return null;
+  }, [location.pathname]);
+
+  // A full page load announces itself, so speak only when the path actually
+  // changes. Tracking the last announced path rather than a "first render"
+  // flag keeps this idempotent: StrictMode runs effects twice on mount, and a
+  // flag would consume its first run and then announce on the second — the
+  // landing page would be read out on every hard load. It also still speaks
+  // when you navigate away and come back.
+  const lastAnnounced = useRef(location.pathname);
+  useEffect(() => {
+    if (location.pathname === lastAnnounced.current) return;
+    lastAnnounced.current = location.pathname;
+    if (routeLabel) announce(`${routeLabel} page`);
+  }, [location.pathname, routeLabel]);
 
   // Point the device manager and telemetry recorder at this user; the
   // simulator, training, history and ring pages all share the one store.
