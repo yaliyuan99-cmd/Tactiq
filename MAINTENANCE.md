@@ -8,6 +8,63 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-11 — cycle 10
+
+**Inspected:** git state, 74 tests, tsc, lint, build + prerender; every form in
+the app (login, sign-up, forgot/reset password, follow-the-project, account
+settings) submitted for real and traced frame by frame for where focus goes;
+signed-out `/dashboard/device` redirect and the return trip after sign-in;
+`/login` at 375 px; console throughout.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| **P1** | **Every form in the app threw focus away on submit.** The submit button carries `disabled={pending}`, and a focused element that becomes disabled has its focus dropped to `<body>`. Traced on login: focus on BUTTON before the click, **BODY 50 ms later**, and it never came back. The error *was* announced (`role="alert"` is a live region), but a keyboard user was left at the top of the document, tabbing all the way back to retry — on the sign-in error path, the most-travelled failure in the app | Fixed |
+| **P1** | Same defect on `FollowForm`'s **input fields**, which my `type="submit"` scan had missed. Submitting with Enter from inside the email field disabled that field mid-flight: measured `emailDisabled: true` with focus already at BODY | Fixed |
+| — | Bad credentials at `/login` correctly rejected and still signed out; the guard did not break real sign-in | Correct, no action |
+| — | Signed-out `/dashboard/device` → `/login?next=…` → returns after sign-in | Correct, no action |
+| — | FollowForm's success state replaces the fields, so focus lands on body | **Not a defect** — the element is gone, and the panel is `role="status"`, so it is announced |
+| — | Login appeared to succeed with a junk password | **Phantom** — a session from cycle 9 was still in localStorage, so `/login` took its already-signed-in redirect. Re-tested signed out |
+
+`aria-disabled` conveys the same state without touching focusability. It also
+leaves the button clickable, so each handler now refuses a second in-flight
+submit itself — on the follow form that guard is what stops one person filing
+two waitlist entries.
+
+**Changed:** seven submit buttons across six files move from `disabled` to
+`aria-disabled` (+ matching Tailwind `aria-disabled:` variants), each handler
+gains an in-flight guard, and FollowForm's two text inputs use `readOnly`
+(a `<select>` has none, and changing it mid-flight is harmless — the value was
+read when the submit began). Plus `submitButtons.test.ts` (21 tests).
+
+**Verified:** 95/95 tests · **mutation-tested twice** — reverting a button to
+`disabled` and deleting a guard each fail by name, all 95 pass restored · tsc 0
+errors · eslint 0 errors · build + 16 prerendered routes · **compiled CSS
+checked** for `aria-disabled:opacity-60/70` and `cursor-not-allowed`, so the
+pending styling survived the variant swap · in-browser, frame-sampled: the
+login trace that read BODY at +50 ms now reads BUTTON at every sample; on the
+follow form the email field holds focus with `readOnly: true` and
+`aria-disabled: "true"` where it previously showed `disabled: true` + BODY ·
+auth round trip intact · `/login` at 375 px, no overflow · 0 console errors ·
+**the local waitlist entries these probes created were removed** (Supabase is
+not configured, so nothing reached production).
+
+**Deployed to Netlify** — user-visible.
+
+**Remaining concerns**
+- The guard is static: it proves the attribute contract, not that focus is
+  actually retained. The frame-sampled browser trace is the only proof of that.
+- The pending window is ~0 ms locally except on the follow form (which has a
+  deliberate 500 ms delay); that delay is what made the state observable at all.
+- Component/routing behaviour still untested at runtime (needs jsdom).
+- Netlify GitHub auto-deploy still broken; manual CLI deploy remains the path.
+
+**Next likely focus:** the `AuthContext` / `useAuth` split (the last lint
+warning) — deferred five cycles now, each time to a real user-facing defect.
+
+---
+
 ## 2026-08-11 — cycle 9
 
 **Inspected:** git state, 63 tests, tsc, lint, build + prerender; every dialog

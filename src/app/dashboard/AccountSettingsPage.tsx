@@ -44,6 +44,9 @@ export default function AccountSettingsPage() {
 
   const saveProfile = async (e: FormEvent) => {
     e.preventDefault();
+    // The button stays focusable while saving (see aria-disabled below), so it
+    // also stays clickable — this is what actually prevents a double submit.
+    if (profileState === 'saving') return;
     setProfileError('');
     setProfileState('saving');
     try {
@@ -62,6 +65,9 @@ export default function AccountSettingsPage() {
 
   const savePassword = async (e: FormEvent) => {
     e.preventDefault();
+    // Same as saveProfile: aria-disabled keeps the button clickable, so the
+    // guard is what stops a second in-flight password change.
+    if (pwState === 'saving') return;
     setPwError('');
     if (newPassword.length < 8) {
       setPwError('Passwords need at least 8 characters.');
@@ -144,7 +150,7 @@ export default function AccountSettingsPage() {
             <div aria-live="polite">
               {profileState === 'error' && <p role="alert" className="text-sm text-destructive">{profileError}</p>}
             </div>
-            <button type="submit" disabled={profileState === 'saving'} className="inline-flex items-center gap-2 px-5 h-12 bg-primary text-primary-foreground rounded-md font-medium hover:opacity-90 transition-opacity disabled:opacity-60">
+            <button type="submit" aria-disabled={profileState === 'saving'} className="inline-flex items-center gap-2 px-5 h-12 bg-primary text-primary-foreground rounded-md font-medium hover:opacity-90 transition-opacity aria-disabled:opacity-60">
               {profileState === 'saving' ? (
                 <><Loader2 className="w-4 h-4 animate-spin" aria-hidden /> Saving…</>
               ) : profileState === 'saved' ? (
@@ -186,7 +192,7 @@ export default function AccountSettingsPage() {
               <p id="acct-pw-hint" className="text-sm text-muted-foreground mt-1.5">At least 8 characters.</p>
               {pwError && <p id="acct-pw-error" role="alert" className="text-sm text-destructive mt-1.5">{pwError}</p>}
             </div>
-            <button type="submit" disabled={pwState === 'saving'} className="inline-flex items-center gap-2 px-5 h-12 border border-border rounded-md font-medium hover:bg-secondary transition-colors disabled:opacity-60">
+            <button type="submit" aria-disabled={pwState === 'saving'} className="inline-flex items-center gap-2 px-5 h-12 border border-border rounded-md font-medium hover:bg-secondary transition-colors aria-disabled:opacity-60">
               {pwState === 'saving' ? (
                 <><Loader2 className="w-4 h-4 animate-spin" aria-hidden /> Changing…</>
               ) : pwState === 'saved' ? (

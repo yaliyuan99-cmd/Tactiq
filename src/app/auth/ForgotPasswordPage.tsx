@@ -14,6 +14,9 @@ export default function ForgotPasswordPage() {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    // The button stays focusable while submitting (see aria-disabled below), so
+    // it also stays clickable — this is what actually prevents a double submit.
+    if (loading) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError('Please enter a valid email address.');
       return;
@@ -93,8 +96,8 @@ export default function ForgotPasswordPage() {
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity font-medium flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            aria-disabled={loading}
+            className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity font-medium flex items-center justify-center gap-2 aria-disabled:opacity-70 aria-disabled:cursor-not-allowed"
           >
             {loading ? (
               <>

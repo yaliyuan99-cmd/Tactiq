@@ -38,6 +38,10 @@ export default function FollowForm() {
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // The button stays focusable while submitting (see aria-disabled below), so
+    // it also stays clickable. Without this guard a second click would file a
+    // second waitlist entry for the same person.
+    if (status === 'submitting') return;
     const v = validate();
     setErrors(v);
     if (v.name || v.email) {
@@ -125,7 +129,11 @@ export default function FollowForm() {
                   aria-invalid={!!errors.name}
                   aria-describedby={errors.name ? 'ff-name-error' : undefined}
                   className={`${fieldCls} ${errors.name ? 'border-destructive' : ''}`}
-                  disabled={status === 'submitting'}
+                  // readOnly, not disabled: a disabled field that currently has
+                  // focus loses it to <body>, and submitting with Enter from
+                  // inside a field is the common way people send this form.
+                  readOnly={status === 'submitting'}
+                  aria-disabled={status === 'submitting'}
                 />
                 {errors.name && (
                   <p id="ff-name-error" className="mt-1.5 text-sm text-destructive flex items-center gap-1.5">
@@ -148,7 +156,8 @@ export default function FollowForm() {
                   aria-invalid={!!errors.email}
                   aria-describedby={errors.email ? 'ff-email-error' : undefined}
                   className={`${fieldCls} ${errors.email ? 'border-destructive' : ''}`}
-                  disabled={status === 'submitting'}
+                  readOnly={status === 'submitting'}
+                  aria-disabled={status === 'submitting'}
                 />
                 {errors.email && (
                   <p id="ff-email-error" className="mt-1.5 text-sm text-destructive flex items-center gap-1.5">
@@ -167,7 +176,9 @@ export default function FollowForm() {
                   value={relationship}
                   onChange={(e) => setRelationship(e.target.value)}
                   className={fieldCls}
-                  disabled={status === 'submitting'}
+                  // A select has no readOnly, and changing it mid-flight is
+                  // harmless: the value was already read when the submit began.
+                  aria-disabled={status === 'submitting'}
                 >
                   {RELATIONSHIPS.map((r) => (
                     <option key={r.value} value={r.value}>
@@ -187,8 +198,8 @@ export default function FollowForm() {
 
               <button
                 type="submit"
-                disabled={status === 'submitting'}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 h-12 bg-primary text-primary-foreground rounded-md font-medium hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
+                aria-disabled={status === 'submitting'}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 h-12 bg-primary text-primary-foreground rounded-md font-medium hover:opacity-90 transition-opacity aria-disabled:opacity-60 aria-disabled:cursor-not-allowed"
               >
                 {status === 'submitting' ? (
                   <>
