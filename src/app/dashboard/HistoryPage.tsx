@@ -25,7 +25,7 @@ import {
   type ActivityEvent,
 } from '../../services/telemetry';
 import { CONTACTS_BY_ID, type ContactId } from '../../lib/gestures';
-import { loadA11yPrefs } from '../../lib/a11yPrefs';
+import { loadA11yPrefs, prefersReducedMotion } from '../../lib/a11yPrefs';
 import { cn, formatTime } from '../../lib/utils';
 
 type Range = 'today' | '7d' | '30d' | 'all';
@@ -216,7 +216,7 @@ export default function HistoryPage() {
   const showOnHand = (id: ContactId) => {
     setFlashId(id);
     heatmapRef.current?.scrollIntoView({
-      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
       block: 'center',
     });
     window.setTimeout(() => setFlashId(null), 900);

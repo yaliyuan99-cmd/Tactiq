@@ -17,7 +17,10 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link } from 'react-router';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
+// Our own hook, not motion/react's: that one reads only the OS media query and
+// would ignore a visitor who ticked the site's own reduced-motion setting.
+import { useReducedMotion } from '../../lib/useReducedMotion';
 import {
   ArrowUpRight,
   Fingerprint,
@@ -277,16 +280,19 @@ function BlurText({
 /* === Cinematic hero ====================================================== */
 function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const reduced = useReducedMotion();
 
-  // Reduced-motion users get a still first frame rather than an autoplay loop.
+  // Reduced-motion visitors get a still frame instead of an autoplay loop —
+  // and get the loop back if they turn the preference off again.
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      v.autoplay = false;
-      v.pause();
-    }
-  }, []);
+    v.autoplay = !reduced;
+    if (reduced) v.pause();
+    // Autoplay can be refused (a backgrounded tab, a browser policy); that
+    // leaves the poster frame showing, which is the same safe resting state.
+    else void v.play().catch(() => {});
+  }, [reduced]);
 
   return (
     <section
@@ -440,9 +446,15 @@ function Hero() {
 function Marquee() {
   const sectionRef = useRef<HTMLElement>(null);
   const rowRef = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
 
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (reduced) {
+      // Drop any drift already applied, so the row rests where CSS puts it
+      // rather than freezing wherever the last scroll left it.
+      if (rowRef.current) rowRef.current.style.transform = '';
+      return;
+    }
     let raf = 0;
     const apply = () => {
       raf = 0;
@@ -461,7 +473,7 @@ function Marquee() {
       window.removeEventListener('scroll', onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [reduced]);
 
   const triple = (arr: string[]) => [...arr, ...arr, ...arr];
 

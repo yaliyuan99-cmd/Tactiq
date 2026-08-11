@@ -8,7 +8,10 @@
  * Statistics are plain text in the initial HTML — no count-up.
  */
 import { useState } from 'react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
+// Our own hook, not motion/react's: that one reads only the OS media query and
+// would ignore a visitor who ticked the site's own reduced-motion setting.
+import { useReducedMotion } from '../../lib/useReducedMotion';
 import { RotateCcw } from 'lucide-react';
 import { PRODUCT } from '../../lib/gestures';
 

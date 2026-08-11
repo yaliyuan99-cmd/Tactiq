@@ -6,14 +6,14 @@
  *    element that slides between items (layoutId) instead of blinking.
  *  - Mobile: compact top bar + drawer for the full list, plus a fixed
  *    bottom navigation for the five everyday destinations (44px targets).
- *  - Every page change plays a 200 ms transform-only entrance; MotionConfig
- *    honours prefers-reduced-motion for all of it.
+ *  - Every page change plays a 200 ms transform-only entrance;
+ *    ReducedMotionProvider honours both reduced-motion sources for all of it.
  *  - Mounts the live regions, the ⌘K command palette, and starts the local
  *    telemetry recorder that feeds the Activity page.
  */
 import { useEffect, useState } from 'react';
 import { NavLink, Link, Outlet, useLocation, useNavigate } from 'react-router';
-import { motion, MotionConfig } from 'motion/react';
+import { motion } from 'motion/react';
 import {
   Hand,
   LayoutDashboard,
@@ -37,6 +37,7 @@ import { deviceManager } from '../../services/device/manager';
 import { startTelemetry, setTelemetryLayout } from '../../services/telemetry';
 import { DEFAULT_LAYOUT } from '../../lib/gestures';
 import LiveRegions from '../components/LiveRegions';
+import ReducedMotionProvider from '../components/ReducedMotionProvider';
 import CommandPalette from './CommandPalette';
 
 const NAV_GROUPS: {
@@ -174,7 +175,7 @@ export default function DashboardLayout() {
   }, [user]);
 
   return (
-    <MotionConfig reducedMotion="user">
+    <ReducedMotionProvider>
       <div className="min-h-screen bg-background">
         <LiveRegions />
         <CommandPalette />
@@ -270,6 +271,6 @@ export default function DashboardLayout() {
           </ul>
         </nav>
       </div>
-    </MotionConfig>
+    </ReducedMotionProvider>
   );
 }

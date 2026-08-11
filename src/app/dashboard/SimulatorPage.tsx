@@ -26,7 +26,7 @@ import { deviceManager } from '../../services/device/manager';
 import { giveFeedback } from '../../lib/feedback';
 import { announce } from '../../lib/announce';
 import { cn, formatTime, uid } from '../../lib/utils';
-import { loadA11yPrefs } from '../../lib/a11yPrefs';
+import { loadA11yPrefs, prefersReducedMotion } from '../../lib/a11yPrefs';
 import { listGestureConfigs } from '../../lib/api';
 import {
   CONTACTS_BY_ID,
@@ -123,7 +123,7 @@ export default function SimulatorPage() {
   const runPipeline = useCallback((gated: boolean, kind: 'confirm' | 'reject' | 'emergency') => {
     stageTimers.current.forEach((t) => clearTimeout(t));
     stageTimers.current = [];
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduce = prefersReducedMotion();
     const last = gated ? 1 : PIPELINE_STAGES.length - 1;
     if (reduce) {
       setStage(last);

@@ -8,6 +8,72 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-11 — cycle 7
+
+**Inspected:** git state, 21 tests, tsc, lint, build + prerender; `/`, `/project`,
+`/login`; signed-out `/dashboard/*` redirect and the return trip after sign-in;
+all 8 dashboard routes at 375 px for overflow, titles, `h1`, accessible names;
+the reduced-motion story end-to-end (CSS rules, JS call sites, motion/react).
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| **P1** | **The site's own reduced-motion setting only half worked.** `/dashboard/accessibility` offers "Remove non-essential animation on this site, *in addition to my system setting*". CSS honoured it via `.force-reduced-motion`, but every JS-driven motion path read `matchMedia` alone and so ignored it: the homepage autoplay video, the marquee parallax, the simulator's staged pipeline, Activity's smooth scroll, and all of motion/react via `MotionConfig reducedMotion="user"` | Fixed |
+| — | Auth: signed-out `/dashboard/history` → `/login?next=%2Fdashboard%2Fhistory` → signing in returns to the right page | Correct, no action |
+| — | Open-redirect probe on `?next=`: `//example.com` and `https://example.com` both stay on-origin (react-router resolves them as paths) | Not a defect |
+| — | All 8 dashboard routes at 375 px: no overflow, unique title, single `h1` | Correct, no action |
+| — | Checkboxes on `/dashboard/accessibility` looked unlabelled to a naive query | **Phantom** — implicitly labelled by wrapping `<label>` (`labels.length === 1`) |
+| — | Homepage hero video paused in the preview pane | **Phantom** — pane autoplay policy; it pauses identically with the setting off |
+
+The label says "in addition to", which is a promise: the setting has to work on
+its own for someone whose OS preference is off. Half-working was the worst
+shape for it — transitions froze while video, parallax and motion/react carried
+on, so the user believes they turned it off and it hasn't. On a site built for
+disabled users, a broken accessibility control is a broken user flow, not
+polish.
+
+**Changed:** one source of truth in `a11yPrefs.ts` — `prefersReducedMotion()`
+(OS query **or** site setting) and `subscribeReducedMotion()`, with
+`applyA11yPrefs()` now emitting a change event. `useReducedMotion` hook
+(`useSyncExternalStore`) for declarative sites, plus a `ReducedMotionProvider`
+that feeds `MotionConfig` `"always"`/`"user"`. Swapped the 4 `matchMedia` reads
+and the 3 uses of motion/react's own `useReducedMotion` — that one is media-query
+only, which was the same bug one layer down. 10 new tests.
+
+**Verified:** 31/31 tests · **mutation-tested** — dropping the site-setting half
+of `prefersReducedMotion()` fails exactly the two tests that describe the
+defect, restoring it passes all 31 · tsc 0 errors · eslint 0 errors · build +
+16 prerendered routes · in-browser, with the OS preference **off**: Activity's
+"Show on hand" used `behavior: "smooth"` before and `"auto"` after · **control
+check** — with the setting off it is still `"smooth"`, so motion is not
+disabled for people who never asked · **live toggle without reload** — flipping
+the setting the way the accessibility page flips it stopped the marquee
+parallax mid-scroll and cleared its transform, proving the subscription reaches
+React · 5-route dashboard sweep with an error counter attached: 0 errors.
+
+**Deployed to Netlify** — user-visible.
+
+**Worth recording:** the console showed
+`ReferenceError: ReducedMotionProvider is not defined` from DashboardLayout —
+stale HMR from the moment between swapping the JSX and adding the import. Not
+assumed away: re-checked with a fresh load and an attached error counter across
+five routes (0 errors), and it could not survive a build that typechecks.
+
+**Remaining concerns**
+- Component/routing behaviour still untested at runtime (needs jsdom +
+  Testing Library); the new tests cover the logic, not the rendering.
+- `prerender-entry.tsx` keeps `MotionConfig reducedMotion="user"` directly.
+  Correct as-is — the prerender has no window and the client re-renders via
+  `createRoot` rather than hydrating, so no mismatch is possible.
+- Netlify GitHub auto-deploy still broken; manual CLI deploy remains the path.
+
+**Next likely focus:** the `AuthContext` / `useAuth` split (the last lint
+warning) — still to be re-audited against whatever the next inspection finds,
+not assumed.
+
+---
+
 ## 2026-08-11 — cycle 6
 
 **Inspected:** git state, 21 tests, tsc, lint, build + prerender; all seven

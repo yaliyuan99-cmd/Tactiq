@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { MotionConfig } from "motion/react";
+import ReducedMotionProvider from "./app/components/ReducedMotionProvider.tsx";
 import App from "./app/App.tsx";
 import { applyA11yPrefs } from "./lib/a11yPrefs";
 import "./styles/index.css";
@@ -12,8 +12,8 @@ applyA11yPrefs();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <MotionConfig reducedMotion="user">
+    <ReducedMotionProvider>
       <App />
-    </MotionConfig>
+    </ReducedMotionProvider>
   </StrictMode>
 );
