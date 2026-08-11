@@ -483,16 +483,25 @@ export default function SimulatorPage() {
       >
         {PIPELINE_STAGES.map((label, i) => (
           <span key={label} className="flex items-center gap-2 shrink-0">
+            {/* The not-yet-reached stages are named text, not decoration, and
+                at rest (stage = -1) every one of them is in that state — so
+                they must stay readable. At 60% opacity they were 2.66:1;
+                full --muted-foreground is 6.31:1, and the active state is
+                still obvious because it changes hue as well as weight of
+                colour (burnt orange, 7.52:1). */}
             <span
               className={cn(
                 'font-mono-label transition-colors duration-150',
-                i <= stage ? 'text-primary-strong' : 'text-muted-foreground/60',
+                i <= stage ? 'text-primary-strong' : 'text-muted-foreground',
               )}
             >
               {label}
             </span>
             {i < PIPELINE_STAGES.length - 1 && (
-              <span aria-hidden className={cn('text-xs', i < stage ? 'text-primary-strong' : 'text-muted-foreground/40')}>
+              // Decorative separator (aria-hidden), so contrast rules don't
+              // bind it — 60% just keeps it subordinate to the brighter labels
+              // instead of nearly vanishing at 40%.
+              <span aria-hidden className={cn('text-xs', i < stage ? 'text-primary-strong' : 'text-muted-foreground/60')}>
                 →
               </span>
             )}

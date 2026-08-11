@@ -8,6 +8,61 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-11 — cycle 12
+
+**Inspected:** git state, 105 tests, tsc, lint, build + prerender; the
+**contrast audit of the authenticated dashboard** that cycle 11 left undone —
+all nine routes, then re-run at a real 1280 px viewport once the desktop
+sidebar actually laid out; 375 px overflow; console.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| **P2** | **Nine pieces of readable text below AA, one root cause: `--muted-foreground` dimmed with an opacity modifier.** The token is only 6.31:1 to begin with, so any `/NN` spends the margin. The simulator's five pipeline stage labels at 60% were **2.66:1** — and at rest (`stage = -1`) *every* one of them is in that state, so that is how the page looks before you touch it. The sidebar's three group headings at 80% were **3.99:1**, and the ⌘K hint at 70% was **3.26:1** | Fixed |
+| — | The other eight dashboard routes' page content | 0 failures |
+| — | The `→` separators between pipeline stages, at 1.83:1 | **Not a violation** — already `aria-hidden`, and decoration is exempt from 1.4.3. Nudged 40%→60% for balance once the labels brightened; recorded as a visual change, not a compliance one |
+| — | My first dashboard sweep reported **0 failures everywhere** | **Incomplete, not wrong** — the sidebar is `lg:`-only and the pane reports `innerWidth: 0`, so those elements had zero-size rects and the audit skipped them. Found by grepping for the pattern instead, then confirmed by forcing layout with a screenshot |
+
+**Changed:** dropped the opacity modifier in all three places. The active
+pipeline state is untouched and still obvious — it differs in hue, not just
+strength (burnt orange `#8c3009` at 7.52:1 vs warm grey `#5f594e` at 6.31:1).
+Plus `mutedTextContrast.test.ts`, a source-level rule against dimming the muted
+token on non-`aria-hidden` text, since a runtime sweep demonstrably could not
+see two of these three.
+
+**Verified:** 108/108 tests · **mutation-tested twice** — restoring either
+dimmed class fails by name, all 108 pass restored · the audit self-tests both
+directions (a low-contrast probe is caught, a high-contrast control is not)
+before any result is trusted · tsc 0 errors · eslint 0 errors · build + 16
+prerendered routes · in-browser at a real 1280 px viewport with the sidebar
+laid out: all nine elements now measure **6.31:1**, and all nine dashboard
+routes re-audit to **0 failures** · 375 px: no overflow, 0 failures · 0 console
+errors.
+
+**Deployed to Netlify** — user-visible.
+
+**A mistake worth recording:** the first edit put a JSX comment inside
+`{group.label && ( … )}`, which is an expression slot, not a child list — it
+broke the parse and the build emitted **0 prerendered routes**. tsc and eslint
+both caught it before anything shipped. Moved the comment outside the
+conditional.
+
+**Remaining concerns**
+- The simulator pipeline could not be driven in the pane (its squeeze needs
+  timers the hidden tab throttles), so the *active* colour was verified from
+  the class and token values rather than by watching it advance. The edit only
+  touches the inactive branch.
+- `--muted-foreground` at 6.31:1 leaves little headroom by design; anything
+  layered on it needs checking. The new test enforces that for opacity only.
+- Component/routing behaviour still untested at runtime (needs jsdom).
+- Netlify GitHub auto-deploy still broken; manual CLI deploy remains the path.
+
+**Next likely focus:** the `AuthContext` / `useAuth` split (the last lint
+warning) — deferred seven cycles, and now the only thing left on the list.
+
+---
+
 ## 2026-08-11 — cycle 11
 
 **Inspected:** git state, 95 tests, tsc, lint, build + prerender; a first-ever

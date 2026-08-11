@@ -94,8 +94,11 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
     <>
       {NAV_GROUPS.map((group) => (
         <div key={group.label ?? 'root'} className="mb-4">
+          {/* No opacity modifier on the muted token: it is only 6.31:1 to
+              begin with, so dimming it at all drops this 12px label under AA
+              (it was 3.99:1 at 80%). */}
           {group.label && (
-            <p className="font-mono-label text-muted-foreground/80 px-3 mb-1.5">{group.label}</p>
+            <p className="font-mono-label text-muted-foreground px-3 mb-1.5">{group.label}</p>
           )}
           <ul className="space-y-0.5">
             {group.items.map(({ to, label, Icon, end }) => {
@@ -144,7 +147,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         <LogOut className="w-4 h-4 shrink-0" aria-hidden />
         Sign out
       </button>
-      <p className="mt-4 px-3 font-mono-label text-muted-foreground/70">
+      {/* Same reason as the group labels: 70% put this at 3.26:1. */}
+      <p className="mt-4 px-3 font-mono-label text-muted-foreground">
         ⌘K — jump anywhere
       </p>
     </>
