@@ -8,6 +8,59 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-11 — cycle 9
+
+**Inspected:** git state, 63 tests, tsc, lint, build + prerender; every dialog
+in the codebase (command palette, simulator emergency overlay, admin
+confirmations) for role, accessible name, Escape and focus management; the
+admin suspend/erase flows by keyboard; console on a fresh load.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| **P1** | **The admin confirmation dialogs were not dialogs.** Suspend-account and erase-user-data rendered on a bare `fixed inset-0` overlay: no `role`, no `aria-modal`, no accessible name, no Escape, and no focus handling. Measured in the browser: opening Suspend left focus on the trigger *behind* the overlay, and 6 Tabs reached another row's Suspend button in the table underneath — while the overlay blocked the mouse | Fixed |
+| — | Command palette and the simulator's emergency overlay | Already correct — `role`, `aria-modal`, name, Escape, focus |
+| — | Escape appeared not to close the fixed dialog either | **Phantom (tool)** — a capture-phase key logger recorded *nothing*: the preview pane swallows Escape. Tab reached the page normally. Re-tested by dispatching the event the app's own `window` listener receives |
+| — | `ReferenceError: useRef is not defined` in the console | **Phantom (stale HMR)** — from the window between adding the hook and adding its import. tsc caught it at the time; a fresh load with an error counter attached reports 0 |
+
+Two of the three dialogs were already right, which is precisely why the third
+went unnoticed — it looked like a dialog and behaved like a div. It also
+happened to be the one wrapping the two destructive actions, where being able
+to back out matters most.
+
+**Changed:** `AdminPage`'s `Modal` gains `role="dialog"`, `aria-modal="true"`
+and a required `label` prop (so a nameless dialog is now a type error, not an
+oversight), Escape-to-close, a Tab/Shift+Tab trap, focus moved in on open and
+handed back to the trigger on close. Follows `CommandPalette`'s existing
+pattern rather than inventing a second one. Plus `dialogSemantics.test.ts`
+(11 tests) covering every `role="dialog"` in the tree.
+
+**Verified:** 74/74 tests · **mutation-tested twice** — stripping the dialog
+ARIA and removing the Escape handler each fail by name, all 74 pass restored ·
+tsc 0 errors · eslint 0 errors · build + 16 prerendered routes · in-browser on
+a fresh load with an error counter: both dialogs report
+`role=dialog / aria-modal=true / aria-label`, focus lands inside on open,
+**8 Tabs and 3 Shift+Tabs stay inside**, Escape closes, focus returns to the
+exact trigger button, 0 console errors · **no account was suspended or erased**
+— both local users still `banned: false` and present.
+
+**Deployed to Netlify** — user-visible.
+
+**Remaining concerns**
+- The dialog guard is static: it proves the markup contract, not the runtime
+  trap. The trap itself is only covered by the browser check above.
+- `Modal`'s key handler re-subscribes on every render because `onClose` is an
+  inline arrow at both call sites. Harmless, and not worth churning the call
+  sites for.
+- Component/routing behaviour still untested at runtime (needs jsdom).
+- Netlify GitHub auto-deploy still broken; manual CLI deploy remains the path.
+
+**Next likely focus:** the `AuthContext` / `useAuth` split (the last lint
+warning) — deferred four cycles now, each time to a real user-facing defect.
+
+---
+
 ## 2026-08-11 — cycle 8
 
 **Inspected:** git state, 31 tests, tsc, lint, build + prerender; `/`, `/project`,

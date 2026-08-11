@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
 import { motion } from 'motion/react';
 import {
@@ -634,7 +634,7 @@ export default function AdminPage() {
       )}
 
       {/* Ban modal */}
-      <Modal open={!!banTarget} onClose={() => setBanTarget(null)}>
+      <Modal open={!!banTarget} onClose={() => setBanTarget(null)} label="Suspend account">
         <h3 className="text-lg font-semibold mb-1 flex items-center gap-2">
           <Ban className="w-5 h-5 text-destructive" /> Suspend account
         </h3>
@@ -667,7 +667,7 @@ export default function AdminPage() {
       </Modal>
 
       {/* Erase modal */}
-      <Modal open={!!eraseTarget} onClose={() => setEraseTarget(null)}>
+      <Modal open={!!eraseTarget} onClose={() => setEraseTarget(null)} label="Erase user data">
         <h3 className="text-lg font-semibold mb-1 flex items-center gap-2">
           <Trash2 className="w-5 h-5 text-destructive" /> Erase user data
         </h3>
@@ -749,12 +749,68 @@ function Empty({ icon: Icon, text }: { icon: typeof LayoutDashboard; text: strin
 function Modal({
   open,
   onClose,
+  label,
   children,
 }: {
   open: boolean;
   onClose: () => void;
+  /** Accessible name — what the dialog is, announced when it opens. */
+  label: string;
   children: ReactNode;
 }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const previousFocus = useRef<HTMLElement | null>(null);
+
+  // Escape closes, and Tab is kept inside. Both dialogs here confirm a
+  // destructive action (suspending an account, erasing someone's data), so a
+  // keyboard user must be able to back out and must not be able to reach the
+  // table underneath — where the row buttons that opened this still sit.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const panel = panelRef.current;
+      if (!panel) return;
+      const focusable = panel.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && (active === first || !panel.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+
+  // Move focus in on open and hand it back to the trigger on close, so the
+  // keyboard doesn't get stranded on a row button hidden behind the overlay.
+  useEffect(() => {
+    if (open) {
+      previousFocus.current = document.activeElement as HTMLElement;
+      // rAF can land before the panel is interactive; the timeout backs it up.
+      const focusFirst = () =>
+        panelRef.current?.querySelector<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        )?.focus();
+      requestAnimationFrame(focusFirst);
+      window.setTimeout(focusFirst, 60);
+    } else {
+      previousFocus.current?.focus?.();
+    }
+  }, [open]);
+
   // Conditional render (no AnimatePresence exit) so closing unmounts immediately
   // and never depends on an exit animation completing.
   if (!open) return null;
@@ -764,6 +820,10 @@ function Modal({
       onClick={onClose}
     >
       <motion.div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={label}
         initial={{ opacity: 0, scale: 0.96, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         onClick={(e) => e.stopPropagation()}
