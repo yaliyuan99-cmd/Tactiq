@@ -76,6 +76,20 @@ function download(name: string, content: string, type: string) {
 
 type Tab = 'overview' | 'users' | 'waitlist' | 'orders';
 
+/**
+ * Titles for the two things this route can be. /admin is not prerendered (it is
+ * authenticated-only, and a public admin-shell HTML file would be a poor idea),
+ * so arriving here directly leaves index.html's homepage title in the tab, and
+ * arriving by an in-app link leaves the previous page's — until this sets it.
+ *
+ * The denied state gets its own title on purpose: it is exactly when knowing
+ * where you are matters most, and screen readers announce the title on
+ * navigation. Being told "Admin console" while the page reads "Admins only"
+ * would be the opposite of helpful.
+ */
+export const ADMIN_TITLE = 'Admin console · Tactiq';
+export const ADMIN_DENIED_TITLE = 'Admins only · Tactiq';
+
 export default function AdminPage() {
   const { user } = useAuth();
   const [authorized, setAuthorized] = useState<boolean | null>(null);
@@ -124,6 +138,12 @@ export default function AdminPage() {
       setError(err instanceof Error ? err.message : 'Could not load admin data.');
     }
   }, []);
+
+  // Claim the tab straight away, then narrow to the denied title once the
+  // check comes back — so the title is never another page's, at any point.
+  useEffect(() => {
+    document.title = authorized === false ? ADMIN_DENIED_TITLE : ADMIN_TITLE;
+  }, [authorized]);
 
   useEffect(() => {
     let mounted = true;

@@ -7,6 +7,7 @@
  * There is deliberately no scroll-progress bar, no back-to-top button, no
  * entrance animation choreography — the content carries the page.
  */
+import { useEffect } from 'react';
 import SiteHeader from './home/SiteHeader';
 import Hero from './home/Hero';
 import Scenarios from './home/Scenarios';
@@ -20,7 +21,19 @@ import FollowForm from './home/FollowForm';
 import FaqSection from './components/FaqSection';
 import SiteFooter from './components/SiteFooter';
 
+/**
+ * Kept identical to the `/project` entry in prerender.mjs. Both have to say the
+ * same thing: a direct hit on /project is served the prerendered file with the
+ * title already baked in, but the homepage's own CTAs reach this page through
+ * the router, where the previous title would otherwise stick.
+ */
+export const PROJECT_TITLE = 'The research project · Tactiq';
+
 export default function LandingPage() {
+  useEffect(() => {
+    document.title = PROJECT_TITLE;
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />

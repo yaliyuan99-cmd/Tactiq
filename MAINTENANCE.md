@@ -8,6 +8,63 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-11 — cycle 8
+
+**Inspected:** git state, 31 tests, tsc, lint, build + prerender; `/`, `/project`,
+`/login`, `/admin`; the admin authorisation gate as a non-admin account;
+signed-out `/admin` redirect; `/admin` at 375 px; whether the 1 MB model-viewer
+chunk loads eagerly; a title sweep of the whole route table.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| **P2** | **`/project` never set its own title.** It is prerendered, so a direct hit was fine — but the homepage's own CTAs reach it through the router, where the tab kept saying "Tactiq — silent, eyes-free phone control for blind users" while the page read "Control your phone with the hand you already know." The most-travelled path on the public site | Fixed |
+| **P2** | **`/admin` never set a title either**, in all three states: direct hit (homepage title), in-app link (previous page's title), and the denial screen — which said "Admins only" in the page and the homepage title in the tab | Fixed |
+| — | Admin gate: a signed-in non-admin gets "Admins only" and no user data reaches the DOM. Production checks `profiles.is_admin`; the local fallback is `import.meta.env.DEV`-only | Correct, no action |
+| — | Signed-out `/admin` → `/login?next=%2Fadmin` | Correct, no action |
+| — | `/admin` at 375 px despite its wide tables | No overflow |
+| — | Non-admin saw the full admin console | **Phantom** — that account is `users[0]`, and the DEV fallback deliberately bootstraps the first local account as owner. A second account correctly gets denied |
+| — | Build warns about a >500 kB chunk (model-viewer, 1047 kB / 291 kB gz) | **Not a defect** — dynamically imported in `ProductViewer`; confirmed absent from `/project`'s resource list. It only loads when a visitor opts into the 3D view |
+
+Two routes have now shipped without titles, found one page at a time — the 404
+in cycle 6, these in cycle 8. Rather than fix the third by hand later, this
+cycle adds the general guard: a test that walks the route table in `App.tsx`,
+resolves every `element={<X />}` to its source, and requires each to set a
+title or delegate to a layout that does. It found `/project` on its own — I
+went in looking only at `/admin`.
+
+**Changed:** `LandingPage` exports `PROJECT_TITLE` and sets it on mount, pinned
+to the `/project` entry in `prerender.mjs`. `AdminPage` sets `ADMIN_TITLE`, and
+`ADMIN_DENIED_TITLE` once the authorisation check comes back — the denied state
+earns its own title because that is when knowing where you are matters most.
+Plus `routeTitles.test.ts` (32 tests). `ProtectedRoute` and `DashboardLayout`
+are exempt as pure wrappers.
+
+**Verified:** 63/63 tests · **mutation-tested three ways** — removing
+`LandingPage`'s title, removing `AdminPage`'s, and drifting the prerender's
+`/project` title each fail the matching test by name, and all 63 pass restored ·
+tsc 0 errors · eslint 0 errors · build + 16 prerendered routes · in-browser:
+`/` → `/project` now sets "The research project · Tactiq" **and returns to the
+homepage title on the way back**; `/dashboard` → `/admin` sets "Admin console ·
+Tactiq"; a non-admin hitting `/admin` gets "Admins only · Tactiq" with no data
+leak · 7-route public sweep with an error counter attached: unique title,
+single `h1`, 0 errors.
+
+**Deployed to Netlify** — user-visible.
+
+**Remaining concerns**
+- The guard is static: it proves a title is *set*, not that it is *correct* for
+  the state. Only `/project` and `/404` are pinned to the prerender.
+- Component/routing behaviour still untested at runtime (needs jsdom).
+- Netlify GitHub auto-deploy still broken; manual CLI deploy remains the path.
+
+**Next likely focus:** the `AuthContext` / `useAuth` split (the last lint
+warning) — deferred three cycles running now, each time to a real user-facing
+defect. Worth doing if the next inspection turns up nothing bigger.
+
+---
+
 ## 2026-08-11 — cycle 7
 
 **Inspected:** git state, 21 tests, tsc, lint, build + prerender; `/`, `/project`,
