@@ -319,11 +319,14 @@ function Hero() {
         }}
       />
 
-      {/* Skip link — first focusable element on the page */}
+      {/* Skip link — first focusable element on the page. Deep violet, not the
+          bright one: white on --t-violet is 3.69:1, under the 4.5:1 that 16px
+          normal-weight text needs (WCAG 1.4.3). --t-violet-deep is 6.93:1 and
+          still unmistakably the showcase's colour. */}
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-md"
-        style={{ background: 'var(--t-violet)', color: '#fff' }}
+        style={{ background: 'var(--t-violet-deep)', color: '#fff' }}
       >
         Skip to content
       </a>

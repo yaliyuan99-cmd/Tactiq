@@ -179,9 +179,10 @@ export default function DashboardLayout() {
       <div className="min-h-screen bg-background">
         <LiveRegions />
         <CommandPalette />
+        {/* See SiteHeader: bg-primary fails contrast in the dark theme. */}
         <a
           href="#dash-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:bg-foreground focus:text-background focus:rounded-md"
         >
           Skip to content
         </a>

@@ -8,6 +8,62 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-11 — cycle 11
+
+**Inspected:** git state, 95 tests, tsc, lint, build + prerender; a first-ever
+**colour-contrast audit** of every text node on `/`, `/project` and the eight
+public section/legal pages, run against the **production build** as well as the
+dev server; all three skip links; the `--primary` pairing in both themes.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| **P2** | **All three skip links fell below WCAG AA (1.4.3).** They are 16px normal weight, so they need 4.5:1. The showcase link was white on `--t-violet` = **3.69:1**; the site-header and dashboard links were white on `--primary`, which is **4.03:1 in the dark theme** (light theme is fine at 6.50). The skip link exists only for keyboard users and is only ever seen while focused, so weak colours there are invisible to everyone except the people it was built for | Fixed |
+| — | Every other text node on `/`, `/project` and the 8 section/legal pages | **0 contrast failures** |
+| — | Primary buttons in the dark theme, given white-on-`#d3591d` is 4.03:1 | **Not a defect** — the audit found none failing, because that text is large or bold enough to need only 3:1 |
+| — | "7 contrast failures on `/project`" | **Phantom (my own tool)** — my first audit couldn't parse `oklch()`, so it walked past a dark `bg-slate-700` keycap up to a near-white card and reported white-on-white at 1.04:1. Rewrote it to resolve any CSS colour through a canvas |
+| — | "All three skip links stay invisible when focused" | **Phantom (pane)** — `document.hasFocus()` is `false` and `visibilityState` is `hidden`, so `:focus` matches nothing in the preview pane. Proved it with a plain control input, not by assumption |
+
+The contrast numbers survive that second phantom: the showcase link's colours
+come from an inline `style`, and the others were computed from the token values
+directly, neither of which depends on `:focus` matching.
+
+**Changed:** the showcase link uses the **already-existing** `--t-violet-deep`
+(6.93:1) instead of `--t-violet`; the other two use `focus:bg-foreground
+focus:text-background` — the pattern already used elsewhere in the app — which
+clears AA in **both** themes (15.1 / 14.4) rather than passing in one and
+failing in the other. No brand token was touched. Plus
+`skipLinkContrast.test.ts` (10 tests).
+
+**Verified:** 105/105 tests · **mutation-tested twice** — reverting either skip
+link to its old pairing fails by name, all 105 pass restored · the contrast
+formula is itself pinned against black-on-white 21:1 and reproduces the 3.69
+and 4.03 measured in the browser · tsc 0 errors · eslint 0 errors · build + 16
+prerendered routes · **compiled CSS checked** for `focus\:bg-foreground:focus`
+and `focus\:text-background:focus`, so the swap did not silently vanish · on the
+**production build** the showcase link now renders white on `rgb(83,74,183)` =
+**6.93:1**, and a full re-audit of `/` returns **0 failures**.
+
+**Deployed to Netlify** — user-visible.
+
+**Remaining concerns**
+- **The focused appearance was never observed.** The pane has no window focus,
+  so `:focus` styles cannot render there; the fix rests on computed colour
+  pairs and the compiled CSS, not on a screenshot of a focused skip link.
+- The new test pins which pairing each link *uses*, not the hex the CSS
+  defines: `?raw` on a `.css` file returns an empty string here (Tailwind's
+  plugin consumes it, by plain import and by `import.meta.glob` alike), so the
+  token values are mirrored as constants. Editing a token alone would slip past.
+- Component/routing behaviour still untested at runtime (needs jsdom).
+- Netlify GitHub auto-deploy still broken; manual CLI deploy remains the path.
+
+**Next likely focus:** the `AuthContext` / `useAuth` split (the last lint
+warning) — deferred six cycles now. Also worth doing once: a contrast audit of
+the authenticated dashboard pages, which this cycle did not reach.
+
+---
+
 ## 2026-08-11 — cycle 10
 
 **Inspected:** git state, 74 tests, tsc, lint, build + prerender; every form in

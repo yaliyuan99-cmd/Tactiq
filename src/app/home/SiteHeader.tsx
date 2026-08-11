@@ -39,9 +39,12 @@ export default function SiteHeader() {
 
   return (
     <>
+      {/* bg-foreground, not bg-primary: white on the dark theme's primary is
+          4.03:1, under the 4.5:1 that 16px normal-weight text needs. The
+          foreground/background pair clears it in both themes (15.1 / 14.4). */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:bg-foreground focus:text-background focus:rounded-md"
       >
         Skip to content
       </a>
