@@ -8,6 +8,62 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-12 — cycle 14 — **no code change**
+
+**Inspected:** git state, 125 tests, tsc, lint, build + prerender; focus
+behaviour across dashboard navigation and through the ⌘K command palette;
+signed-out `/dashboard/simulator` redirect and the return trip after sign-in;
+five dashboard routes and `/project` at 375 px; console.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| — | **The planned work for this cycle does not exist.** Cycle 13 left "focus does not move on navigation" as the next focus. It does not need to move: with focus genuinely on a nav link, after navigation it **stays on that link**, inside the sidebar — the standard, correct SPA behaviour. Forcing focus to the heading would fight the user's position, not help it | **Deliberately no change** |
+| — | Cycle 13's "focus left on `<body>`" was **wrong**, and the entry above is now corrected | Record fixed |
+| — | ⌘K palette: opens with focus in the search field, navigates, closes, and **restores focus to where it was** | Correct, no action |
+| — | Signed-out `/dashboard/simulator` → `/login?next=…` → returns after sign-in | Correct, no action |
+| — | "15 and 147 elements overflowing" | **Phantom** — `clientWidth` was 0, the collapsed-pane artefact, so every element counted as past the edge. Re-measured at a real 375 px: **0 overflow** on five dashboard routes and `/project` |
+| — | 125 tests, tsc, eslint (1 standing warning), build + 16 prerendered routes | All green |
+
+**Why the focus claim was wrong:** I measured it with `element.click()`, which
+dispatches a click without moving focus — so focus had never been on the link,
+and reading `<body>` afterwards told me nothing about the real interaction. A
+keyboard user tabs to the link and presses Enter, and focus is on it throughout.
+Re-measured this cycle by calling `.focus()` first (which itself needs the pane
+forced into a real layout, or it silently no-ops on the `lg:`-only sidebar).
+
+The announcement shipped in cycle 13 stands on its own: the live regions were
+genuinely empty either side of a navigation, which I verified by reading their
+contents — that measurement never depended on focus.
+
+**Changed:** nothing in the app. One documentation correction: the stale focus
+claim in the cycle-13 entry, struck through rather than quietly deleted,
+because it also shipped in commit `067fa9c`.
+
+**Verified:** tsc 0 errors · eslint 0 errors, 1 standing warning · 125/125 tests
+· build + 16 prerendered routes · in-browser: focus retained on the activated
+nav link, palette focus restored, auth round trip intact, 0 console errors,
+0 overflow at 375 px once the viewport was real.
+
+**Not deployed** — no user-visible change. Pushed to GitHub only, per the
+contract.
+
+**Remaining concerns**
+- Only the dashboard announces route changes; the public section routes do not.
+- The pane's zero-width collapse has now produced false readings in three
+  separate cycles (12, 14). Any measurement that divides by viewport width
+  needs `clientWidth` checked first — worth remembering rather than rediscovering.
+- `ErrorBoundary` still sets no title and does not announce on catch (P3).
+- Component/routing behaviour still untested at runtime (needs jsdom).
+- Netlify GitHub auto-deploy still broken; manual CLI deploy remains the path.
+
+**Next likely focus:** the `AuthContext` / `useAuth` split — the one item left,
+and now genuinely the highest-value thing outstanding rather than something
+deferred behind a defect.
+
+---
+
 ## 2026-08-11 — cycle 13
 
 **Inspected:** git state, 108 tests, tsc, lint, build + prerender; `/help`
@@ -19,7 +75,7 @@ navigation; `ErrorBoundary`; 375 px; console.
 
 | Pri | Finding | Action |
 |---|---|---|
-| **P2** | **Dashboard route changes were announced to nobody.** Navigating between the nine routes swaps the entire main region with no page load. Measured: both live regions **empty before and after**, focus left on `<body>`, and only `document.title` changed — which screen readers report inconsistently for SPA navigations. `announce()` was already wired for simulator, training and haptic events, but never for navigation. On a dashboard whose users are the reason this product exists, replacing the page in silence is the wrong default | Fixed |
+| **P2** | **Dashboard route changes were announced to nobody.** Navigating between the nine routes swaps the entire main region with no page load. Measured: both live regions **empty before and after**, and only `document.title` changed — which screen readers report inconsistently for SPA navigations. `announce()` was already wired for simulator, training and haptic events, but never for navigation. On a dashboard whose users are the reason this product exists, replacing the page in silence is the wrong default | Fixed |
 | — | `/help` had no inbound link in two earlier public sweeps | **Phantom** — it is linked from the signed-in sidebar, so the *public* sweeps could not see it. Renders correctly: title, `h1`, 4 sections, one `main` |
 | — | Signed-out `/dashboard/device` → `/login?next=…` → returns after sign-in | Correct, no action |
 | — | `ErrorBoundary` sets no `document.title` and does not announce or move focus when it catches | Real but **P3** and only on a crash — logged, not acted on this cycle |
@@ -53,9 +109,12 @@ test.
 - Only the dashboard announces. The public section routes change without one,
   but `LiveRegions` is mounted in the dashboard shell only, so covering them is
   a larger change than this cycle should take.
-- Focus still does not move on navigation. Announcing is the less intrusive
-  half of the standard remedy; moving focus to the heading is the other half
-  and deserves its own cycle.
+- ~~Focus still does not move on navigation.~~ **Corrected in cycle 14:** focus
+  stays on the nav link you activated, which is the correct behaviour. The
+  "focus lands on `<body>`" reading in this entry came from measuring with
+  `element.click()`, which fires a click without moving focus — so focus had
+  never been on the link. Struck through rather than deleted, because the claim
+  shipped in this entry and in commit `067fa9c`.
 - Component/routing behaviour still untested at runtime (needs jsdom); these
   are source-level checks plus a browser trace.
 - Netlify GitHub auto-deploy still broken; manual CLI deploy remains the path.
