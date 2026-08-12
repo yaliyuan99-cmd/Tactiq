@@ -183,7 +183,11 @@ export default function DevicePage() {
 
       {/* Interface preview — honest simulation */}
       <section className="border border-border rounded-lg p-5">
-        <div className="flex items-start justify-between gap-4 mb-1">
+        {/* `flex-wrap`: the button is `shrink-0` (181px at the "larger" text
+            setting) and the heading beside it does not shrink either, so on a
+            320px screen the pair overflowed the page. Wrapping drops the button
+            below the heading instead. */}
+        <div className="flex flex-wrap items-start justify-between gap-4 mb-1">
           <h2 className="text-lg">Interface preview</h2>
           <button
             onClick={() => setPreview((p) => !p)}

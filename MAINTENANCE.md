@@ -8,6 +8,61 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-12 — cycle 20
+
+**Inspected:** git state, 133 tests, tsc, lint, build + prerender; the container
+floor cycle 19 left untraced, walked ancestor by ancestor with computed
+`min-width`, `flex-shrink` and grid track values recorded at each step; the hand
+diagram's rendering **and its taps** at 320 px; the desktop two-column layout;
+all nine dashboard routes at 320 px with the largest text.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| **P3** | **`/dashboard/simulator` overflowed at 320 px + largest text** (368 px vs 320). Cause, measured: the grid's implicit track is `auto`, and an auto track is sized to its item's min-content — the hand SVG contributes a **348 px floor** despite being otherwise responsive (`viewBox` + `w-full h-auto`). The track resolved to 347.969 px against 280 px available | Fixed |
+| **P3** | **`/dashboard/device` overflowed** (343 px vs 320) from a **different** cause: a `flex` row holding a heading and a `shrink-0` 181 px button, with no wrapping | Fixed |
+| — | The bottom nav at 344/369 px on both pages | **Consequence, not cause** — `fixed inset-x-0` stretching to the already-widened page, as in cycle 18. It returned to 320 px once each real cause was fixed |
+
+**Two hypotheses tested and rejected before the right one.** Cycle 19 blamed the
+progress bar's `min-w-40`; disproved there. This cycle I first blamed the grid
+*item*'s `min-width: auto` and added `min-w-0` — the computed value duly became
+`0px` and **the page still overflowed at 368**, so that was wrong too, and I
+reverted it. Capping the SVG with `max-width: 100%` also changed nothing (368).
+Only `minmax(0, 1fr)` on the **track** moved it: 368 → 320. I tested all three
+live in the browser before editing any source, which is what finally separated
+them.
+
+**Changed:** `grid-cols-[minmax(0,1fr)]` at the base width on the simulator's
+layout grid (the `lg:` two-column rule is untouched), and `flex-wrap` on the
+device page's heading row.
+
+**Verified:** 133/133 tests · tsc 0 errors · eslint clean · build + 16
+prerendered routes · **all nine dashboard routes at 320 px with the largest
+text: 0 overflow** (was 2 pages) · **the hand still works at 320 px** — this was
+cycle 19's stated precondition for shipping: the SVG renders at 280×333, the
+contact targets measure 55×55 px, squeeze-to-wake arms the ring, and tapping
+"Next" announced *"The History Hour. 2 of 6."* and recorded the event · desktop
+1280 px unchanged: two-column grid, full-size hand, no regression · 0 console
+errors.
+
+**Deployed to Netlify** — user-visible.
+
+**Remaining concerns**
+- The `lg:grid-cols-[1.1fr_0.9fr]` track has the same latent `auto`-minimum
+  shape, but there is ample width there and it does not overflow; left alone
+  rather than changed speculatively.
+- The Supabase branch of cycle 16's single-active fix is still reasoned, not
+  executed.
+- Only the dashboard announces route changes.
+- `ErrorBoundary` still sets no title and does not announce on catch (P3).
+- Component/routing behaviour still untested at runtime (needs jsdom).
+
+**Next likely focus:** nothing outstanding. Reflow is now clean at 320 px in
+both text sizes, across public and authenticated pages.
+
+---
+
 ## 2026-08-12 — cycle 19 — **no code change**
 
 **Inspected:** git state, 133 tests, tsc, lint, build + prerender; **320 px**,

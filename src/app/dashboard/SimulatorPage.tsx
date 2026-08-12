@@ -516,7 +516,15 @@ export default function SimulatorPage() {
         )}
       </div>
 
-      <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
+      {/* `grid-cols-[minmax(0,1fr)]` at the base width, not the implicit `auto`
+          column: an auto track is sized to its item's min-content, and the hand
+          SVG contributes a 348px floor even though it is otherwise responsive
+          (viewBox + w-full h-auto). On a 320px screen that resolved the track
+          to 348px against 280px available and scrolled the page sideways.
+          minmax(0,…) lets the track ignore that floor. Measured: capping the
+          SVG or setting min-w-0 on the item both leave it at 348 — the track is
+          what has to change. */}
+      <div className="grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
         {/* ------------------------------------------------ left: hand ---- */}
         <div>
           {/* Gate control */}
