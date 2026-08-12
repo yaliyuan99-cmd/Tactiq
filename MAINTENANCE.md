@@ -8,6 +8,64 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-12 — cycle 19 — **no code change**
+
+**Inspected:** git state, 133 tests, tsc, lint, build + prerender; **320 px**,
+the WCAG 1.4.10 reflow threshold every previous sweep missed by testing at
+375 px — across all nine public pages and all nine dashboard routes, at the
+default text size and again at the app's largest; console.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| — | **WCAG 1.4.10 passes.** At 320 px and the default text size, all nine public pages and all nine dashboard routes reflow with **zero** page overflow | Correct, no action |
+| **P3** | At 320 px **stacked with the app's "larger" text setting**, two pages scroll sideways: `/dashboard/simulator` (368 px vs 320) and `/dashboard/device` (343 px vs 320). That combination is beyond what 1.4.10 asks for — but it is a real one for a low-vision user on a small phone | **Logged, not fixed** — see below |
+| — | The bottom nav measuring 369 px on the simulator | **Consequence, not cause**, as in cycle 18: it is `fixed inset-x-0` and stretches to the already-widened page |
+
+**Changed: nothing.** I tried a fix, it did not work, and I reverted it rather
+than keep a change I could not justify.
+
+**What I got wrong, and what is actually true.** My hypothesis was the progress
+bar's `min-w-40`, which resolves to a 200 px floor at the larger text size —
+plausible, and I changed it to `min-w-0 sm:min-w-40`. The bar duly shrank to
+35 px and **the page still overflowed at 368**. So that floor was never the
+constraint. Reverted.
+
+Walking the tree properly afterwards: the simulator's whole content column
+measures 348 px, and every section at 348 is stretched to match rather than
+causing it. `SimHand`'s SVG is already correct — `viewBox` plus
+`className="w-full h-auto"`, the right responsive pattern — so the floor sits
+in a container above it that I have not yet traced.
+
+I stopped there deliberately. I had already been wrong once this cycle, the
+remaining fix touches the layout around the simulator's central interactive
+element, and a guess there risks a worse regression than a 48 px overflow in a
+combination WCAG does not require.
+
+**Verified:** worktree clean after the revert · tsc 0 errors · eslint clean ·
+133/133 tests · build + 16 prerendered routes · 320 px at default text: 18 of
+18 page checks with zero overflow · 0 console errors throughout.
+
+**Not deployed** — nothing changed.
+
+**Remaining concerns**
+- The 320 px + largest-text overflow on `/dashboard/simulator` and
+  `/dashboard/device`, with the cause narrowed to a container-level width floor
+  above `SimHand`, not the SVG and not `min-w-40`.
+- The Supabase branch of cycle 16's single-active fix is still reasoned, not
+  executed.
+- Only the dashboard announces route changes.
+- `ErrorBoundary` still sets no title and does not announce on catch (P3).
+- Component/routing behaviour still untested at runtime (needs jsdom).
+
+**Next likely focus:** trace that container floor with the measurements above
+as the starting point, and verify the hand diagram still renders and accepts
+taps at 320 px before shipping anything — the part this cycle was not willing
+to rush.
+
+---
+
 ## 2026-08-12 — cycle 18
 
 **Inspected:** git state, 133 tests, tsc, lint, build + prerender; a full
