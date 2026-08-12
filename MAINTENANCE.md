@@ -8,6 +8,52 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-13 — cycle 24 — **no code change**
+
+**Inspected:** git state, 133 tests, tsc, lint, build + prerender; the follow
+form's **duplicate-email branch** — a public path `joinWaitlist` computes but
+the form never reads; signed-out `/dashboard/accessibility` redirect and the
+return trip; 375 px; console.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| — | **`duplicate` is computed and never used.** `joinWaitlist` returns `{ ok: true, duplicate: true }` on a repeat address (Supabase unique-violation 23505, and the local fallback), but `FollowForm` only branches on `ok` | **Not a defect.** Submitting the same address twice shows the same "You're on the list" both times, stores exactly **one** row, raises no error, and logs nothing. The message is true, and an identical response either way avoids confirming whether an address is already registered. The flag exists so a caller *could* differentiate; nothing obliges it to |
+| — | A second submission's **name** is silently discarded (the row keeps the first) | Noted, not changed — first-record-wins is reasonable for a waitlist, and reporting it would leak the same enumeration signal |
+| — | Signed-out `/dashboard/accessibility` → `/login?next=…` → returns after sign-in | Correct, no action |
+| — | 375 px on both pages; console | 0 overflow, 0 errors |
+
+**A false positive of my own:** a loose regex flagged "went wrong / already /
+error / try again" anywhere in the page text and reported an error was shown.
+Checking `[role="alert"]` and `.text-destructive` directly found **none** — the
+matches were "you **already** know" in the hero and "word **error** rate" in a
+research citation.
+
+**Changed:** nothing. This entry only.
+
+**Verified:** tsc 0 errors · eslint clean · 133/133 tests · build + 16
+prerendered routes · duplicate submission exercised end to end, one row before
+and after · auth round trip intact · 0 overflow · 0 console errors · the probe
+waitlist row was removed afterwards (Supabase is not configured, so it never
+left this browser).
+
+**Not deployed** — nothing user-visible changed.
+
+**Remaining concerns** (unchanged)
+- Cycle 16's single-active fix: the Supabase branch is reasoned, not executed.
+- Only the dashboard announces route changes.
+- `ErrorBoundary` sets no title and does not announce on catch (P3).
+- No runtime component/routing tests (needs jsdom).
+
+**Next likely focus:** six cycles (14, 17, 21–24) have now found nothing. The
+remaining concerns are the real backlog, and two of them cannot be closed from
+this machine — one needs a Supabase project, the other a jsdom test setup.
+Worth the user's judgement on whether the two-hourly cadence still earns its
+keep, or should drop to something less frequent.
+
+---
+
 ## 2026-08-13 — cycle 23 — **no code change**
 
 **Inspected:** git state, 133 tests, tsc, lint, build + prerender; **keyboard
