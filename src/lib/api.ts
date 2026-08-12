@@ -142,13 +142,21 @@ function toAuthUser(u: LocalUser): AuthUser {
  * loudly rather than silently persisting unhashed passwords in the browser.
  */
 function assertLocalAuthAllowed(): void {
-  if (!import.meta.env.DEV) {
-    throw new Error(
-      'Sign-in is unavailable: this deployment is missing its Supabase ' +
-        'configuration (VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY). ' +
-        'The insecure local auth fallback is disabled outside development.',
-    );
-  }
+  if (import.meta.env.DEV) return;
+  // This branch only ever runs in production, so its message is only ever read
+  // by a visitor — never by whoever is developing. Naming the env vars and
+  // calling the fallback "insecure" told them nothing they could act on, and
+  // "insecure" is a poor word to show unprompted on a site about a product for
+  // vulnerable users. The diagnosis goes to the console, where the person who
+  // deployed it will look; the page gets a sentence written for a reader.
+  console.error(
+    '[Tactiq] Auth unavailable: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are ' +
+      'not set for this deployment. The plaintext local fallback is DEV-only and ' +
+      'is deliberately disabled here.',
+  );
+  throw new Error(
+    'Accounts aren’t available on this deployment yet — the research site works without one.',
+  );
 }
 
 export async function signUp(params: {

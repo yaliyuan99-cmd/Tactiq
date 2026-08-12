@@ -8,6 +8,61 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-13 — cycle 26
+
+**Inspected:** git state, 138 tests, tsc, lint, build + prerender; **the live
+production site in a browser** — 25 cycles had tested the dev server and only
+ever checked production with `curl` for titles and status codes. Seven-page SPA
+nav on the deployed build, the signed-out guard, and a real sign-in attempt.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| **P2** | **Visitors were shown a developer's error message.** Attempting to sign in on the live site returns *"Sign-in is unavailable: this deployment is missing its Supabase configuration (VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY). The insecure local auth fallback is disabled outside development."* `assertLocalAuthAllowed()` throws **only** when `DEV` is false, so that text is read exclusively by visitors and never by whoever is developing — and it surfaces on all three public entry points: sign-in, sign-up and password reset | Fixed |
+| — | Production SPA routing: 7 pages, unique titles, single `h1` each | 0 overflow, 0 console errors |
+| — | Signed-out `/dashboard/simulator` on the deployed build → `/login?next=…`, no crash, no blank page | Correct, no action |
+| — | The sign-in attempt itself: no session created, error announced via `role="alert"`, focus kept on the button (cycle 10's fix holding on the real build) | Correct, no action |
+
+Naming env vars tells a reader nothing they can act on, and "insecure" is a
+poor word to show unprompted on a site about a product for vulnerable users.
+The rest of the site's copy is scrupulously human; this was the one place that
+broke voice.
+
+**Changed:** the guard now logs the full diagnosis to the console — where
+whoever deployed it will look, and with *more* detail than before — and throws
+a sentence written for a reader: *"Accounts aren't available on this deployment
+yet — the research site works without one."* The security behaviour is
+untouched. Plus `authUnavailable.test.ts` (7 tests).
+
+**Verified:** 145/145 tests · **mutation-tested both halves** — restoring the
+developer message fails 3 tests, dropping the console diagnosis fails 2, all 145
+pass restored · tsc 0 errors · eslint clean · build + 16 prerendered routes ·
+**exercised on the production build**, not the dev server, because the guard
+only fires there: sign-in and password-reset both now show the human sentence,
+with `VITE_` and "insecure" absent from the page, the full diagnosis present in
+the console, no session created, and focus retained.
+
+**A mistake in my own method:** the first mutation run reported all 7 tests
+passing with the developer message restored, which would have meant a useless
+test. The substitution had silently not applied — a curly apostrophe and an
+em-dash in the string defeated the pattern. Re-run with the edit confirmed
+applied, it failed 3 tests as it should. A mutation that does not mutate is
+indistinguishable from a test that does not test.
+
+**Deployed to Netlify** — user-visible.
+
+**Remaining concerns**
+- Cycle 16's single-active fix: the Supabase branch is reasoned, not executed.
+- Only the dashboard announces route changes.
+- No runtime component/routing tests (needs jsdom).
+
+**Next likely focus:** nothing outstanding that is fixable here. Testing the
+deployed site rather than the dev server was worth doing once and found this;
+it is now covered.
+
+---
+
 ## 2026-08-13 — cycle 25
 
 **Inspected:** git state, 133 tests, tsc, lint, build + prerender; the
