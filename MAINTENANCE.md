@@ -8,6 +8,46 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-13 — cycle 23 — **no code change**
+
+**Inspected:** git state, 133 tests, tsc, lint, build + prerender; **keyboard
+operation of the public `/project` hand map** — the product's central demo for
+visitors, never keyboard-tested; signed-out `/dashboard/training` redirect and
+the return trip; 375 px; console.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| — | **The hand map is properly keyboard-operable.** Eight real `<button>`s with complete names ("Index tip: Confirm. Fixed command."), a roving tabindex, `role="group"` labelled with the arrow-key hint, and the SVG `aria-hidden` so the buttons carry the semantics. Arrow keys move focus across all eight | Correct, no action |
+| — | The description panel stays put while arrowing — it looked like the readout failing to follow focus | **Not a defect.** The widget is focus-then-activate, and consistently so: arrows move focus only; Enter commits, at which point `aria-pressed`, the roving `tabIndex=0` and the panel all move together to the new point. The panel describes the *selected* point, which genuinely has not changed, and a screen reader still hears each button's own label as focus lands on it |
+| — | Signed-out `/dashboard/training` → `/login?next=…` → returns after sign-in | Correct, no action |
+| — | 375 px on `/login` and `/dashboard/training`; console | 0 overflow, 0 errors |
+
+Selection-following-focus would arguably suit a single-select widget like this
+better, but that is a design preference, not a fault — and rewriting the
+interaction semantics of a public demo on preference alone is exactly the
+speculative change this contract rules out.
+
+**Changed:** nothing. This entry only.
+
+**Verified:** tsc 0 errors · eslint clean · 133/133 tests · build + 16
+prerendered routes · arrow-key traversal and Enter-to-select both exercised ·
+auth round trip intact · 0 overflow · 0 console errors.
+
+**Not deployed** — nothing user-visible changed.
+
+**Remaining concerns** (unchanged)
+- Cycle 16's single-active fix: the Supabase branch is reasoned, not executed.
+- Only the dashboard announces route changes.
+- `ErrorBoundary` sets no title and does not announce on catch (P3).
+- No runtime component/routing tests (needs jsdom).
+
+**Next likely focus:** nothing outstanding. Five cycles (14, 17, 21, 22, 23)
+have found nothing to change.
+
+---
+
 ## 2026-08-12 — cycle 22 — **no code change**
 
 **Inspected:** git state, 133 tests, tsc, lint, build + prerender; the **Web
