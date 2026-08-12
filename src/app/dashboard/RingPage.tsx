@@ -104,8 +104,13 @@ export default function RingPage() {
         <DeviceHud />
       </div>
 
-      {/* Mode toggle */}
-      <div role="group" aria-label="View mode" className="inline-flex rounded-md border border-border p-0.5 bg-secondary/50 mb-8">
+      {/* Mode toggle. `flex-wrap`, not a fixed row: at the site's "larger"
+          text setting (20px root) the three tabs measure 386px, which is wider
+          than a 375px phone, and the page picked up a horizontal scroll — the
+          setting exists for low-vision users, so it must not break the layout
+          for them. Wrapping keeps every tab visible and tappable; a horizontal
+          scroller would hide one behind a gesture nobody is told about. */}
+      <div role="group" aria-label="View mode" className="inline-flex flex-wrap rounded-md border border-border p-0.5 bg-secondary/50 mb-8">
         {(
           [
             { id: 'hardware', label: 'Hardware' },

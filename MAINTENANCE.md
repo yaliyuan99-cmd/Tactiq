@@ -8,6 +8,62 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-12 — cycle 18
+
+**Inspected:** git state, 133 tests, tsc, lint, build + prerender; a full
+**honesty audit** of every numeric claim on the public site against the
+contract's own hard rule; the site's **own text-size setting** at all three
+values across the public pages and all nine dashboard routes at 375 px;
+console.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| **P2** | **The site's "larger" text setting broke the Ring page on a phone.** The Hardware/Sensors/Commands toggle is a fixed `inline-flex` row: 309 px at the default 16 px root, 348 px at "large", and **386 px at "larger"** — wider than a 375 px viewport, so the page picked up a 31 px horizontal scroll (`scrollWidth` 406). The setting exists for low-vision users, which makes it precisely the wrong thing to break for them | Fixed |
+| — | **Honesty labels: clean.** Every occurrence of "measured" on the public site is a *negative* — "has never been measured", "not yet measured", "no figure on this site has been physically measured". Nothing is labelled MEASURED anywhere, exactly matching the stated policy | Correct, no action |
+| — | External figures (91.3% / 38% screen-reader use, 50% / 71% ASR word error, EFRing's 89.5%) | **Attributed** — a Sources block cites WebAIM Survey #10 (2024), Ballati et al. (2018), JSLHR (2024). The two Tactiq papers are explicitly flagged as unpublished |
+| — | Tactiq's own figures (87%→50% at sixteen points, 86% worst-contact at 4 mm scatter) | **Honestly framed** — the copy says "Model a worn ring…" and "Under modelled worn conditions", and states outright that thumb-placement scatter "has never been measured — that is what the bench experiment is for" |
+| — | Two elements past the viewport on `/dashboard/simulator` and `/dashboard/history` at larger text | **Not defects** — both sit inside `overflow-x` scrollers, so the content scrolls in its own container and the page does not. Distinguished by walking up for a scrolling ancestor rather than trusting the raw count |
+| — | The bottom nav measuring 406 px on the Ring page | **Consequence, not cause** — it is `fixed inset-x-0`, so it stretched to the already-widened page. It returned to 375 px once the toggle was fixed |
+
+**Changed:** one class on the Ring page's mode toggle — `flex-wrap`. Wrapping
+keeps all three tabs visible and tappable; a horizontal scroller would have
+hidden one behind an undiscoverable gesture.
+
+**Verified:** 133/133 tests · tsc 0 errors · eslint clean · build + 16
+prerendered routes · in-browser at 375 px across **all three text sizes**: page
+overflow gone at "larger" (406 → 375), and every tab still a ≥44 px target at
+every size · the default 16 px layout is unchanged, still a single row ·
+**all nine dashboard routes** re-swept at the largest setting: 0 page overflow,
+0 page-level offenders, 0 console errors.
+
+**Deployed to Netlify** — user-visible.
+
+**A note on the honesty audit:** my first pass counted "MEASURED" 32 times and
+looked like a contradiction of the site's own "nothing has reached measured
+status". It was a case-insensitive grep catching prose. Reading each occurrence
+in context showed every one of them denying measurement rather than claiming
+it.
+
+**Remaining concerns**
+- At the "large" (18 px) setting the toggle now wraps to two rows where it
+  previously fit on one. It was already overflowing its padded container there;
+  it just had not reached the viewport edge. Wrapping is the more correct of
+  the two, but it is a visual change at that size.
+- The Supabase branch of cycle 16's single-active fix is still reasoned, not
+  executed.
+- Only the dashboard announces route changes.
+- `ErrorBoundary` still sets no title and does not announce on catch (P3).
+- Component/routing behaviour still untested at runtime (needs jsdom).
+
+**Next likely focus:** nothing outstanding. Text scaling is now covered for the
+dashboard; the equivalent sweep for the authenticated pages at desktop widths,
+and browser zoom as distinct from the in-app setting, are the nearest untested
+ground.
+
+---
+
 ## 2026-08-12 — cycle 17 — **no code change**
 
 **Inspected:** git state (clean, in sync), 133 tests, tsc, lint, build +
