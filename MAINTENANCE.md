@@ -8,6 +8,56 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-12 — cycle 17 — **no code change**
+
+**Inspected:** git state (clean, in sync), 133 tests, tsc, lint, build +
+prerender; the two user paths no earlier cycle had exercised — **`/reset-password`**
+(including against a **production build**) and the **Training lesson flow**, run
+start to finish; signed-out `/dashboard/ring` redirect and the return trip;
+375 px; console.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| — | **`/reset-password` takes the target account from a URL query parameter** and the DEV fallback changes that account's password with no token. Worth chasing: it looks alarming | **Not a defect.** In production the parameter is ignored entirely — Supabase acts on the recovery session from the emailed link. The fallback sits behind `assertLocalAuthAllowed()`, which Vite folds to an **unconditional throw** in a production build (confirmed in the minified bundle: `function Mr(){throw new Error(…)}`) |
+| — | Attempting the email-targeted reset **against the built site** | Refused with the guard error, no password changed, no success state — verified in the browser, not inferred |
+| — | Training: lesson start, 5 steps, completion, accuracy, persistence, gating | Works end to end. Each step is announced ("Step 3 of 5…"), completion announces "Lesson complete. Accuracy 100 percent", progress persists to a **per-user** key, stats update to 1/5 and 2/8, lesson 2 unlocks and 3–5 keep their "Finish lesson N first" gates |
+| — | Signed-out `/dashboard/ring` → `/login?next=…` → returns after sign-in | Correct, no action |
+| — | 375 px on `/login` and `/dashboard/ring`; console throughout | 0 overflow, 0 errors |
+
+Both remaining unexercised paths came back clean, so per the contract nothing
+was changed. The most interesting result is the negative one: the reset flow
+*reads* like a hole and is not one, and that is now confirmed against a real
+production build rather than argued from the source.
+
+**Changed:** nothing in the app. This entry only.
+
+**Verified:** tsc 0 errors · eslint clean (0 errors, 0 warnings) · 133/133
+tests · build + 16 prerendered routes · the production-build reset attempt
+refused · the Training lesson completed and persisted · auth round trip intact ·
+0 console errors · 0 overflow at 375 px.
+
+**Not deployed** — nothing user-visible changed.
+
+**Probe data removed:** the training progress this inspection generated was
+deleted afterwards. Supabase is not configured locally, so nothing left the
+browser.
+
+**Remaining concerns**
+- The Supabase branch of cycle 16's single-active fix is still **reasoned, not
+  executed** — no project is configured here.
+- Only the dashboard announces route changes; the public routes do not.
+- `ErrorBoundary` still sets no title and does not announce on catch (P3).
+- Component/routing behaviour still untested at runtime (needs jsdom).
+- Netlify GitHub auto-deploy still broken; manual CLI deploy remains the path.
+
+**Next likely focus:** nothing is outstanding. Every user path has now been
+exercised at least once. The honest next step is another open inspection, with
+a real willingness to find nothing again.
+
+---
+
 ## 2026-08-12 — cycle 16
 
 **Inspected:** git state (the cycle 14–15 backlog finally pushed — GitHub was
