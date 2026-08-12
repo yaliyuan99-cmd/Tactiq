@@ -8,6 +8,55 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-13 — cycle 25
+
+**Inspected:** git state, 133 tests, tsc, lint, build + prerender; the
+`ErrorBoundary` crash screen, triggered against a **real caught render error**
+via a temporary throwing route; normal operation across four pages afterwards.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| **P3** | **The crash screen announced nothing and kept the wrong title.** It swaps in without a navigation, so the browser tells a screen reader nothing: measured, the tab still read "The research project · Tactiq" while the page said "Something went wrong". The live-region bus is no help here — the shell that hosts `LiveRegions` has just been replaced | Fixed |
+
+This had sat in the backlog as P3 for several cycles. It is rare — only on a
+crash — but on a product for blind users, a screen that replaces everything and
+says nothing is the wrong failure mode, and it was the one remaining item
+actually fixable from this machine.
+
+**Changed:** `componentDidCatch` sets `document.title` from an exported
+`ERROR_TITLE`, and `role="alert"` wraps the heading and explanation — **not**
+the whole screen, which would read "Reload page / Back to home" out as part of
+the alert. Plus `errorBoundary.test.ts` (5 tests).
+
+**Verified:** 138/138 tests · **mutation-tested both halves** — removing the
+title assignment and removing `role="alert"` each fail two tests by name, all
+138 pass restored · tsc 0 errors · eslint clean · build + 16 prerendered routes
+· **triggered for real**: a temporary `/__crash` route threw during render, and
+the boundary caught it with title "Something went wrong · Tactiq", the alert
+containing exactly the heading and explanation, and **0 interactive elements
+inside it** · the probe route was then removed and the diff confirmed to be the
+boundary and its test only · normal operation re-checked afterwards: four pages,
+correct titles and `h1`s, no crash screen, auth round trip intact, 0 console
+errors.
+
+**Deployed to Netlify** — user-visible.
+
+**Remaining concerns**
+- Cycle 16's single-active fix: the Supabase branch is reasoned, not executed.
+- Only the dashboard announces route changes.
+- No runtime component/routing tests (needs jsdom) — this cycle's test is
+  source-level, with the behaviour confirmed once by hand in the browser.
+
+**Next likely focus:** the backlog is now two items, and **neither can be closed
+from this machine**: one needs a Supabase project, the other a jsdom setup that
+is a deliberate decision rather than a maintenance fix. On the evidence of
+cycles 14 and 17–24, the two-hourly sweep has stopped paying for itself; worth
+the user deciding whether to slow the cadence or point it at one of those two.
+
+---
+
 ## 2026-08-13 — cycle 24 — **no code change**
 
 **Inspected:** git state, 133 tests, tsc, lint, build + prerender; the follow

@@ -10,6 +10,9 @@ interface State {
   error: Error | null;
 }
 
+/** Kept here so the recovery screen and the tab agree on what happened. */
+export const ERROR_TITLE = 'Something went wrong · Tactiq';
+
 /**
  * App-wide error boundary. A render error anywhere below this component shows a
  * calm recovery screen instead of React unmounting the tree to a blank page.
@@ -24,6 +27,13 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
+    // The screen swaps in without a navigation, so nothing tells a screen
+    // reader the page just changed: the title would still name the page that
+    // crashed, and no live region fires. Set both. `alert` is the right
+    // politeness here — the previous content is gone and the user needs to
+    // know now, not after whatever they were reading finishes.
+    document.title = ERROR_TITLE;
+
     // Surface the crash in dev; in production this is where a real app would
     // forward to an error-reporting service (Sentry, etc.).
     if (import.meta.env.DEV) {
@@ -45,13 +55,20 @@ export default class ErrorBoundary extends Component<Props, State> {
             <AlertTriangle className="h-7 w-7" aria-hidden="true" />
           </span>
 
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground text-balance">
-            Something went wrong
-          </h1>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground text-pretty">
-            An unexpected error interrupted this page. Reloading usually clears it — your
-            account and settings are safe.
-          </p>
+          {/* role="alert" on the heading and explanation only — not the whole
+              screen, which would read the buttons out as part of the alert.
+              This mounts at the moment of the crash, which is what makes it
+              announce; the live-region bus is no use here because the shell
+              that hosts it has just been replaced. */}
+          <div role="alert">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground text-balance">
+              Something went wrong
+            </h1>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground text-pretty">
+              An unexpected error interrupted this page. Reloading usually clears it — your
+              account and settings are safe.
+            </p>
+          </div>
 
           {import.meta.env.DEV && this.state.error && (
             <pre className="mt-5 max-h-40 overflow-auto rounded-lg border border-border bg-card px-4 py-3 text-left text-xs text-muted-foreground">
