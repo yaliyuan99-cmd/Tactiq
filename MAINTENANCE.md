@@ -8,6 +8,61 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-12 — cycle 16
+
+**Inspected:** git state (the cycle 14–15 backlog finally pushed — GitHub was
+reachable again), 125 tests, tsc, lint, build + prerender; the **command-layout
+save path**, which writes user data and had never been exercised in any cycle;
+the multi-layout / "make active" flow end to end; console.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| **P1** | **Activating a second command layout silently did nothing.** `saveGestureConfig` sets `is_active` on the row it writes and never clears it on the others, but every reader resolves the layout with `rows.find((r) => r.is_active)` — which returns the *first* match. Measured: save layout A (pinky tip → Play/Pause) starred, then layout B (→ Next track) starred, and **both** came back `is_active: true` while the dashboard, simulator, training and overview all kept applying **A**. The command layout is the user's muscle memory; quietly running the wrong one is a real failure | Fixed |
+| — | The save path itself: persists correctly, button confirms "Saved", 0 errors | Correct, no action |
+| — | Local fallback stores `user_id: 'local'` rather than the account id | **Not a defect worth acting on** — localStorage is per browser, so it cannot leak across people; in production Supabase supplies the real id and RLS scopes it. Noted, not changed |
+| — | A layout saved without the star comes back `is_active: false` | **Correct by design** — the star is an explicit control, and readers fall back to the first layout |
+
+The bug needs two layouts and the natural user action of starring the new one
+without unstarring the old — which is exactly what someone would do, since
+nothing suggests the flag is exclusive. The UI then showed two layouts both
+marked active, a state that should not exist.
+
+**Changed:** `saveGestureConfig` now enforces the single-active invariant on
+both write paths — the Supabase upsert clears `is_active` on the user's other
+rows (`.eq(user_id).neq(id)`), and the local fallback does the same in the
+array. Plus `gestureConfigs.test.ts` (8 tests) covering the invariant and
+checking the shipped source still implements it on both paths.
+
+**Verified:** 133/133 tests · **mutation-tested both paths** — removing the
+local clear and breaking the Supabase `neq` each fail by name, all 133 pass
+restored · tsc 0 errors · eslint clean (0 errors, 0 warnings) · build + 16
+prerendered routes · **in-browser, the exact scenario that failed**: two
+layouts saved and starred in turn now leave `starredCount: 1`, the older row
+flipped to `false`, and the app resolves `media-next` — the one just activated,
+where before it resolved `media-playpause` · the Overview confirms it downstream:
+"Shortcut 1 · pinky tip **Next track**" · 0 console errors.
+
+**Deployed to Netlify** — user-visible.
+
+**Test layouts created during the inspection were deleted afterwards**;
+Supabase is not configured locally, so nothing left this browser.
+
+**Remaining concerns**
+- The Supabase branch of this fix is **reasoned, not executed**: no Supabase
+  project is configured here, so only the local path ran for real. The two
+  branches are pinned by source assertions rather than behaviour.
+- Only the dashboard announces route changes; the public routes do not.
+- `ErrorBoundary` still sets no title and does not announce on catch (P3).
+- Component/routing behaviour still untested at runtime (needs jsdom).
+- Netlify GitHub auto-deploy still broken; manual CLI deploy remains the path.
+
+**Next likely focus:** the Training lesson flow and `/reset-password`, the two
+remaining user paths no cycle has yet exercised.
+
+---
+
 ## 2026-08-12 — cycle 15
 
 **Inspected:** local git state, 125 tests, tsc, lint, build + prerender; the

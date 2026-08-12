@@ -397,6 +397,17 @@ export async function saveGestureConfig(params: {
       .select()
       .single();
     if (error) throw error;
+    // "Active" means one layout, not a flag each row keeps forever. Every
+    // reader resolves it with `find(is_active)`, so leaving an older row
+    // marked active makes that find return the wrong layout and the newly
+    // activated one never takes effect. Clear the others.
+    if (row.is_active) {
+      await supabase
+        .from('gesture_configs')
+        .update({ is_active: false })
+        .eq('user_id', user.id)
+        .neq('id', data.id);
+    }
     return data;
   }
 
@@ -417,6 +428,12 @@ export async function saveGestureConfig(params: {
   };
   if (existingIdx >= 0) configs[existingIdx] = record;
   else configs.push(record);
+  // Same single-active rule as the Supabase path above.
+  if (record.is_active) {
+    for (const c of configs) {
+      if (c.id !== record.id) c.is_active = false;
+    }
+  }
   localStorage.setItem(GESTURE_LS_KEY, JSON.stringify(configs));
   return record;
 }
