@@ -8,6 +8,40 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-13 — cycle 27 — **no code change**
+
+**Inspected:** git state, 145 tests, tsc, lint, build + prerender; **production
+at 375 px** — the deployed build had never been checked at a mobile width; the
+collapsed mobile nav; the 404 page loaded in a browser rather than curled.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| — | Production at 375 px: no page overflow anywhere reachable, unique titles, 0 console errors | Correct, no action |
+| — | Mobile nav: an "Open menu" button whose `aria-expanded` flips false→true, revealing every section link (`/how-it-works`, `/prototype`, `/research`, `/status`, `/faq`, `/login`, `/signup`), plus a labelled dark-mode toggle | Correct, no action |
+| — | Production 404 in-browser: title "Page not found · Tactiq", matching `h1`, no overflow, and "Back to home" recovers to `/` with the right title | Correct, no action |
+| — | **Two pages appeared to show the previous page's title** — `/project` showing the homepage's, `/privacy` showing `/project`'s | **Phantom (my measurement).** A fixed 850 ms delay was racing the lazy-chunk fetch over the CDN. Re-measured waiting for the `h1` to actually change: `/privacy` → "Privacy Policy · Tactiq" at 450 ms, `/terms` → "Terms of Service · Tactiq" at 300 ms. Both correct |
+| — | Five of ten pages reported "no link" in the first sweep | **Also my sweep**, not the site — at 375 px those links sit behind the closed hamburger |
+
+**Changed:** nothing. This entry only.
+
+**Verified:** tsc 0 errors · eslint clean · 145/145 tests · build + 16
+prerendered routes · production mobile sweep, nav disclosure, and 404 recovery
+all exercised on the live site · 0 console errors throughout.
+
+**Not deployed** — nothing changed.
+
+**Remaining concerns** (unchanged)
+- Cycle 16's single-active fix: the Supabase branch is reasoned, not executed.
+- Only the dashboard announces route changes.
+- No runtime component/routing tests (needs jsdom).
+
+**Next likely focus:** production is now covered at both widths, so the surface
+that paid off in cycle 26 is exhausted. Nothing outstanding is fixable here.
+
+---
+
 ## 2026-08-13 — cycle 26
 
 **Inspected:** git state, 138 tests, tsc, lint, build + prerender; **the live
