@@ -8,6 +8,50 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-12 — cycle 21 — **no code change**
+
+**Inspected:** git state, 133 tests, tsc, lint, build + prerender; whether each
+of the six accessibility settings actually reaches a consumer; the simulator's
+**keyboard operation** end to end; signed-out `/dashboard/history` redirect and
+the return trip; 375 px; console.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| — | **`emergencyConfirm` is write-only** — the checkbox sets it and nothing in the codebase reads it, unlike the other five settings, which all reach a consumer (`handPreference` mirrors the hand on four pages, `hapticStrength` scales the vibration in `feedback.ts`, `longerWindow` doubles the simulator's command window, `reducedMotion` and `textSize` are wired through `applyA11yPrefs`) | **Not a defect** — the control sits directly under a badge reading *"Will sync when a ring is paired — not yet available"*. It is a stored preference for hardware that does not exist, and the UI says exactly that |
+| — | **The simulator is fully keyboard-operable**, as its own hint claims ("Keys 1–8 tap the points · hold W to squeeze"). Holding W for 400 ms armed the ring ("window 3.5 s"); key 4 then fired the command and announced *"The History Hour. 2 of 6."* | Correct, no action |
+| — | A single tap of `w` did **not** arm the ring | **Correct behaviour, not a bug** — the gate requires a ≥150 ms hold, and keydown/keyup from one keypress is far below it |
+| — | Signed-out `/dashboard/history` → `/login?next=…` → returns after sign-in | Correct, no action |
+| — | 375 px on `/login` and `/dashboard/history`; console throughout | 0 overflow, 0 errors |
+
+Both hypotheses this cycle were rejected on evidence. The write-only setting was
+the stronger one — cycle 7 found a setting that genuinely did nothing — but the
+badge above it makes the state honest rather than broken, which is the same
+discipline the rest of the site follows.
+
+**Changed:** nothing. This entry only.
+
+**Verified:** tsc 0 errors · eslint clean · 133/133 tests · build + 16
+prerendered routes · keyboard path exercised end to end · auth round trip
+intact · 0 overflow at 375 px · 0 console errors.
+
+**Not deployed** — nothing user-visible changed.
+
+**Remaining concerns**
+- The Supabase branch of cycle 16's single-active fix is still reasoned, not
+  executed — no project is configured locally.
+- Only the dashboard announces route changes; the public routes do not.
+- `ErrorBoundary` still sets no title and does not announce on catch (P3).
+- Component/routing behaviour still untested at runtime (needs jsdom).
+- Netlify GitHub auto-deploy still broken; manual CLI deploy remains the path.
+
+**Next likely focus:** nothing outstanding. Three cycles now (14, 17, 21) have
+found nothing to change, which is the expected shape once the obvious defects
+are gone — the checks still run, and the log records what was looked at.
+
+---
+
 ## 2026-08-12 — cycle 20
 
 **Inspected:** git state, 133 tests, tsc, lint, build + prerender; the container
