@@ -8,6 +8,44 @@ it briefly rather than manufacturing work.
 
 ---
 
+## 2026-08-12 — cycle 22 — **no code change**
+
+**Inspected:** git state, 133 tests, tsc, lint, build + prerender; the **Web
+Bluetooth unsupported-browser path** (what Safari and Firefox visitors actually
+get); whether any status is conveyed by **colour alone** on the Activity
+timeline; signed-out `/dashboard/commands` redirect and the return trip; five
+pages at 375 px; console.
+
+**Found**
+
+| Pri | Finding | Action |
+|---|---|---|
+| — | **Unsupported-browser pairing is handled properly.** Stubbing `navigator.bluetooth` away and remounting the page swapped the heading to "Bluetooth unavailable in this browser", **removed** the Pair button rather than leaving it to throw, and explained where it does work ("Chrome and Edge on desktop and Android"). The section is `aria-live="polite"`, and both the mount effect and `pair()` guard independently. 0 console errors — no unhandled `TypeError` | Correct, no action |
+| — | **No status depends on colour alone** (WCAG 1.4.1). The timeline's coloured dot is `aria-hidden`, and every state is also written out: "misread", "gated — ring was idle", "5 s hold", plus a confidence percentage | Correct, no action |
+| — | Signed-out `/dashboard/commands` → `/login?next=…` → returns after sign-in | Correct, no action |
+| — | Five pages at 375 px, titles and `h1` counts, console | 0 overflow, 0 errors |
+
+**Changed:** nothing. This entry only.
+
+**Verified:** tsc 0 errors · eslint clean · 133/133 tests · build + 16
+prerendered routes · unsupported-Bluetooth path exercised by stubbing the API ·
+auth round trip intact · 0 overflow · 0 console errors · the stub was
+page-scoped and `navigator.bluetooth` is restored.
+
+**Not deployed** — nothing user-visible changed.
+
+**Remaining concerns** (unchanged from cycle 21)
+- Cycle 16's single-active fix: the Supabase branch is reasoned, not executed.
+- Only the dashboard announces route changes.
+- `ErrorBoundary` sets no title and does not announce on catch (P3).
+- No runtime component/routing tests (needs jsdom).
+
+**Next likely focus:** nothing outstanding. Four cycles (14, 17, 21, 22) have
+now found nothing to change; the remaining concerns above are the honest
+backlog, and none is worth a speculative edit.
+
+---
+
 ## 2026-08-12 — cycle 21 — **no code change**
 
 **Inspected:** git state, 133 tests, tsc, lint, build + prerender; whether each
